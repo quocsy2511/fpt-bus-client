@@ -1,7 +1,3 @@
-import axios from "axios";
-import { serverEndpoint } from '../utilities/serverEndpoint'
-import { axiosInstance } from "../helpers/axiosInstance";
-
 export const onFinishFunction = async () => {
 
     try {
