@@ -2,6 +2,7 @@ import axios from "axios";
 import jwt from "jsonwebtoken";
 import firebase from "firebase/app";
 import "firebase/auth";
+import { serverEndpoint } from "../utilities/serverEndpoint";
 
 const API_BASE_URL = "https://http://178.128.223.115:8080/";
 const JWT_SECRET = "mysecretkey";
@@ -20,19 +21,21 @@ const createJWT = (data) => {
     return token;
 };
 
-const postUserData = async (data) => {
+const postUserData = async (user) => {
     try {
         const accessToken = await getAccessToken();
         const response = await axios.post(
-            `${API_BASE_URL}/users`,
-            { data },
+            // `${API_BASE_URL}/users`,
+            `${serverEndpoint}/api/v1/auth/sign-in`,
+            { user },
             { headers: { Authorization: `Bearer ${accessToken}` } }
         );
         const { userId, name, email } = response.data;
         const userData = { userId, name, email };
         const jwtToken = createJWT(userData);
         localStorage.setItem("jwtToken", jwtToken);
-        return userData;
+        // return userData;
+        return jwtToken;
     } catch (error) {
         console.error(error);
         throw new Error("Failed to post user data");

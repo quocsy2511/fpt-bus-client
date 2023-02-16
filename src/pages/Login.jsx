@@ -4,26 +4,34 @@ import { GoogleButton } from 'react-google-button';
 import { UserAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 import '../resources/login.css'
-
+import { postUserData } from '../services/api';
+import { message } from 'antd';
 
 
 const Login = () => {
     const { user, googleSignIn } = UserAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (user != null) {
-            navigate('/home');
-        }
-    }, [user]);
-
     const handleGoogleSignIn = async () => {
         try {
             await googleSignIn();
+            const response = await postUserData(user);
+            console.log('response in login: ', response)
+            if (response.data.success) {
+                message.success(response.data.message);
+                localStorage.setItem("token", response.data.data);
+                navigate("/")
+            } else {
+                message.error(response.data.message);
+            }
         } catch (error) {
             console.log(error);
         }
     };
+    // useEffect(() => {
+    //     if (user != null) {
+    //         navigate('/home');
+    //     }
+    // }, [user]);
     return (
         <div className='login-body'>
 
