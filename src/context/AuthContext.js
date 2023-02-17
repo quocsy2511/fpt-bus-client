@@ -11,10 +11,14 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
-
-    const googleSignIn = () => {
+    const [accessToken, setAccessToken] = useState("");
+    const googleSignIn = async () => {
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const token = await user.getIdToken();
+        setAccessToken(token);
+        setUser(user);
     };
 
     const logOut = () => {
@@ -23,41 +27,26 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            console.log("first", currentUser);
             setUser(currentUser);
-            console.log('User', currentUser)
             if (!currentUser.email.endsWith("@fpt.edu.vn")) {
                 logOut();
                 setTimeout(() => {
                     alert("Please Login by account FPT University");
                 }, 1000);
-
+            } else {
+                currentUser.getIdToken().then((token) => {
+                    setAccessToken(token);
+                });
             }
-            const handleGoogleSignIn = async () => {
-                try {
-                    await googleSignIn();
-                    const response = await postUserData();
-                    console.log('response in login: ', response)
-                    if (response.data.success) {
-                        message.success(response.data.message);
-                        localStorage.setItem("token", response.data.data);
-                        navigate("/home")
-                    } else {
-                        message.error(response.data.message);
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-
-
         });
         return () => {
             unsubscribe();
         };
-    }, []);
+    }, [user])
 
     return (
-        <AuthContext.Provider value={{ googleSignIn, logOut, user }}>
+        <AuthContext.Provider value={{ googleSignIn, logOut, user, accessToken }}>
             {children}
         </AuthContext.Provider>
     );

@@ -7,12 +7,7 @@ import { serverEndpoint } from "../utilities/serverEndpoint";
 const JWT_SECRET = process.env.SECRET_KEY;
 
 const getAccessToken = async () => {
-    const user = firebase.auth().currentUser;
-    if (!user) {
-        throw new Error("User not logged in");
-    }
-    const tokenResult = await user.getIdTokenResult();
-    return tokenResult.token;
+
 };
 
 
@@ -26,7 +21,7 @@ const postUserData = async (user) => {
             { accessToken }
         );
         const { userId, name, email } = response.data;
-        const userData = { userId, name, email };
+        // const userData = { userId, name, email };
         localStorage.setItem("jwtToken", response.data);
         return accessToken
         // return jwtToken;
