@@ -1,11 +1,10 @@
 import axios from "axios";
-import jwt from "jsonwebtoken";
-import firebase from "firebase/app";
-import "firebase/auth";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import { serverEndpoint } from "../utilities/serverEndpoint";
 
-const API_BASE_URL = "https://http://178.128.223.115:8080/";
-const JWT_SECRET = "mysecretkey";
+const JWT_SECRET = process.env.SECRET_KEY;
 
 const getAccessToken = async () => {
     const user = firebase.auth().currentUser;
@@ -16,26 +15,21 @@ const getAccessToken = async () => {
     return tokenResult.token;
 };
 
-const createJWT = (data) => {
-    const token = jwt.sign(data, JWT_SECRET, { expiresIn: "1h" });
-    return token;
-};
 
 const postUserData = async (user) => {
     try {
+        //token firebase 
         const accessToken = await getAccessToken();
         const response = await axios.post(
             // `${API_BASE_URL}/users`,
             `${serverEndpoint}/api/v1/auth/sign-in`,
-            { user },
-            { headers: { Authorization: `Bearer ${accessToken}` } }
+            { accessToken }
         );
         const { userId, name, email } = response.data;
         const userData = { userId, name, email };
-        const jwtToken = createJWT(userData);
-        localStorage.setItem("jwtToken", jwtToken);
-        // return userData;
-        return jwtToken;
+        localStorage.setItem("jwtToken", response.data);
+        return accessToken
+        // return jwtToken;
     } catch (error) {
         console.error(error);
         throw new Error("Failed to post user data");

@@ -32,6 +32,23 @@ export const AuthContextProvider = ({ children }) => {
                 }, 1000);
 
             }
+            const handleGoogleSignIn = async () => {
+                try {
+                    await googleSignIn();
+                    const response = await postUserData();
+                    console.log('response in login: ', response)
+                    if (response.data.success) {
+                        message.success(response.data.message);
+                        localStorage.setItem("token", response.data.data);
+                        navigate("/home")
+                    } else {
+                        message.error(response.data.message);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+
 
         });
         return () => {
