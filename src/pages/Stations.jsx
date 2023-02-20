@@ -1,13 +1,11 @@
 import React from 'react';
 
-
-const Home = () => {
-
+const Stations = () => {
     return (
         <div>
-            <h1 >admin home </h1>
+            <h1>Stations</h1>
         </div>
     );
 };
 
-export default Home;
+export default Stations;

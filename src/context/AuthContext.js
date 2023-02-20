@@ -27,17 +27,20 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            console.log("first", currentUser);
-            setUser(currentUser);
-            if (!currentUser.email.endsWith("@fpt.edu.vn")) {
+            if (currentUser && !currentUser.email.endsWith("@fpt.edu.vn")) {
                 logOut();
                 setTimeout(() => {
                     alert("Please Login by account FPT University");
                 }, 1000);
+
             } else {
-                currentUser.getIdToken().then((token) => {
-                    setAccessToken(token);
-                });
+                setUser(currentUser);
+                if (currentUser) {
+                    currentUser.getIdToken().then((token) => {
+                        setAccessToken(token);
+                    });
+                }
+
             }
         });
         return () => {

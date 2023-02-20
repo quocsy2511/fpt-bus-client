@@ -1,13 +1,11 @@
 import React from 'react';
 
-
-const Home = () => {
-
+const BusRoutes = () => {
     return (
         <div>
-            <h1 >admin home </h1>
+            <h1>Routes</h1>
         </div>
     );
 };
 
-export default Home;
+export default BusRoutes;

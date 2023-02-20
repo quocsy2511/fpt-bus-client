@@ -1,17 +1,20 @@
 import axios from "axios";
 import { serverEndpoint } from '../utilities/serverEndpoint'
 
-export const onFinishFunction = async (values) => {
+
+export const loginFunction = async (accessToken) => {
 
     try {
-        const response = await axios.post(serverEndpoint + "/api/users/login", values);
+        const response = await axios.post(
+            serverEndpoint + "api/v1/auth/sign-in",
+            { accessToken },
+        );
         return response;
     } catch (error) {
-        console.log('error in onFinishFunction : ', error)
+        console.log('error in service: ', error)
         return error;
-
     }
-};
+}
 
 export const validateTokenFunction = async () => {
     try {
@@ -26,3 +29,6 @@ export const validateTokenFunction = async () => {
         return error;
     }
 }
+
+
+

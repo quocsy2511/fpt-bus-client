@@ -4,43 +4,44 @@ import { GoogleButton } from 'react-google-button';
 import { UserAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 import '../resources/login.css'
-
+import { loginFunction } from '../services/login.service';
+import { HideLoading, ShowLoading } from '../redux/alertsSlice';
+import { useDispatch } from 'react-redux';
+import { message } from 'antd';
 
 
 const Login = () => {
     const { user, googleSignIn, accessToken } = UserAuth();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    console.log(user);
+
     const handleGoogleSignIn = async () => {
+        dispatch(ShowLoading());
         try {
             await googleSignIn();
+            dispatch(HideLoading());
             if (accessToken) {
-                const response = await fetch(
-                    "http://178.128.223.115:8080/api/v1/auth/sign-in",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ accessToken: accessToken }),
-                    }
-                );
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data !== undefined) {
-                        localStorage.setItem("access_token", data.token);
-                        console.log(data);
-                        navigate("/home");
-                    } else {
-                        console.log("No data returned from server");
-                    }
+                const response = await loginFunction(accessToken);
+                console.log("response:  ", response);
+                if (response.data.status === "Success") {
+                    message.success(response.data.messages);
+                    const token = response.data.data.accessToken
+                    localStorage.setItem("access_token", token);
+                    console.log(token);
+                    navigate("/home");
                 } else {
+                    dispatch(HideLoading());
                     console.log("Response not OK");
+                    message.error(response.data.messages);
                 }
             } else {
+                dispatch(HideLoading());
                 console.log("Access token not found");
             }
         } catch (error) {
+            dispatch(HideLoading());
             console.log("error", error);
         }
     };
@@ -54,7 +55,7 @@ const Login = () => {
         <div className='login-body'>
 
             <div className="container" id="container">
-                <div class="form-container log-in-container">
+                <div className="form-container log-in-container">
                     <form action="#">
                         {user?.displayName ? (
                             <hr />

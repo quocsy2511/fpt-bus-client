@@ -2,62 +2,43 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "../resources/layout.css";
+import { UserAuth } from '../context/AuthContext';
 
 const DefaultLayout = ({ children }) => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const { user } = useSelector((state) => state.users);
-    const userMenu = [
-        {
-            name: "Home",
-            icon: "ri-home-line",
-            path: "/",
-        },
-        {
-            name: "Bookings",
-            icon: "ri-file-list-line",
-            path: "/bookings",
-        },
-        {
-            name: "Profile",
-            icon: "ri-user-line",
-            path: "/profile",
-        },
-        {
-            name: "Logout",
-            icon: "ri-logout-box-line",
-            path: "/logout",
-        },
-    ];
+    const { logOut } = UserAuth();
+
     const adminMenu = [
         {
             name: "Home",
-            path: "/admin",
+            path: "/home",
             icon: "ri-home-line",
         },
         {
             name: "Buses",
-            path: "/admin/buses",
+            path: "/buses",
             icon: "ri-bus-line",
         },
         {
             name: "Users",
-            path: "/admin/users",
+            path: "/users",
             icon: "ri-user-line",
         },
         {
-            name: "Trip",
-            path: "/admin/trip",
+            name: "Trips",
+            path: "/trips",
             icon: "ri-file-list-line",
         },
         {
-            name: "Station",
-            path: "/admin/station",
+            name: "Stations",
+            path: "/stations",
             icon: "ri-map-2-fill",
         },
         {
-            name: "Route",
-            path: "/admin/route",
+            name: "Routes",
+            path: "/routes",
             icon: "ri-pin-distance-line",
         },
         {
@@ -67,7 +48,7 @@ const DefaultLayout = ({ children }) => {
         },
     ];
 
-    const menuToBeRendered = user?.isAdmin ? adminMenu : userMenu;
+    const menuToBeRendered = adminMenu
     let activeRoute = window.location.pathname;
     if (window.location.pathname.includes('book-now')) {
         activeRoute = "/";
@@ -76,10 +57,22 @@ const DefaultLayout = ({ children }) => {
         <div className='layout-parent'>
             <div className='sidebar'>
                 <div className="sidebar-header">
-                    <div className='flex flex-row gap-4   ' >
+                    <div className='sidebar-collapsed' >
                         <h3 className="logo items-center justify-content-start"><i className="ri-bus-fill"> </i> FPT </h3>
+                        <div>{collapsed ? (
+                            <i
+                                className="ri-bar-chart-horizontal-fill"
+                                onClick={() => setCollapsed(!collapsed)}
+                            ></i>
+                        ) : (
+                            <i
+                                className="ri-close-circle-fill"
+                                onClick={() => setCollapsed(!collapsed)}
+                            ></i>
+                        )}</div>
                     </div>
-                    <h1 className="role ">{user?.isAdmin ? 'Admin' : 'User'} : {user?.name}</h1>
+
+                    <h1 className="role">{user?.fullname} </h1>
                 </div>
                 <div className='d-flex flex-column gap-3 justify-content-start menu'>
                     {menuToBeRendered.map((item, index) => {
@@ -88,12 +81,17 @@ const DefaultLayout = ({ children }) => {
                                 <i className={item.icon}></i>
                                 {!collapsed && (
                                     <span
-                                        onClick={() => {
-                                            if (item.path === "/logout") {
-                                                localStorage.removeItem("token");
-                                                navigate("/login");
-                                            } else {
-                                                navigate(item.path);
+                                        onClick={async () => {
+                                            try {
+                                                if (item.path === "/logout") {
+                                                    await logOut();
+                                                    localStorage.removeItem("token");
+                                                    navigate("/login");
+                                                } else {
+                                                    navigate(item.path);
+                                                }
+                                            } catch (error) {
+                                                console.log(error);
                                             }
                                         }}
                                     >
@@ -107,17 +105,6 @@ const DefaultLayout = ({ children }) => {
             </div>
             <div className='body'>
                 <div className='header'>
-                    {collapsed ? (
-                        <i
-                            className="ri-menu-2-fill"
-                            onClick={() => setCollapsed(!collapsed)}
-                        ></i>
-                    ) : (
-                        <i
-                            className="ri-close-line"
-                            onClick={() => setCollapsed(!collapsed)}
-                        ></i>
-                    )}
                 </div>
                 <div className='content'>{children}</div>
             </div>
