@@ -12,24 +12,35 @@ import { message } from 'antd';
 
 const Login = () => {
     const { user, googleSignIn, accessToken } = UserAuth();
+    console.log("token_firebase: ", accessToken);
+    console.log("user: ", user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    console.log(user);
-
     const handleGoogleSignIn = async () => {
         dispatch(ShowLoading());
         try {
+            //call function google signin in AuthContext
             await googleSignIn();
             dispatch(HideLoading());
-            if (accessToken) {
-                const response = await loginFunction(accessToken);
+            /**
+             * After call googleSignIn() firebase return token and storage with key "@token_fb",
+             *  then get token_firebase in localstorage 
+             */
+            const tokenFirebase = localStorage.getItem("@token_fb")
+            //have token firebase
+            if (tokenFirebase) {
+                console.log("token-fire-base:", tokenFirebase);
+                //call api login function service
+                const response = await loginFunction(tokenFirebase);
                 console.log("response:  ", response);
+                //check response 
                 if (response.data.status === "Success") {
                     message.success(response.data.messages);
+                    //get token of api return 
                     const token = response.data.data.accessToken
+                    //set localstorage token of server
                     localStorage.setItem("access_token", token);
-                    console.log(token);
+                    console.log("access_token", token);
                     navigate("/home");
                 } else {
                     dispatch(HideLoading());
@@ -45,12 +56,6 @@ const Login = () => {
             console.log("error", error);
         }
     };
-    useEffect(() => {
-        if (user != null) {
-            navigate('/home');
-        }
-    }, [user]);
-
     return (
         <div className='login-body'>
 

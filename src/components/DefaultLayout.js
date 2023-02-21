@@ -85,7 +85,6 @@ const DefaultLayout = ({ children }) => {
                                             try {
                                                 if (item.path === "/logout") {
                                                     await logOut();
-                                                    localStorage.removeItem("token");
                                                     navigate("/login");
                                                 } else {
                                                     navigate(item.path);

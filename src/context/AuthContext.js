@@ -1,4 +1,4 @@
-import { useContext, createContext, useEffect, useState } from 'react';
+import { useContext, createContext, useEffect, useState, useCallback } from 'react';
 import {
     GoogleAuthProvider,
     signInWithPopup,
@@ -10,43 +10,54 @@ import { auth } from '../firebase';
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [user, setUser] = useState({});
-    const [accessToken, setAccessToken] = useState("");
+    const [user, setUser] = useState(AuthStorage.getUser());
+    const [accessToken, setAccessToken] = useState(AuthStorage.getToken());
+    /**
+     * Remove key token of server send and token of firebase 
+     */
+    const logOut = () => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("@token_fb");
+        setAccessToken(undefined);
+        setUser(undefined);
+        signOut(auth)
+    }
     const googleSignIn = async () => {
         const provider = new GoogleAuthProvider();
+        //response of firebase return 
         const result = await signInWithPopup(auth, provider);
+        //get infor of user 
         const user = result.user;
-        const token = await user.getIdToken();
-        setAccessToken(token);
-        setUser(user);
-    };
-
-    const logOut = () => {
-        signOut(auth)
+        //check đuôi email fpt
+        if (user.email.endsWith("@fpt.edu.vn")) {
+            //get token firebase
+            const userTokenFirebase = await user.getIdToken();
+            setAccessToken(userTokenFirebase);
+            AuthStorage.setToken(userTokenFirebase)
+            AuthStorage.setUser(user)
+            setUser(user);
+        } else {
+            //không phải reun hàm logout
+            logOut();
+            setTimeout(() => {
+                alert("Please Login by account FPT University");
+            }, 1000);
+        }
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (currentUser && !currentUser.email.endsWith("@fpt.edu.vn")) {
-                logOut();
-                setTimeout(() => {
-                    alert("Please Login by account FPT University");
-                }, 1000);
-
-            } else {
-                setUser(currentUser);
-                if (currentUser) {
-                    currentUser.getIdToken().then((token) => {
-                        setAccessToken(token);
-                    });
-                }
-
-            }
+        //onAuthStateChanged để giữ trạng thái đăng nhập mình sử dụng
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            console.log("Current in auth:", currentUser);
+            if (!currentUser) return;
+            console.log("Auth state change");
+            setUser(currentUser)
+            setAccessToken(await currentUser.getIdToken());
         });
         return () => {
             unsubscribe();
         };
-    }, [user])
+    }, [])
 
     return (
         <AuthContext.Provider value={{ googleSignIn, logOut, user, accessToken }}>
@@ -58,3 +69,24 @@ export const AuthContextProvider = ({ children }) => {
 export const UserAuth = () => {
     return useContext(AuthContext);
 };
+
+
+//class to take function get/set user and token in storage 
+export class AuthStorage {
+    static setToken(token) {
+        localStorage.setItem("@token_fb", token);
+    }
+
+    static setUser(user) {
+        localStorage.setItem("@user", JSON.stringify(user));
+    }
+
+    static getToken() {
+        return localStorage.getItem("@token");
+    }
+
+    static getUser() {
+        const userStored = localStorage.getItem("@user");
+        return userStored ? userStored : null;
+    }
+}

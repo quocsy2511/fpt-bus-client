@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const PublicRoute = ({ children }) => {
     const navigate = useNavigate();
     useEffect(() => {
-        if (localStorage.getItem("token")) {
+        if (localStorage.getItem("@token_fb")) {
             navigate("/")
         }
     }, [])
