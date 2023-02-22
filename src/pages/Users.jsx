@@ -87,9 +87,9 @@ const Users = () => {
 
     const getAllUsers = async () => {
         try {
-
+            
             dispatch(ShowLoading());
-            const response = await getAllUsersFunction()
+            const response = await getAllUsersFunction("user")
             console.log('response get all user: ', response)
             dispatch(HideLoading());
             // if (response.data.status === "Success") {
