@@ -36,7 +36,7 @@ export const AuthContextProvider = ({ children }) => {
             AuthStorage.setToken(userTokenFirebase)
             setUser(user);
         } else {
-            //không phải reun hàm logout
+            //không phải un hàm logout
             logOut();
             message.error("Please Login by account FPT University");
         }
