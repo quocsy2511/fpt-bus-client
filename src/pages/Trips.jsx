@@ -1,9 +1,61 @@
-import React from 'react';
+import { message, Table } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import PageTitle from '../components/PageTitle';
+import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 
 const Trips = () => {
+    const dispatch = useDispatch();
+    const [trips, setTrips] = useState([]);
+
+    const columns = [
+        {
+            title: "Departure time",
+            dataIndex: "departure_time",
+        },
+        {
+            title: "Bus name",
+            dataIndex: "license_plate",
+        },
+        {
+            title: "Route",
+            dataIndex: "id",
+        },
+        {
+            title: "Ticket quantity",
+            dataIndex: "ticket_quantity",
+        }
+    ];
+
+    const getAllTrips = async () => {
+        try {
+
+            dispatch(ShowLoading());
+            // const response = await getAllTripsFunction()
+            // console.log('response get all user: ', response)
+            dispatch(HideLoading());
+            // if (response.data.status === "Success") {
+            //     setTrips(response.data.data);
+            // } else {
+            //     message.error(response.data.message);
+            // }
+        } catch (error) {
+            dispatch(HideLoading());
+            message.error(error.message);
+        }
+    };
+
+    useEffect(() => {
+        getAllTrips();
+    }, []);
+
+
     return (
         <div>
-            <h1>Trips</h1>
+            <div className="d-flex justify-content-between my-2">
+                <PageTitle title="List Trips" />
+            </div>
+            <Table columns={columns} dataSource={trips} />
         </div>
     );
 };

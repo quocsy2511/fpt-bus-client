@@ -29,8 +29,10 @@ const Users = () => {
                 console.log(data);
                 if (data?.role_name === "ADMIN") {
                     return "Admin";
+                } else if (data?.role_name === "DRIVER") {
+                    return "driver";
                 } else {
-                    return "Student";
+                    return "student"
                 }
             },
         },
@@ -41,47 +43,29 @@ const Users = () => {
                 return data.status ? "Blocked" : "Active";
             },
         },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: (action, record) => (
+                <div className="d-flex gap-3">
+                    {record?.isBlocked && (
+                        <p
+                            className="underline"
+                        >
+                            UnBlock
+                        </p>
+                    )}
+                    {!record?.isBlocked && (
+                        <p
+                            className="underline"
 
-        // {
-        //     title: "Action",
-        //     dataIndex: "action",
-        //     render: (action, record) => (
-        //         <div className="d-flex gap-3">
-        //             {record?.isBlocked && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     UnBlock
-        //                 </p>
-        //             )}
-        //             {!record?.isBlocked && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     Block
-        //                 </p>
-        //             )}
-        //             {record?.isAdmin && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     Remove Admin
-        //                 </p>
-        //             )}
-        //             {!record?.isAdmin && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     Make Admin
-        //                 </p>
-        //             )}
-        //         </div>
-        //     ),
-        // },
+                        >
+                            Block
+                        </p>
+                    )}
+                </div>
+            ),
+        },
     ];
 
 
@@ -109,9 +93,8 @@ const Users = () => {
 
     return (
         <div>
-            <h1>Users</h1>
             <div className="d-flex justify-content-between my-2">
-                <PageTitle title="Users" />
+                <PageTitle title="List Users" />
             </div>
             <Table columns={columns} dataSource={users} />
         </div>
