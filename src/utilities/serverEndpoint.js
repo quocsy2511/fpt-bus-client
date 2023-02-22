@@ -1,1 +1,1 @@
-export const serverEndpoint = "http://localhost:5000"
+export const serverEndpoint = "http://localhost:7000/"
