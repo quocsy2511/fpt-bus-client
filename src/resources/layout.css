@@ -77,3 +77,10 @@
   flex-direction: row;
   justify-content: space-between;
 }
+.item-collapsed {
+  text-align: center;
+  width: 50px;
+  color: white;
+  width: 50px;
+  padding-left: 30px;
+}

@@ -12,6 +12,8 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [accessToken, setAccessToken] = useState("");
+
+
     const googleSignIn = async () => {
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
@@ -23,16 +25,17 @@ export const AuthContextProvider = ({ children }) => {
 
     const logOut = () => {
         signOut(auth)
+        localStorage.removeItem("access_token");
     }
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            console.log('currentUser', currentUser)
             if (currentUser && !currentUser.email.endsWith("@fpt.edu.vn")) {
                 logOut();
                 setTimeout(() => {
                     alert("Please Login by account FPT University");
                 }, 1000);
-
             } else {
                 setUser(currentUser);
                 if (currentUser) {
@@ -40,14 +43,14 @@ export const AuthContextProvider = ({ children }) => {
                         setAccessToken(token);
                     });
                 }
-
             }
+
+            console.log("user in auth", user);
         });
         return () => {
             unsubscribe();
         };
-    }, [user])
-
+    }, [])
     return (
         <AuthContext.Provider value={{ googleSignIn, logOut, user, accessToken }}>
             {children}

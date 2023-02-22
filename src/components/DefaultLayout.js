@@ -59,20 +59,23 @@ const DefaultLayout = ({ children }) => {
                 <div className="sidebar-header">
                     <div className='sidebar-collapsed' >
                         <h3 className="logo items-center justify-content-start"><i className="ri-bus-fill"> </i> FPT </h3>
-                        <div>{collapsed ? (
-                            <i
-                                className="ri-bar-chart-horizontal-fill"
-                                onClick={() => setCollapsed(!collapsed)}
-                            ></i>
-                        ) : (
-                            <i
-                                className="ri-close-circle-fill"
-                                onClick={() => setCollapsed(!collapsed)}
-                            ></i>
-                        )}</div>
+                        <div className='item-collapsed'>
+                            {collapsed ? (
+                                <i
+                                    className="ri-bar-chart-horizontal-line"
+                                    style={{ color: "while" }}
+                                    onClick={() => setCollapsed(!collapsed)}
+                                ></i>
+                            ) : (
+                                <i
+                                    className="ri-close-circle-line"
+                                    style={{ color: "while" }}
+                                    onClick={() => setCollapsed(!collapsed)}
+                                ></i>
+                            )}</div>
                     </div>
 
-                    <h1 className="role">{user?.fullname} </h1>
+                    <h1 className="role">{user?.fullname}</h1>
                 </div>
                 <div className='d-flex flex-column gap-3 justify-content-start menu'>
                     {menuToBeRendered.map((item, index) => {
@@ -85,7 +88,7 @@ const DefaultLayout = ({ children }) => {
                                             try {
                                                 if (item.path === "/logout") {
                                                     await logOut();
-                                                    localStorage.removeItem("token");
+                                                    localStorage.removeItem("access_token");
                                                     navigate("/login");
                                                 } else {
                                                     navigate(item.path);

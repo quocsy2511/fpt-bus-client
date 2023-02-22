@@ -15,10 +15,11 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    console.log(user);
-
     const handleGoogleSignIn = async () => {
         dispatch(ShowLoading());
+        console.log("token tin login", accessToken);
+        console.log("user in login", user);
+
         try {
             await googleSignIn();
             dispatch(HideLoading());
@@ -29,7 +30,7 @@ const Login = () => {
                     message.success(response.data.messages);
                     const token = response.data.data.accessToken
                     localStorage.setItem("access_token", token);
-                    console.log(token);
+                    console.log("token in local: ", token);
                     navigate("/home");
                 } else {
                     dispatch(HideLoading());
@@ -45,11 +46,6 @@ const Login = () => {
             console.log("error", error);
         }
     };
-    useEffect(() => {
-        if (user != null) {
-            navigate('/home');
-        }
-    }, [user]);
 
     return (
         <div className='login-body'>
