@@ -6,7 +6,7 @@ import {
     onAuthStateChanged,
 } from 'firebase/auth';
 import { auth } from '../firebase';
-
+import { message } from 'antd';
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -34,14 +34,11 @@ export const AuthContextProvider = ({ children }) => {
             const userTokenFirebase = await user.getIdToken();
             setAccessToken(userTokenFirebase);
             AuthStorage.setToken(userTokenFirebase)
-            AuthStorage.setUser(user)
             setUser(user);
         } else {
             //không phải reun hàm logout
             logOut();
-            setTimeout(() => {
-                alert("Please Login by account FPT University");
-            }, 1000);
+            message.error("Please Login by account FPT University");
         }
     }
 

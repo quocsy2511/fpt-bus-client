@@ -11,7 +11,7 @@ import { message } from 'antd';
 
 
 const Login = () => {
-    const { user, googleSignIn, accessToken } = UserAuth();
+    const { user, googleSignIn, accessToken,logOut } = UserAuth();
     console.log("token_firebase: ", accessToken);
     console.log("user: ", user);
     const navigate = useNavigate();
@@ -35,13 +35,22 @@ const Login = () => {
                 console.log("response:  ", response);
                 //check response 
                 if (response.data.status === "Success") {
-                    message.success(response.data.messages);
-                    //get token of api return 
-                    const token = response.data.data.accessToken
-                    //set localstorage token of server
-                    localStorage.setItem("access_token", token);
-                    console.log("access_token", token);
-                    navigate("/home");
+                    const roleUser = response.data.data.user.role_name;
+                    if (roleUser === "ADMIN") {
+                        //get token of api return 
+                        const token = response.data.data.accessToken
+                        //set localstorage token of server
+                        localStorage.setItem("access_token", token);
+                        console.log("access_token", token);
+                        dispatch(HideLoading());
+                        navigate("/home");
+                        message.success(response.data.messages);
+                    } else {
+                        dispatch(HideLoading());
+                        console.log("không đủ quyền");
+                        message.warning("Your role doesn't have enough permissions!!!");
+                        await logOut();
+                    }
                 } else {
                     dispatch(HideLoading());
                     console.log("Response not OK");
