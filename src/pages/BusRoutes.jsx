@@ -3,12 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
+import "../resources/content.css"
 
 const BusRoutes = () => {
     const dispatch = useDispatch();
     const [busRoutes, setBusRoutes] = useState([]);
 
     const columns = [
+        {
+            title: "No",
+            dataIndex: "",
+            width: 50,
+            render: (_, __, index) => index + 1, // Return the index of each row plus one
+        },
         {
             title: "Departure",
             dataIndex: "departure",
@@ -76,11 +83,12 @@ const BusRoutes = () => {
 
 
     return (
-        <div>
-            <div className="d-flex justify-content-between my-2">
+        <div className='inside-content'>
+            <div className="d-flex justify-content-between">
                 <PageTitle title="List Bus Routes" />
             </div>
-            <Table columns={columns} dataSource={busRoutes} />
+            <br />
+            <Table rowKey="id" columns={columns} dataSource={busRoutes} />
         </div>
     );
 };

@@ -5,7 +5,7 @@ import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllUsersFunction } from "../services/getUser.service";
-
+import "../resources/content.css"
 
 
 const Users = () => {
@@ -15,26 +15,23 @@ const Users = () => {
 
     const columns = [
         {
+            title: "No",
+            dataIndex: "",
+            width: 50,
+            render: (_, __, index) => index + 1, // Return the index of each row plus one
+        },
+        {
+            title: "Student ID",
+            width: 150,
+            dataIndex: "student_id",
+        },
+        {
             title: "Name",
             dataIndex: "fullname",
         },
         {
             title: "Email",
             dataIndex: "email",
-        },
-        {
-            title: "Role",
-            dataIndex: "",
-            render: (data) => {
-                console.log(data);
-                if (data?.role_name === "ADMIN") {
-                    return "Admin";
-                } else if (data?.role_name === "DRIVER") {
-                    return "driver";
-                } else {
-                    return "student"
-                }
-            },
         },
         {
             title: "Status",
@@ -71,7 +68,7 @@ const Users = () => {
 
     const getAllUsers = async () => {
         try {
-            
+
             dispatch(ShowLoading());
             const response = await getAllUsersFunction("user")
             console.log('response get all user: ', response)
@@ -92,11 +89,18 @@ const Users = () => {
     }, []);
 
     return (
-        <div>
-            <div className="d-flex justify-content-between my-2">
+        <div className='inside-content'>
+            <div className="d-flex justify-content-between">
                 <PageTitle title="List Users" />
             </div>
-            <Table columns={columns} dataSource={users} />
+            <br />
+            <Table rowKey="id" columns={columns} dataSource={users} />
+            <br />
+            <div className="d-flex justify-content-between">
+                <PageTitle title="List Drivers" />
+            </div>
+            <br />
+            <Table rowKey="id" columns={columns} dataSource={users} />
         </div>
     );
 };

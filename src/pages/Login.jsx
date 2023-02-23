@@ -63,10 +63,12 @@ const Login = () => {
             } else {
                 dispatch(HideLoading());
                 console.log("Access token not found");
+                await logOut();
             }
         } catch (error) {
             dispatch(HideLoading());
             console.log("error", error);
+            await logOut();
         }
     };
 

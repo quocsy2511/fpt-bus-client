@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
+import "../resources/content.css"
 
 const Stations = () => {
 
@@ -10,6 +11,12 @@ const Stations = () => {
     const [stations, setStations] = useState([]);
 
     const columns = [
+        {
+            title: "No",
+            dataIndex: "",
+            width: 50,
+            render: (_, __, index) => index + 1, // Return the index of each row plus one
+        },
         {
             title: "Station",
             dataIndex: "station_name",
@@ -32,6 +39,7 @@ const Stations = () => {
         {
             title: "Action",
             dataIndex: "action",
+            
             render: (action, record) => (
                 <div className="d-flex gap-3">
                     {record?.isBlocked && (
@@ -75,11 +83,12 @@ const Stations = () => {
         getAllStations();
     }, []);
     return (
-        <div>
-            <div className="d-flex justify-content-between my-2">
+        <div className='inside-content'>
+            <div className="d-flex justify-content-between ">
                 <PageTitle title="List Stations" />
             </div>
-            <Table columns={columns} dataSource={stations} />
+            <br />
+            <Table rowKey="id" columns={columns} dataSource={stations} />
         </div>
     );
 };

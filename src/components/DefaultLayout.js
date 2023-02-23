@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "../resources/layout.css";
 import { UserAuth } from '../context/AuthContext';
+import { Input } from 'antd';
 
 const DefaultLayout = ({ children }) => {
+    const { Search } = Input;
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const { user } = useSelector((state) => state.users);
@@ -17,19 +19,14 @@ const DefaultLayout = ({ children }) => {
             icon: "ri-home-line",
         },
         {
-            name: "Buses",
-            path: "/buses",
-            icon: "ri-bus-line",
-        },
-        {
             name: "Users",
             path: "/users",
             icon: "ri-user-line",
         },
         {
-            name: "Trips",
-            path: "/trips",
-            icon: "ri-file-list-line",
+            name: "Buses",
+            path: "/buses",
+            icon: "ri-bus-line",
         },
         {
             name: "Stations",
@@ -40,6 +37,11 @@ const DefaultLayout = ({ children }) => {
             name: "Routes",
             path: "/routes",
             icon: "ri-pin-distance-line",
+        },
+        {
+            name: "Trips",
+            path: "/trips",
+            icon: "ri-file-list-line",
         },
         {
             name: "Logout",
@@ -105,10 +107,21 @@ const DefaultLayout = ({ children }) => {
                     })}
                 </div>
             </div>
+
             <div className='body'>
-                <div className='header'>
+                <div className='header' >
+                    <div>
+                        <button className='add-button'> Add </button>
+                    </div>
+                    <div className='search'>
+                        <Search placeholder="search here " enterButton="Search" size="large" />
+                    </div>
                 </div>
-                <div className='content'>{children}</div>
+                <div className='content'>
+                    <div className='children'>
+                        {children}
+                    </div>
+                </div>
             </div>
 
         </div>

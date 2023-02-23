@@ -17,9 +17,9 @@ select {
   width: 100%;
   padding-left: 20px;
 }
-.ant-form-item {
+/* .ant-form-item {
   margin: 0 !important;
-}
+} */
 
 /* card */
 
@@ -92,9 +92,9 @@ select {
   height: 40px;
 }
 
-button {
+/* button {
   border-radius: 0 !important;
-}
+} */
 
 /* anchor */
 
