@@ -1,6 +1,7 @@
 import { message, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
@@ -58,12 +59,19 @@ const Trips = () => {
 
 
     return (
-        <div className='inside-content'>
-            <div className="d-flex justify-content-between ">
-                <PageTitle title="List Trips" />
+        <div>
+            <div>
+                <Header />
             </div>
-            <br />
-            <Table rowKey="id" columns={columns} dataSource={trips} />
+            <div className='inside-content'>
+                <div className='inside-content-2'>
+                    <div className="d-flex justify-content-between ">
+                        <PageTitle title="List Trips" />
+                    </div>
+                    <br />
+                    <Table rowKey="id" columns={columns} dataSource={trips} />
+                </div>
+            </div>
         </div>
     );
 };

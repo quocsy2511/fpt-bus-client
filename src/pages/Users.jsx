@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllUsersFunction } from "../services/getUser.service";
 import "../resources/content.css"
+import Header from "../components/Header";
 
 
 const Users = () => {
@@ -89,18 +90,26 @@ const Users = () => {
     }, []);
 
     return (
-        <div className='inside-content'>
-            <div className="d-flex justify-content-between">
-                <PageTitle title="List Users" />
+        <div>
+            <div>
+                <Header />
             </div>
-            <br />
-            <Table rowKey="id" columns={columns} dataSource={users} />
-            <br />
-            <div className="d-flex justify-content-between">
-                <PageTitle title="List Drivers" />
+
+            <div className='inside-content'>
+                <div className="inside-content-2">
+                    <div className="d-flex justify-content-between">
+                        <PageTitle title="List Users" />
+                    </div>
+                    <br />
+                    <Table rowKey="id" columns={columns} dataSource={users} />
+                    <br />
+                    <div className="d-flex justify-content-between">
+                        <PageTitle title="List Drivers" />
+                    </div>
+                    <br />
+                    <Table rowKey="id" columns={columns} dataSource={users} />
+                </div>
             </div>
-            <br />
-            <Table rowKey="id" columns={columns} dataSource={users} />
         </div>
     );
 };

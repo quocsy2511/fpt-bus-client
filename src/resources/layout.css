@@ -13,7 +13,7 @@
   width: 100%;
 }
 .header {
-  padding: 20px 0px;
+  padding: 0px 0px 20px 0px;
   display: flex;
   justify-content: space-between;
 }
@@ -33,14 +33,13 @@
   justify-content: start;
   padding: 10px 30px;
   flex-direction: column;
+  height: 96vh;
 }
 .content {
-  border-radius: 5px;
-  padding: 20px;
-  background-color: white;
-  overflow-y: scroll !important;
-  overflow-x: hidden !important;
-  height: 85vh;
+  background-color: whitesmoke;
+  /* overflow-y: scroll !important;
+  overflow-x: hidden !important; */
+  height: 96vh;
 }
 .children {
   display: flex;

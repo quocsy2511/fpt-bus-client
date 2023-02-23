@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import "../resources/layout.css";
 import { UserAuth } from '../context/AuthContext';
 import { Input } from 'antd';
+import Header from './Header';
 
 const DefaultLayout = ({ children }) => {
     const { Search } = Input;
@@ -109,14 +110,15 @@ const DefaultLayout = ({ children }) => {
             </div>
 
             <div className='body'>
-                <div className='header' >
+                {/* <div className='header' >
                     <div>
                         <button className='add-button'> Add </button>
                     </div>
                     <div className='search'>
                         <Search placeholder="search here " enterButton="Search" size="large" />
                     </div>
-                </div>
+                </div> */}
+                
                 <div className='content'>
                     <div className='children'>
                         {children}

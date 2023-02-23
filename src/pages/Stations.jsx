@@ -1,6 +1,7 @@
 import { message, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
@@ -39,7 +40,7 @@ const Stations = () => {
         {
             title: "Action",
             dataIndex: "action",
-            
+
             render: (action, record) => (
                 <div className="d-flex gap-3">
                     {record?.isBlocked && (
@@ -83,12 +84,19 @@ const Stations = () => {
         getAllStations();
     }, []);
     return (
-        <div className='inside-content'>
-            <div className="d-flex justify-content-between ">
-                <PageTitle title="List Stations" />
+        <div>
+            <div>
+                <Header />
             </div>
-            <br />
-            <Table rowKey="id" columns={columns} dataSource={stations} />
+            <div className='inside-content'>
+                <div className='inside-content-2'>
+                    <div className="d-flex justify-content-between ">
+                        <PageTitle title="List Stations" />
+                    </div>
+                    <br />
+                    <Table rowKey="id" columns={columns} dataSource={stations} />
+                </div>
+            </div>
         </div>
     );
 };
