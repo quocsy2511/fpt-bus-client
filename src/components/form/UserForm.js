@@ -3,41 +3,43 @@ import Modal from 'antd/es/modal/Modal';
 import React from 'react';
 import "../../resources/form.css"
 
-const BusForm = ({
-    showBusForm,
-    setShowBusForm,
+
+const UserForm = ({
+    showUserForm,
+    setShowUserForm,
 }) => {
     return (
         <div>
             <Modal
                 width={800}
                 title={"New User"}
-                open={showBusForm}
+                open={showUserForm}
                 onCancel={() => {
-                    setShowBusForm(false)
+                    setShowUserForm(false)
                 }}
                 footer={false}
             >
                 <Form layout='horizontal' className='new-user' >
                     <Row>
                         <Col lg={20} xs={24}>
-                            <Form.Item  label="License Plate :" name="license_plate" >
-                                <input type="text" placeholder='Enter Bus License Plate ' />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col lg={20} xs={24} className='content-input'>
-                            <Form.Item label="Seat Quantity: " name="seat_quantity">
-                                <input type="number" placeholder='Enter Seat Quantity' min={1} />
+                            <Form.Item label=" Student ID :" name="student_id">
+                                <input type="text" placeholder='Enter your Student ID ' />
                             </Form.Item>
 
                         </Col>
                     </Row>
                     <Row>
                         <Col lg={20} xs={24} className='content-input'>
-                            <Form.Item label="Driver Id: " name="driver_id">
-                                <input type="text" placeholder='Enter Driver Id' />
+                            <Form.Item label=" User Name : " name="fullname">
+                                <input type="text" placeholder='Enter your Name ' />
+                            </Form.Item>
+
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col lg={20} xs={24} className='content-input'>
+                            <Form.Item label="Email Address : " name="email">
+                                <input type="text" placeholder='Enter your Email Address ' />
                             </Form.Item>
 
                         </Col>
@@ -53,4 +55,4 @@ const BusForm = ({
     );
 };
 
-export default BusForm;
+export default UserForm;

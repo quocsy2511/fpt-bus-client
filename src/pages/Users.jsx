@@ -1,5 +1,5 @@
 
-import { message, Table } from "antd";
+import { message, Space, Table, Tag } from "antd";
 import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
@@ -7,18 +7,20 @@ import { useDispatch } from "react-redux";
 import { getAllUsersFunction } from "../services/getUser.service";
 import "../resources/content.css"
 import Header from "../components/Header";
+import UserForm from "../components/form/UserForm"
 
 
 const Users = () => {
 
     const dispatch = useDispatch();
     const [users, setUsers] = useState([]);
+    const [showUserForm, setShowUserForm] = useState(false);
 
     const columns = [
         {
             title: "No",
             dataIndex: "",
-            width: 50,
+            width: 70,
             render: (_, __, index) => index + 1, // Return the index of each row plus one
         },
         {
@@ -29,6 +31,7 @@ const Users = () => {
         {
             title: "Name",
             dataIndex: "fullname",
+            render: (text) => <a>{text}</a>,
         },
         {
             title: "Email",
@@ -37,31 +40,34 @@ const Users = () => {
         {
             title: "Status",
             dataIndex: "",
+            width: 120,
+            key: "status",
             render: (data) => {
-                return data.status ? "Blocked" : "Active";
+                let color = ""
+                if (data.status) {
+                    color = "geekblue";
+                } else {
+                    color = "volcano";
+                }
+                return (
+                    <Tag color={color}>
+                        {data.status ? "Active" : "Block"}
+                    </Tag>
+                )
             },
         },
         {
             title: "Action",
             dataIndex: "action",
             render: (action, record) => (
-                <div className="d-flex gap-3">
-                    {record?.isBlocked && (
-                        <p
-                            className="underline"
-                        >
-                            UnBlock
-                        </p>
+                <Space size="middle" >
+                    {record?.status && (
+                        <a>Block</a>
                     )}
-                    {!record?.isBlocked && (
-                        <p
-                            className="underline"
-
-                        >
-                            Block
-                        </p>
+                    {!record?.status && (
+                        <a>UnBlock</a>
                     )}
-                </div>
+                </Space>
             ),
         },
     ];
@@ -74,11 +80,11 @@ const Users = () => {
             const response = await getAllUsersFunction("user")
             console.log('response get all user: ', response)
             dispatch(HideLoading());
-            // if (response.data.status === "Success") {
-            //     setUsers(response.data.data);
-            // } else {
-            //     message.error(response.data.message);
-            // }
+            if (response?.data?.status === "Success") {
+                setUsers(response.data.data.cacheResults);
+            } else {
+                message.error(response.data?.message);
+            }
         } catch (error) {
             dispatch(HideLoading());
             message.error(error.message);
@@ -92,7 +98,7 @@ const Users = () => {
     return (
         <div>
             <div>
-                <Header />
+                <Header showForm={showUserForm} setShowForm={setShowUserForm} />
             </div>
 
             <div className='inside-content'>
@@ -101,15 +107,20 @@ const Users = () => {
                         <PageTitle title="List Users" />
                     </div>
                     <br />
-                    <Table rowKey="id" columns={columns} dataSource={users} />
-                    <br />
+                    <Table rowKey="id" columns={columns} pagination={{ pageSize: 5, }} scroll={{ y: 240, }} dataSource={users} />
                     <div className="d-flex justify-content-between">
                         <PageTitle title="List Drivers" />
                     </div>
                     <br />
-                    <Table rowKey="id" columns={columns} dataSource={users} />
+                    <Table rowKey="id" columns={columns} pagination={{ pageSize: 5, }} scroll={{ y: 240, }} dataSource={users} />
                 </div>
             </div>
+            {showUserForm && (
+                <UserForm
+                    showUserForm={showUserForm}
+                    setShowUserForm={setShowUserForm}>
+                </UserForm>
+            )}
         </div>
     );
 };

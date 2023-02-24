@@ -77,7 +77,7 @@ const Login = () => {
 
             <div className="container" id="container">
                 <div className="form-container log-in-container">
-                    <form action="#">
+                    <form action="#" className='form-content'>
                         {user?.displayName ? (
                             <hr />
                         ) : (

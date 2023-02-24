@@ -1,14 +1,17 @@
-import { message, Table } from 'antd';
+import { message, Table, Tag, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import BusForm from '../components/form/BusForm';
 import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
+import { getAllBusesFunction } from '../services/getBus.service';
 
 const Buses = () => {
     const dispatch = useDispatch();
     const [buses, setBuses] = useState([]);
+    const [showBusForm, SetShowBusForm] = useState(false)
 
     const columns = [
         {
@@ -17,12 +20,15 @@ const Buses = () => {
             width: 50,
             render: (_, __, index) => index + 1, // Return the index of each row plus one
         },
+        // {
+        //     title: "Name",
+        //     dataIndex: "User.fullname",
+        //     render: (text) => <a>{text}</a>,
+        // },
         {
             title: "Driver",
-            dataIndex: "driver_name",
-            width: 200,
-            key: "driver_name"
-
+            dataIndex: "User",
+            render: (user) => <a>{user ? user.fullname : ""}</a>,
         },
         {
             title: "License Plate",
@@ -37,47 +43,54 @@ const Buses = () => {
         {
             title: "Status",
             dataIndex: "",
-            key: "seat_quantity",
+            width: 120,
+            key: "status",
             render: (data) => {
-                return data.status ? "Blocked" : "Active";
+                let color = ""
+                if (data.status) {
+                    color = "geekblue";
+                } else {
+                    color = "volcano";
+                }
+                return (
+                    <Tag color={color}>
+                        {data.status ? "Active" : "Block"}
+                    </Tag>
+                )
             },
         },
         {
             title: "Action",
             dataIndex: "action",
             render: (action, record) => (
-                <div className="d-flex gap-3">
-                    {record?.isBlocked && (
-                        <p
-                            className="underline"
-                        >
-                            UnBlock
-                        </p>
+                <Space size="middle" >
+                    {record?.status && (
+                        <a>Block</a>
                     )}
-                    {!record?.isBlocked && (
-                        <p
-                            className="underline"
-                        >
-                            Block
-                        </p>
+                    {!record?.status && (
+                        <a>UnBlock</a>
                     )}
-                </div>
+                </Space>
             ),
         },
     ];
+
+
 
     const getAllBuses = async () => {
         try {
 
             dispatch(ShowLoading());
-            // const response = await getAllBusesFunction()
-            // console.log('response get all user: ', response)
+            const response = await getAllBusesFunction()
+            console.log('response get all buses: ', response)
+            console.log("driver: ", response.data.data[0].User?.fullname);
             dispatch(HideLoading());
-            // if (response.data.status === "Success") {
-            //     setBuses(response.data.data);
-            // } else {
-            //     message.error(response.data.message);
-            // }
+            if (response.data.status === "Success") {
+                setBuses(response.data.data);
+
+            } else {
+                message.error(response.message);
+            }
         } catch (error) {
             dispatch(HideLoading());
             message.error(error.message);
@@ -92,7 +105,7 @@ const Buses = () => {
     return (
         <div>
             <div>
-                <Header />
+                <Header showForm={showBusForm} setShowForm={SetShowBusForm} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
@@ -103,6 +116,11 @@ const Buses = () => {
                     <Table rowKey="id" columns={columns} dataSource={buses} />
                 </div>
             </div>
+            {showBusForm && (
+                <BusForm
+                    showBusForm={showBusForm}
+                    setShowBusForm={SetShowBusForm}>
+                </BusForm>)}
         </div>
     );
 };

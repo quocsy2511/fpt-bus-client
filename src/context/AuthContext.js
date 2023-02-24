@@ -45,9 +45,9 @@ export const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         //onAuthStateChanged để giữ trạng thái đăng nhập mình sử dụng
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            console.log("Current in auth:", currentUser);
+            // console.log("Current in auth:", currentUser);
             if (!currentUser) return;
-            console.log("Auth state change");
+            // console.log("Auth state change");
             setUser(currentUser)
             setAccessToken(await currentUser.getIdToken());
         });

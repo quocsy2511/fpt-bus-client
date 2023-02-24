@@ -7,6 +7,7 @@
   height: 100vh;
   gap: 20px;
   overflow-x: hidden !important;
+  /* overflow-y: hidden !important; */
 }
 
 .body {
@@ -33,7 +34,7 @@
   justify-content: start;
   padding: 10px 30px;
   flex-direction: column;
-  height: 96vh;
+  height: 120vh;
 }
 .content {
   background-color: whitesmoke;
@@ -99,6 +100,6 @@
   width: 50px;
   padding-left: 30px;
 }
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   display: none;
-}
+} */

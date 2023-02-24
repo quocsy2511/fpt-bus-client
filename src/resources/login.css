@@ -36,11 +36,10 @@ a {
   color: #333;
   font-size: 14px;
   text-decoration: none;
-  margin: 15px 0;
 }
 
 button {
-  border-radius: 20px;
+  border-radius: 7px;
   border: 1px solid #ff4b2b;
   background-color: #ff4b2b;
   color: #ffffff;
@@ -52,7 +51,7 @@ button {
   transition: transform 80ms ease-in;
 }
 
-form {
+.form-content {
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -67,8 +66,9 @@ input {
   background-color: #eee;
   border: none;
   padding: 12px 15px;
-  margin: 8px 0;
+  margin: 0px 20px;
   width: 100%;
+  border-radius: 5px;
 }
 
 .container {
