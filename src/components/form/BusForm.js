@@ -1,6 +1,7 @@
 import { Col, Form, Row } from 'antd';
 import Modal from 'antd/es/modal/Modal';
 import React from 'react';
+import 'antd/dist/reset.css'
 import "../../resources/form.css"
 
 const BusForm = ({
@@ -18,10 +19,10 @@ const BusForm = ({
                 }}
                 footer={false}
             >
-                <Form layout='horizontal' className='new-user' >
+                <Form layout='horizontal' className='new-user' labelCol={{ span: 8 }} >
                     <Row>
                         <Col lg={20} xs={24}>
-                            <Form.Item  label="License Plate :" name="license_plate" >
+                            <Form.Item label="License Plate :" name="license_plate" >
                                 <input type="text" placeholder='Enter Bus License Plate ' />
                             </Form.Item>
                         </Col>

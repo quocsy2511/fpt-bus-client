@@ -4,10 +4,9 @@ import { useSelector } from "react-redux";
 import "../resources/layout.css";
 import { UserAuth } from '../context/AuthContext';
 import { Input } from 'antd';
-import Header from './Header';
+import 'antd/dist/reset.css'
 
 const DefaultLayout = ({ children }) => {
-    const { Search } = Input;
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const { user } = useSelector((state) => state.users);
@@ -118,7 +117,7 @@ const DefaultLayout = ({ children }) => {
                         <Search placeholder="search here " enterButton="Search" size="large" />
                     </div>
                 </div> */}
-                
+
                 <div className='content'>
                     <div className='children'>
                         {children}

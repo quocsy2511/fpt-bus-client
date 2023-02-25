@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
+import 'antd/dist/reset.css'
 
 const BusRoutes = () => {
     const dispatch = useDispatch();

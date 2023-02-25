@@ -1,5 +1,5 @@
-
-import { message, Space, Table, Tag } from "antd";
+import 'antd/dist/reset.css'
+import { message, Space, Switch, Table, Tag } from "antd";
 import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { getAllUsersFunction } from "../services/getUser.service";
 import "../resources/content.css"
 import Header from "../components/Header";
 import UserForm from "../components/form/UserForm"
+
 
 
 const Users = () => {
@@ -27,35 +28,54 @@ const Users = () => {
             title: "Student ID",
             width: 150,
             dataIndex: "student_id",
+
         },
         {
             title: "Name",
             dataIndex: "fullname",
             render: (text) => <a>{text}</a>,
+            ellipsis: true,
         },
         {
             title: "Email",
             dataIndex: "email",
+            ellipsis: true,
         },
+        // {
+        //     title: "Status",
+        //     dataIndex: "",
+        //     width: 120,
+        //     key: "status",
+        //     render: (data) => {
+        //         let color = ""
+        //         if (data.status) {
+        //             color = "geekblue";
+        //         } else {
+        //             color = "volcano";
+        //         }
+        //         return (
+        //             <Tag color={color}>
+        //                 {data.status ? "Active" : "Block"}
+        //             </Tag>
+        //         )
+        //     },
+        // },        
         {
             title: "Status",
             dataIndex: "",
-            width: 120,
+            width: 100,
             key: "status",
             render: (data) => {
-                let color = ""
-                if (data.status) {
-                    color = "geekblue";
-                } else {
-                    color = "volcano";
-                }
+
                 return (
-                    <Tag color={color}>
-                        {data.status ? "Active" : "Block"}
-                    </Tag>
+                    <Space direction="vertical" size="middle">
+                        {data.status ? (<Switch className="custom-switch"checkedChildren="Active" unCheckedChildren="Block" defaultChecked />)
+                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" />)}
+                    </Space>
                 )
             },
         },
+
         {
             title: "Action",
             dataIndex: "action",
@@ -71,7 +91,10 @@ const Users = () => {
             ),
         },
     ];
+    const handleStatus = () => {
 
+
+    }
 
     const getAllUsers = async () => {
         try {
