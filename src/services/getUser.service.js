@@ -1,6 +1,5 @@
 
 import { serverEndpoint } from '../utilities/serverEndpoint'
-import { axiosInstance } from "../helpers/axiosInstance"
 import axios from 'axios';
 
 const config = {
@@ -10,10 +9,9 @@ const config = {
     }
 
 }
-console.log("local", localStorage.getItem('access_token'));
-export const getAllUsersFunction = async (userKey) => {
+export const getAllUsersFunction = async () => {
     try {
-        const response = await axios.get(serverEndpoint + `api/v1/users/${userKey}`, config)
+        const response = await axios.get(serverEndpoint + 'api/v1/users', config)
         // console.log(response);
         return response
     } catch (error) {

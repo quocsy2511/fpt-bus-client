@@ -72,6 +72,9 @@ const Login = () => {
         }
     };
 
+    useEffect(() => {
+        loginFunction();
+    }, [googleSignIn])
     return (
         <div className='login-body'>
 

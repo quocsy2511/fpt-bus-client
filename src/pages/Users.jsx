@@ -1,5 +1,5 @@
 import 'antd/dist/reset.css'
-import { message, Space, Switch, Table, Tag } from "antd";
+import { Divider, message, Space, Switch, Table, Tag } from "antd";
 import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { getAllUsersFunction } from "../services/getUser.service";
 import "../resources/content.css"
 import Header from "../components/Header";
 import UserForm from "../components/form/UserForm"
+import { EditTwoTone } from '@ant-design/icons';
 
 
 
@@ -41,25 +42,6 @@ const Users = () => {
             dataIndex: "email",
             ellipsis: true,
         },
-        // {
-        //     title: "Status",
-        //     dataIndex: "",
-        //     width: 120,
-        //     key: "status",
-        //     render: (data) => {
-        //         let color = ""
-        //         if (data.status) {
-        //             color = "geekblue";
-        //         } else {
-        //             color = "volcano";
-        //         }
-        //         return (
-        //             <Tag color={color}>
-        //                 {data.status ? "Active" : "Block"}
-        //             </Tag>
-        //         )
-        //     },
-        // },        
         {
             title: "Status",
             dataIndex: "",
@@ -69,42 +51,39 @@ const Users = () => {
 
                 return (
                     <Space direction="vertical" size="middle">
-                        {data.status ? (<Switch className="custom-switch"checkedChildren="Active" unCheckedChildren="Block" defaultChecked />)
+                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked />)
                             : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" />)}
                     </Space>
                 )
             },
         },
-
         {
             title: "Action",
             dataIndex: "action",
             render: (action, record) => (
-                <Space size="middle" >
-                    {record?.status && (
-                        <a>Block</a>
-                    )}
-                    {!record?.status && (
-                        <a>UnBlock</a>
-                    )}
+                <Space size="large" >
+                    <EditTwoTone twoToneColor='orange'
+                        onClick={() => {
+                            console.log("click click ")
+                        }} />
+                    <Divider />
                 </Space>
             ),
         },
     ];
     const handleStatus = () => {
-
-
     }
 
     const getAllUsers = async () => {
         try {
 
             dispatch(ShowLoading());
-            const response = await getAllUsersFunction("user")
+            const response = await getAllUsersFunction()
             console.log('response get all user: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
-                setUsers(response.data.data.cacheResults);
+                setUsers(response.data.data);
+                console.log(users);
             } else {
                 message.error(response.data?.message);
             }
@@ -130,12 +109,12 @@ const Users = () => {
                         <PageTitle title="List Users" />
                     </div>
                     <br />
-                    <Table rowKey="id" columns={columns} pagination={{ pageSize: 5, }} scroll={{ y: 240, }} dataSource={users} />
+                    <Table rowKey="id" columns={columns} pagination={{ pageSize: 10, }} scroll={{ y: 290, }} dataSource={users} />
                     <div className="d-flex justify-content-between">
                         <PageTitle title="List Drivers" />
                     </div>
                     <br />
-                    <Table rowKey="id" columns={columns} pagination={{ pageSize: 5, }} scroll={{ y: 240, }} dataSource={users} />
+                    <Table rowKey="id" columns={columns} pagination={{ pageSize: 10, }} scroll={{ y: 200, }} dataSource={users} />
                 </div>
             </div>
             {showUserForm && (

@@ -1,4 +1,4 @@
-import axios from "axios";
+
 import { axiosInstance } from "../helpers/axiosInstance";
 import { serverEndpoint } from '../utilities/serverEndpoint'
 

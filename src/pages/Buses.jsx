@@ -1,15 +1,15 @@
-import { message, Table, Tag, Space, Switch } from 'antd';
+import { message, Table, Space, Switch, Divider } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import BusForm from '../components/form/BusForm';
 import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
-import "../resources/content.css"
 import { getAllBusesFunction } from '../services/getBus.service';
-import { CheckOutlined } from '@ant-design/icons';
-import 'antd/dist/reset.css'
 import { updateBusStatusFunction } from '../services/updateBusStatus.service';
+import "../resources/content.css"
+import 'antd/dist/reset.css'
+import { EditTwoTone, EditFilled } from '@ant-design/icons'
 
 const Buses = () => {
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const Buses = () => {
         {
             title: "No",
             dataIndex: "",
-            width: 50,
+            width: 70,
             render: (_, __, index) => index + 1, // Return the index of each row plus one
         },
         {
@@ -38,12 +38,13 @@ const Buses = () => {
         {
             title: "Quantity",
             dataIndex: "seat_quantity",
-            key: "seat_quantity"
+            key: "seat_quantity",
+            width: 120,
         },
         {
             title: "Status",
             dataIndex: "",
-            width: 100,
+            width: 150,
             key: "status",
             render: (data, record) => {
                 return (
@@ -60,15 +61,18 @@ const Buses = () => {
             title: "Action",
             dataIndex: "action",
             render: (action, record) => (
-                <Space size="middle" >
-                    <a onClick={() => {
-                        setSelectedBus(record);
-                        setShowBusForm(true);
-                    }} >Update</a>
+                <Space size="large" >
+                    <EditTwoTone twoToneColor='orange'
+                        onClick={() => {
+                            setSelectedBus(record);
+                            setShowBusForm(true);
+                        }} />
+                    <Divider />
                 </Space>
             ),
         },
     ];
+
     const handleStatus = async (id) => {
         try {
             dispatch(ShowLoading());
@@ -76,7 +80,7 @@ const Buses = () => {
             console.log('response update in bus: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
-                message.success("Update bus status successfully.");
+                message.success(response.data.message);
                 dispatch(HideLoading());
             } else {
                 message.error(response.message);
@@ -91,14 +95,12 @@ const Buses = () => {
 
     const getAllBuses = async () => {
         try {
-
             dispatch(ShowLoading());
             const response = await getAllBusesFunction()
             console.log('response get all buses: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setBuses(response.data.data);
-
             } else {
                 message.error(response.message);
             }
@@ -124,15 +126,19 @@ const Buses = () => {
                         <PageTitle title="List Buses" />
                     </div>
                     <br />
-                    <Table rowKey="id" bordered={false} columns={columns} dataSource={buses} />
+                    <Table rowKey="id" bordered={false} columns={columns} dataSource={buses}
+                        pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
                 </div>
             </div>
             {showBusForm && (
                 <BusForm
                     showBusForm={showBusForm}
-                    setShowBusForm={setShowBusForm}>
-                    type={selectedBus ? "edit" : "add"}
-                </BusForm>)}
+                    setShowBusForm={setShowBusForm}
+                    type={selectedBus ? "edit" : "new"}
+                    selectedBus={selectedBus}
+                    setSelectedBus={setSelectedBus}
+                    getData={getAllBuses} />
+            )}
         </div>
     );
 };
