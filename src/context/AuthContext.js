@@ -1,4 +1,4 @@
-import { useContext, createContext, useEffect, useState, useCallback } from 'react';
+import { useContext, createContext, useEffect, useState } from 'react';
 import {
     GoogleAuthProvider,
     signInWithPopup,

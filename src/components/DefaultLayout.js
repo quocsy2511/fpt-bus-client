@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "../resources/layout.css";
 import { UserAuth } from '../context/AuthContext';
-import { Input } from 'antd';
 import 'antd/dist/reset.css'
 
 const DefaultLayout = ({ children }) => {

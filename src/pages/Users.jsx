@@ -1,5 +1,5 @@
 import 'antd/dist/reset.css'
-import { Divider, message, Space, Switch, Table, Tag } from "antd";
+import { Divider, message, Space, Switch, Table } from "antd";
 import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
@@ -83,7 +83,6 @@ const Users = () => {
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 setUsers(response.data.data);
-                console.log(users);
             } else {
                 message.error(response.data?.message);
             }

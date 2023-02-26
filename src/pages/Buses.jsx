@@ -9,7 +9,7 @@ import { getAllBusesFunction } from '../services/getBus.service';
 import { updateBusStatusFunction } from '../services/updateBusStatus.service';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { EditTwoTone, EditFilled } from '@ant-design/icons'
+import { EditTwoTone } from '@ant-design/icons'
 
 const Buses = () => {
     const dispatch = useDispatch();
@@ -91,7 +91,6 @@ const Buses = () => {
             message.error(error.message);
         }
     }
-
 
     const getAllBuses = async () => {
         try {
