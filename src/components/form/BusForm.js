@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, InputNumber, message } from 'antd';
 import Modal from 'antd/es/modal/Modal';
 import React from 'react';
 import 'antd/dist/reset.css'
@@ -19,7 +19,7 @@ const BusForm = ({
     const dispatch = useDispatch();
 
     const onFinish = async (values) => {
-        console.log(" values in onfinish ", values);
+        // console.log(" values in onfinish ", values);
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -28,7 +28,7 @@ const BusForm = ({
                 console.log('response in bus form add : ', response)
 
             } else {
-                response = await handleUpdateBusFunction(values , selectedBus);
+                response = await handleUpdateBusFunction(values, selectedBus);
             }
             dispatch(HideLoading());
             setShowBusForm(false);
@@ -89,15 +89,15 @@ const BusForm = ({
                         [{
                             required: true,
                             message: 'Please input Seat Quantity!',
-
                         },
                         {
+                            type: "number",
                             max: 45,
-                            min: 1
+                            min: 10,
+                            message: "Seat quantity must be between 10 and 45!"
                         }
-                        ]}>
-                        {/* <input type="number" placeholder='Enter Seat Quantity' min={1} max={45} required   /> */}
-                        <Input type='number' placeholder='Enter Seat Quantity' style={{ width: "100%" }} min={1} max={45} />
+                        ]} hasFeedback>
+                        <InputNumber style={{ width: "100%" }} />
                     </Form.Item>
                     <Form.Item label="Driver Id: " name="driver_id" rules={
                         [{
@@ -110,7 +110,6 @@ const BusForm = ({
                             message: 'Please type License Plate!'
                         },
                         ]} hasFeedback>
-                        {/* <input type="text" placeholder='Enter Driver Id' /> */}
                         <Input placeholder='Enter Driver Id ' />
                     </Form.Item>
                     <Form.Item className='d-flex justify-content-end'>
