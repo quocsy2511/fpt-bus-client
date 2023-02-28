@@ -10,13 +10,24 @@ import { updateBusStatusFunction } from '../services/updateBusStatus.service';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
 import { EditTwoTone } from '@ant-design/icons'
+// import { useParams, useSearchParams } from 'react-router-dom';
 
 const Buses = () => {
     const dispatch = useDispatch();
     const [buses, setBuses] = useState([]);
     const [showBusForm, setShowBusForm] = useState(false)
     const [selectedBus, setSelectedBus] = useState(null);
+    const [query, setQuery] = useState("");
+    // const [loading, setLoading] = useState(false);
+    // let [searchParams, setSearchParams] = useSearchParams();
+    // console.log('searchParams in busses ', searchParams.get("fullname"))
+    // console.log("name: ", buses[0].User.fullname);
 
+    const getFilterItem = (data) => {
+        return data.filter((item) => item.license_plate.toLowerCase().includes(query.toLowerCase())
+            || item.driver_name.toLowerCase().includes(query.toLowerCase()))
+    }
+    const dataFilter = getFilterItem(buses);
 
     const columns = [
         {
@@ -27,8 +38,9 @@ const Buses = () => {
         },
         {
             title: "Driver",
-            dataIndex: "User",
-            render: (user) => <a>{user ? user.fullname : ""}</a>,
+            dataIndex: "driver_name",
+            // render: (user) => <a>{user ? user.fullname : ""}</a>,
+            render: (text) => <a>{text}</a>,
         },
         {
             title: "License Plate",
@@ -98,7 +110,7 @@ const Buses = () => {
             const response = await getAllBusesFunction()
             console.log('response get all buses: ', response)
             dispatch(HideLoading());
-            if (response.data.status === "Success") {
+            if (response?.data?.status === "Success") {
                 setBuses(response.data.data);
             } else {
                 message.error(response.message);
@@ -113,11 +125,10 @@ const Buses = () => {
         getAllBuses();
     }, []);
 
-
     return (
         <div>
             <div>
-                <Header showForm={showBusForm} setShowForm={setShowBusForm} />
+                <Header showForm={showBusForm} setShowForm={setShowBusForm} query={query} setQuery={setQuery} search={dataFilter} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
@@ -125,7 +136,7 @@ const Buses = () => {
                         <PageTitle title="List Buses" />
                     </div>
                     <br />
-                    <Table rowKey="id" bordered={false} columns={columns} dataSource={buses}
+                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
                         pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
                 </div>
             </div>
