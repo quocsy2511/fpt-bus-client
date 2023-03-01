@@ -18,10 +18,6 @@ const Buses = () => {
     const [showBusForm, setShowBusForm] = useState(false)
     const [selectedBus, setSelectedBus] = useState(null);
     const [query, setQuery] = useState("");
-    // const [loading, setLoading] = useState(false);
-    // let [searchParams, setSearchParams] = useSearchParams();
-    // console.log('searchParams in busses ', searchParams.get("fullname"))
-    // console.log("name: ", buses[0].User.fullname);
 
     const getFilterItem = (data) => {
         return data.filter((item) => item.license_plate.toLowerCase().includes(query.toLowerCase())
@@ -108,7 +104,7 @@ const Buses = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllBusesFunction()
-            console.log('response get all buses: ', response)
+            // console.log('response get all buses: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 setBuses(response.data.data);
