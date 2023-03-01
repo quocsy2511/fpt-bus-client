@@ -56,16 +56,19 @@ const Login = () => {
                         await logOut();
                     }
                 } else {
-                    dispatch(HideLoading());
                     console.log("Response not OK");
+                    await logOut();
                     message.error(response.data.messages);
+                    dispatch(HideLoading());
                 }
             } else {
-                dispatch(HideLoading());
+                await logOut();
                 console.log("Access token not found");
+                dispatch(HideLoading());
             }
         } catch (error) {
             dispatch(HideLoading());
+            await logOut();
             console.log("error", error);
         }
     };

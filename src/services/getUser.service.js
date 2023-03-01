@@ -15,6 +15,7 @@ const config = {
 }
 export const getAllUsersFunction = async (userKey) => {
     try {
+        console.log(localStorage.getItem('access_token'));
         const response = await axios.get(serverEndpoint + `api/v1/users/${userKey}`, config)
         console.log(response);
         return response
