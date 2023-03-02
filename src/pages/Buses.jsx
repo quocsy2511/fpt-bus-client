@@ -5,8 +5,8 @@ import BusForm from '../components/form/BusForm';
 import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
-import { getAllBusesFunction } from '../services/getBus.service';
-import { updateBusStatusFunction } from '../services/updateBusStatus.service';
+import { getAllBusesFunction } from '../services/bus.service';
+import { updateBusStatusFunction } from '../services/bus.service';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
 import { EditTwoTone } from '@ant-design/icons'

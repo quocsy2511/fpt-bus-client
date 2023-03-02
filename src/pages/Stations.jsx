@@ -7,9 +7,9 @@ import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import { EditTwoTone } from '@ant-design/icons'
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { updateStationStatusFunction } from '../services/updateStationStatus.service';
+import { updateStationStatusFunction } from '../services/station.service';
 import StationForm from '../components/form/StationForm';
-import { getAllStationsFunction } from '../services/getStation.service';
+import { getAllStationsFunction } from '../services/station.service';
 
 const Stations = () => {
 
@@ -29,6 +29,7 @@ const Stations = () => {
         {
             title: "Station",
             dataIndex: "station_name",
+            render: (text) => <a>{text}</a>,
             width: 350,
         },
         {

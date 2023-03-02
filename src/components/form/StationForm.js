@@ -4,11 +4,10 @@ import Modal from 'antd/es/modal/Modal';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import { handleNewStationFunction } from '../../services/handleNewStationFunction.service'
-
+import { handleNewStationFunction } from '../../services/station.service'
+import { handleUpdateStationFunction } from '../../services/station.service';
 import 'antd/dist/reset.css'
 import "../../resources/form.css"
-import { handleUpdateStationFunction } from '../../services/handleUpdateStationFunction.service';
 
 const StationForm = ({
     showStationForm,
@@ -21,7 +20,7 @@ const StationForm = ({
     const dispatch = useDispatch();
 
     const onFinish = async (values) => {
-        // console.log(" values in onfinish ", values);
+        // console.log(" values in onfinish ", values); 112.7919828 11.7919828 c7 Apartment
         try {
             dispatch(ShowLoading())
             let response = null;

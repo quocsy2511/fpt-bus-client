@@ -4,12 +4,15 @@ import { useDispatch } from 'react-redux';
 import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
+import BusRouteForm from "../components/form/BusRouteForm"
 import "../resources/content.css"
 import 'antd/dist/reset.css'
 
 const BusRoutes = () => {
     const dispatch = useDispatch();
     const [busRoutes, setBusRoutes] = useState([]);
+    const [selectedBus, setSelectedBus] = useState(null);
+    const [showBusRouteForm, setShowBusRouteForm] = useState(false)
 
     const columns = [
         {
@@ -86,7 +89,7 @@ const BusRoutes = () => {
     return (
         <div>
             <div>
-                <Header />
+                <Header showForm={showBusRouteForm} setShowForm={setShowBusRouteForm} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
@@ -97,6 +100,14 @@ const BusRoutes = () => {
                     <Table rowKey="id" columns={columns} dataSource={busRoutes} />
                 </div>
             </div>
+            {showBusRouteForm && (
+                <BusRouteForm
+                    showBusRouteForm={showBusRouteForm}
+                    setShowBusRouteForm={setShowBusRouteForm}
+                    type={selectedBus ? "edit" : "new"}
+                    setSelectedBus={setSelectedBus}
+                />
+            )}
         </div>
     );
 };

@@ -4,7 +4,7 @@ import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllUsersFunction } from "../services/getUser.service";
+import { getAllUsersFunction } from "../services/user.service";
 import "../resources/content.css"
 import Header from "../components/Header";
 import UserForm from "../components/form/UserForm"
@@ -19,7 +19,6 @@ const Users = () => {
     let [drivers, setDrivers] = useState([]);
     const [showUserForm, setShowUserForm] = useState(false);
     const [query, setQuery] = useState("");
-
 
     const columnsStudent = [
         {
@@ -144,7 +143,7 @@ const Users = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllUsersFunction()
-            console.log('response get all user: ', response)
+            // console.log('response get all user: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 const students = response.data.data.filter((item) => item.RoleType?.role_name === "STUDENT");

@@ -14,3 +14,6 @@
 .ant-switch.ant-switch-checked {
   background-color: rgb(21, 181, 26);
 }
+.timeline-item strong {
+  font-weight: bold;
+}
