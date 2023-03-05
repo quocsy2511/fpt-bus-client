@@ -1,9 +1,81 @@
-import React from 'react';
+import { message, Table } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import Header from '../components/Header';
+import PageTitle from '../components/PageTitle';
+import { HideLoading, ShowLoading } from '../redux/alertsSlice';
+import "../resources/content.css"
+import 'antd/dist/reset.css'
+import TripForm from './form';
 
 const Trips = () => {
+    const dispatch = useDispatch();
+    const [trips, setTrips] = useState([]);
+
+    const columns = [
+        {
+            title: "No",
+            dataIndex: "",
+            width: 50,
+            render: (_, __, index) => index + 1, // Return the index of each row plus one
+        },
+        {
+            title: "Departure time",
+            dataIndex: "departure_time",
+        },
+        {
+            title: "Bus name",
+            dataIndex: "license_plate",
+        },
+        {
+            title: "Route",
+            dataIndex: "id",
+        },
+        {
+            title: "Ticket quantity",
+            dataIndex: "ticket_quantity",
+        }
+    ];
+
+    const getAllTrips = async () => {
+        try {
+
+            dispatch(ShowLoading());
+            // const response = await getAllTripsFunction()
+            // console.log('response get all user: ', response)
+            dispatch(HideLoading());
+            // if (response.data.status === "Success") {
+            //     setTrips(response.data.data);
+            // } else {
+            //     message.error(response.data.message);
+            // }
+        } catch (error) {
+            dispatch(HideLoading());
+            message.error(error.message);
+        }
+    };
+
+    useEffect(() => {
+        getAllTrips();
+    }, []);
+
+
     return (
         <div>
-            <h1>Trips</h1>
+            <div>
+                <Header />
+            </div>
+            <div className='inside-content'>
+                <div className='inside-content-2'>
+                    <div className="d-flex justify-content-between ">
+                        <PageTitle title="List Trips" />
+                    </div>
+                    <br />
+                    <Table rowKey="id" columns={columns} dataSource={trips} />
+                    <TripForm></TripForm>
+                </div>
+                
+            </div>
         </div>
     );
 };

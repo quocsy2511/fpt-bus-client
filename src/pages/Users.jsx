@@ -1,102 +1,159 @@
-
-import { message, Table } from "antd";
+import 'antd/dist/reset.css'
+import { Divider, message, Space, Switch, Table } from "antd";
 import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllUsersFunction } from "../services/getUser.service";
+import "../resources/content.css"
+import Header from "../components/Header";
+import UserForm from "../components/form/UserForm"
+import { EditTwoTone } from '@ant-design/icons';
 
 
 
 const Users = () => {
 
     const dispatch = useDispatch();
-    const [users, setUsers] = useState([]);
+    let [users, setUsers] = useState([]);
+    let [drivers, setDrivers] = useState([]);
+    const [showUserForm, setShowUserForm] = useState(false);
+    const [query, setQuery] = useState("");
 
-    const columns = [
+
+    const columnsStudent = [
+        {
+            title: "No",
+            dataIndex: "",
+            width: 70,
+            render: (_, __, index) => index + 1, // Return the index of each row plus one
+        },
+        {
+            title: "Student ID",
+            width: 150,
+            dataIndex: "student_id",
+
+        },
         {
             title: "Name",
             dataIndex: "fullname",
+            render: (text) => <a>{text}</a>,
+            ellipsis: true,
         },
         {
             title: "Email",
             dataIndex: "email",
-        },
-        {
-            title: "Role",
-            dataIndex: "",
-            render: (data) => {
-                console.log(data);
-                if (data?.role_name === "ADMIN") {
-                    return "Admin";
-                } else {
-                    return "Student";
-                }
-            },
+            ellipsis: true,
         },
         {
             title: "Status",
             dataIndex: "",
+            width: 100,
+            key: "status",
             render: (data) => {
-                return data.status ? "Blocked" : "Active";
+
+                return (
+                    <Space direction="vertical" size="middle">
+                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked />)
+                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" />)}
+                    </Space>
+                )
             },
         },
-
-        // {
-        //     title: "Action",
-        //     dataIndex: "action",
-        //     render: (action, record) => (
-        //         <div className="d-flex gap-3">
-        //             {record?.isBlocked && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     UnBlock
-        //                 </p>
-        //             )}
-        //             {!record?.isBlocked && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     Block
-        //                 </p>
-        //             )}
-        //             {record?.isAdmin && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     Remove Admin
-        //                 </p>
-        //             )}
-        //             {!record?.isAdmin && (
-        //                 <p
-        //                     className="underline"
-
-        //                 >
-        //                     Make Admin
-        //                 </p>
-        //             )}
-        //         </div>
-        //     ),
-        // },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: (action, record) => (
+                <Space size="large" >
+                    <EditTwoTone twoToneColor='orange'
+                        onClick={() => {
+                            console.log("click click ")
+                        }} />
+                    <Divider />
+                </Space>
+            ),
+        },
     ];
 
+    const columnsDriver = [
+        {
+            title: "No",
+            dataIndex: "",
+            width: 70,
+            render: (_, __, index) => index + 1, // Return the index of each row plus one
+        },
+        {
+            title: "Name",
+            dataIndex: "fullname",
+            render: (text) => <a>{text}</a>,
+            ellipsis: true,
+        },
+        {
+            title: "Phone",
+            dataIndex: "phone_number",
+            ellipsis: true,
+        },
+        {
+            title: "Email",
+            dataIndex: "email",
+            render: (text) => <a>{text}</a>,
+            ellipsis: true,
+        },
+        {
+            title: "Status",
+            dataIndex: "",
+            width: 100,
+            key: "status",
+            render: (data) => {
+
+                return (
+                    <Space direction="vertical" size="middle">
+                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked />)
+                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" />)}
+                    </Space>
+                )
+            },
+        },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: (action, record) => (
+                <Space size="large" >
+                    <EditTwoTone twoToneColor='orange'
+                        onClick={() => {
+                            console.log("click click ")
+                        }} />
+                    <Divider />
+                </Space>
+            ),
+        },
+    ];
+
+    const getFilterItem = (data) => {
+        return data.filter((item) => item.fullname.toLowerCase().includes(query.toLowerCase())
+            || item.student_id.toLowerCase().includes(query.toLowerCase())
+            || item.email.toLowerCase().includes(query.toLowerCase()))
+    }
+    const userFilter = getFilterItem(users);
+    const driverFilter = getFilterItem(drivers);
+
+    const handleStatus = () => {
+    }
 
     const getAllUsers = async () => {
         try {
-            
             dispatch(ShowLoading());
-            const response = await getAllUsersFunction("user")
+            const response = await getAllUsersFunction()
             console.log('response get all user: ', response)
             dispatch(HideLoading());
-            // if (response.data.status === "Success") {
-            //     setUsers(response.data.data);
-            // } else {
-            //     message.error(response.data.message);
-            // }
+            if (response?.data?.status === "Success") {
+                const students = response.data.data.filter((item) => item.RoleType?.role_name === "STUDENT");
+                const drivers = response.data.data.filter((item) => item.RoleType?.role_name === "DRIVER");
+                setUsers(students);
+                setDrivers(drivers)
+            } else {
+                message.error(response.data?.message);
+            }
         } catch (error) {
             dispatch(HideLoading());
             message.error(error.message);
@@ -109,11 +166,30 @@ const Users = () => {
 
     return (
         <div>
-            <h1>Users</h1>
-            <div className="d-flex justify-content-between my-2">
-                <PageTitle title="Users" />
+            <div>
+                <Header showForm={showUserForm} setShowForm={setShowUserForm} query={query} setQuery={setQuery} />
             </div>
-            <Table columns={columns} dataSource={users} />
+
+            <div className='inside-content'>
+                <div className="inside-content-2">
+                    <div className="d-flex justify-content-between">
+                        <PageTitle title="List Users" />
+                    </div>
+                    <br />
+                    <Table rowKey="id" columns={columnsStudent} pagination={{ pageSize: 10, }} scroll={{ y: 290, }} dataSource={userFilter} />
+                    <div className="d-flex justify-content-between">
+                        <PageTitle title="List Drivers" />
+                    </div>
+                    <br />
+                    <Table rowKey="id" columns={columnsDriver} pagination={{ pageSize: 10, }} scroll={{ y: 200, }} dataSource={driverFilter} />
+                </div>
+            </div>
+            {showUserForm && (
+                <UserForm
+                    showUserForm={showUserForm}
+                    setShowUserForm={setShowUserForm}>
+                </UserForm>
+            )}
         </div>
     );
 };

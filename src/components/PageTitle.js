@@ -1,9 +1,9 @@
 import React from 'react';
 
-const PageTitle = ({ tile }) => {
+const PageTitle = ({ title }) => {
     return (
         <div>
-            <h1 className='text-lg'>{tile}</h1>
+            <h1 className='text-lg' style={{ padding: "10px", margin: "10px" }}>{title}</h1>
         </div>
     );
 };

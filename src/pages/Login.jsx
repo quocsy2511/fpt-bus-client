@@ -56,29 +56,31 @@ const Login = () => {
                         await logOut();
                     }
                 } else {
-                    console.log("Response not OK");
-                    await logOut();
-                    message.error(response.data.messages);
                     dispatch(HideLoading());
+                    console.log("Response not OK");
+                    message.error(response.data.messages);
                 }
             } else {
-                await logOut();
-                console.log("Access token not found");
                 dispatch(HideLoading());
+                console.log("Access token not found");
+                await logOut();
             }
         } catch (error) {
             dispatch(HideLoading());
-            await logOut();
             console.log("error", error);
+            await logOut();
         }
     };
 
+    useEffect(() => {
+        loginFunction();
+    }, [googleSignIn])
     return (
         <div className='login-body'>
 
             <div className="container" id="container">
                 <div className="form-container log-in-container">
-                    <form action="#">
+                    <form action="#" className='form-content'>
                         {user?.displayName ? (
                             <hr />
                         ) : (
