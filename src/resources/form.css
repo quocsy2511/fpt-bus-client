@@ -17,3 +17,17 @@
 .timeline-item strong {
   font-weight: bold;
 }
+.end-select label {
+  float: right !important;
+  margin-right: 70px;
+}
+.end-select .ant-select {
+  float: left;
+}
+.busRouteFrom {
+  background-color: white;
+  width: 100% !important;
+}
+.busRouteFrom .vertical-timeline-element {
+  margin: 4em 15px;
+}

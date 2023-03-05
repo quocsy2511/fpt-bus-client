@@ -100,7 +100,9 @@ const Stations = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllStationsFunction()
-            // console.log('response get all station: ', response)
+            console.log('response get all station: ', response)
+            console.log('name station: ', response.data.data[0].station_name);
+
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setStations(response.data.data);

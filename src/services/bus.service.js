@@ -1,9 +1,16 @@
+import axios from "axios";
 import { axiosInstance } from "../helpers/axiosInstance";
 import { serverEndpoint } from '../utilities/serverEndpoint'
 
 export const getAllBusesFunction = async () => {
     try {
-        const response = await axiosInstance.get(serverEndpoint + `api/v1/bus`)
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                'Content-Type': `application/json`
+            }
+        }
+        const response = await axios.get(serverEndpoint + `api/v1/bus`, config)
         // console.log('response in getAllBusesFunction + ', response)
         return response
     } catch (error) {
@@ -24,7 +31,7 @@ export const handleNewBusFunction = async (values) => {
 }
 export const handleUpdateBusFunction = async (values, selectedBus) => {
     try {
-        const response = await axiosInstance.post(serverEndpoint + `api/v1/bus/update/${selectedBus.id}`, values);
+        const response = await axiosInstance.put(serverEndpoint + `api/v1/bus/update/${selectedBus.id}`, values);
         // console.log('response in service: ', response)
         return response;
     } catch (error) {
@@ -34,7 +41,7 @@ export const handleUpdateBusFunction = async (values, selectedBus) => {
 }
 export const updateBusStatusFunction = async (id) => {
     try {
-        const response = await axiosInstance.post(serverEndpoint + `api/v1/bus/change-status/${id}`)
+        const response = await axiosInstance.put(serverEndpoint + `api/v1/bus/change-status/${id}`)
         // console.log('response update status bus in service :', response)
         return response
     } catch (error) {

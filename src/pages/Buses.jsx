@@ -85,7 +85,7 @@ const Buses = () => {
         try {
             dispatch(ShowLoading());
             const response = await updateBusStatusFunction(id);
-            console.log('response update in bus: ', response)
+            // console.log('response update in bus: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 message.success(response.data.message);
@@ -104,7 +104,7 @@ const Buses = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllBusesFunction()
-            // console.log('response get all buses: ', response)
+            console.log('response get all buses: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 setBuses(response.data.data);
