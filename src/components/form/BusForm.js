@@ -5,8 +5,8 @@ import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import { handleNewBusFunction } from '../../services/handleNewBusFunction.service';
-import { handleUpdateBusFunction } from '../../services/handleUpdateBusFunction.service';
+import { handleNewBusFunction } from '../../services/bus.service';
+import { handleUpdateBusFunction } from '../../services/bus.service';
 
 const BusForm = ({
     showBusForm,
@@ -69,16 +69,20 @@ const BusForm = ({
                             message: 'Please input License Plate! Example : 29B-144.21',
                         },
                         {
+                            pattern: /^[A-Z0-9.-]+$/,
+                            message: "Only uppercase letters, digits, periods, and hyphens are allowed. Example: 29B-144.21",
+                        },
+                        {
                             whitespace: true,
                             message: 'Please type License Plate!'
                         },
                         {
                             min: 10,
-                            message: "Enter at least 10 characters Example :",
+                            message: "Enter at least 10 characters Example : 29B-144.21",
                         },
                         {
                             max: 10,
-                            message: "Enter at max 10characters"
+                            message: "Enter at max 10characters Example : 29B-144.21"
                         }
                         ]}
                         hasFeedback>

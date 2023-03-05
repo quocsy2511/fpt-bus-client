@@ -5,8 +5,8 @@ import BusForm from '../components/form/BusForm';
 import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
-import { getAllBusesFunction } from '../services/getBus.service';
-import { updateBusStatusFunction } from '../services/updateBusStatus.service';
+import { getAllBusesFunction } from '../services/bus.service';
+import { updateBusStatusFunction } from '../services/bus.service';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
 import { EditTwoTone } from '@ant-design/icons'
@@ -85,7 +85,7 @@ const Buses = () => {
         try {
             dispatch(ShowLoading());
             const response = await updateBusStatusFunction(id);
-            console.log('response update in bus: ', response)
+            // console.log('response update in bus: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 message.success(response.data.message);
@@ -104,7 +104,7 @@ const Buses = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllBusesFunction()
-            // console.log('response get all buses: ', response)
+            console.log('response get all buses: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 setBuses(response.data.data);

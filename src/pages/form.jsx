@@ -125,13 +125,6 @@ const TripForm = () => {
                     </Button>
                 </Form.Group>
                 <Form.Group controlId="daysOfWeek">
-                    <Form.Check
-                        type="checkbox"
-                        id="daysOfWeek"
-                        label="Select days of the week"
-                        checked={showDaysOfWeek}
-                        onChange={handleToggleDaysOfWeek}
-                    />
                     <Switch checkedChildren="Select days of the week" unCheckedChildren="Unselect days of the week" checked={showDaysOfWeek} onChange={handleToggleDaysOfWeek} />
                     {showDaysOfWeek && (
                         <div>

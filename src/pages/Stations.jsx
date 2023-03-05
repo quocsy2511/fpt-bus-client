@@ -7,9 +7,9 @@ import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import { EditTwoTone } from '@ant-design/icons'
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { updateStationStatusFunction } from '../services/updateStationStatus.service';
+import { updateStationStatusFunction } from '../services/station.service';
 import StationForm from '../components/form/StationForm';
-import { getAllStationsFunction } from '../services/getStation.service';
+import { getAllStationsFunction } from '../services/station.service';
 
 const Stations = () => {
 
@@ -29,6 +29,7 @@ const Stations = () => {
         {
             title: "Station",
             dataIndex: "station_name",
+            render: (text) => <a>{text}</a>,
             width: 350,
         },
         {
@@ -99,7 +100,9 @@ const Stations = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllStationsFunction()
-            // console.log('response get all station: ', response)
+            console.log('response get all station: ', response)
+            console.log('name station: ', response.data.data[0].station_name);
+
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setStations(response.data.data);
