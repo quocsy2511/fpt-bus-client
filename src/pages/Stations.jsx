@@ -18,6 +18,8 @@ const Stations = () => {
     const [showStationForm, setShowStationForm] = useState(false)
     const [selectedStation, setSelectedStation] = useState(null);
     const [query, setQuery] = useState("");
+    const [stationStatus, setStationStatus] = useState([]);
+
 
     const columns = [
         {
@@ -100,12 +102,13 @@ const Stations = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllStationsFunction()
-            console.log('response get all station: ', response)
-            console.log('name station: ', response.data.data[0].station_name);
+            console.log('response get all station : ', response.data.data)
 
+            console.log('response get all station status: ', response.data.data.status)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setStations(response.data.data);
+                setStationStatus()
             } else {
                 message.error(response.data.message);
             }
@@ -114,7 +117,6 @@ const Stations = () => {
             message.error(error.message);
         }
     };
-
     useEffect(() => {
         getAllStations();
     }, []);

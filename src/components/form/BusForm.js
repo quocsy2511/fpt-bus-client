@@ -1,12 +1,14 @@
-import { Button, Form, Input, InputNumber, message } from 'antd';
+import { Button, Form, Input, InputNumber, message, Select } from 'antd';
 import Modal from 'antd/es/modal/Modal';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
 import { handleNewBusFunction } from '../../services/bus.service';
 import { handleUpdateBusFunction } from '../../services/bus.service';
+import { getAllDriversFunction } from '../../services/user.service';
+
 
 const BusForm = ({
     showBusForm,
@@ -16,17 +18,35 @@ const BusForm = ({
     selectedBus,
     setSelectedBus,
 }) => {
+    const [drivers, setDrivers] = useState([])
     const dispatch = useDispatch();
 
+    const getAllDrivers = async () => {
+        try {
+            dispatch(ShowLoading());
+            const response = await getAllDriversFunction()
+            console.log('response get all user: ', response)
+            dispatch(HideLoading());
+            if (response?.data?.status === "Success") {
+                const drivers = response.data.data.filter((item) => item.RoleType?.role_name === "DRIVER");
+                setDrivers(drivers)
+            } else {
+                message.error(response.data?.message);
+            }
+        } catch (error) {
+            dispatch(HideLoading());
+            message.error(error.message);
+        }
+    };
+
     const onFinish = async (values) => {
-        // console.log(" values in onfinish ", values);
+        console.log(" values in onfinish ", values);
         try {
             dispatch(ShowLoading())
             let response = null;
             if (type === "new") {
                 response = await handleNewBusFunction(values);
                 console.log('response in bus form add : ', response)
-
             } else {
                 response = await handleUpdateBusFunction(values, selectedBus);
             }
@@ -35,7 +55,6 @@ const BusForm = ({
             if (response.data.status === "Success") {
                 message.success(response.data.message);
                 dispatch(HideLoading());
-
             } else {
                 dispatch(HideLoading());
                 message.error(response.data.message)
@@ -48,6 +67,10 @@ const BusForm = ({
             dispatch(HideLoading());
         }
     }
+
+    useEffect(() => {
+        getAllDrivers()
+    }, [])
 
     return (
         <div>
@@ -101,20 +124,22 @@ const BusForm = ({
                             message: "Seat quantity must be between 10 and 45!"
                         }
                         ]} hasFeedback>
-                        <InputNumber style={{ width: "100%" }} />
+                        <InputNumber className='seat-quantity' />
                     </Form.Item>
-                    <Form.Item label="Driver Id: " name="driver_id" rules={
+                    <Form.Item label="Driver : " name="driver_id" rules={
                         [{
                             required: true,
-                            message: 'Please input Driver Id!',
-
-                        },
-                        {
-                            whitespace: true,
-                            message: 'Please type License Plate!'
+                            message: 'Please choose Driver !',
                         },
                         ]} hasFeedback>
-                        <Input placeholder='Enter Driver Id ' />
+                        <Select className='driver'
+                            // onChange={handleChange}
+                            placeholder="choose driver "
+                            options={drivers && drivers.length > 0 ? drivers.map((driver) => ({
+                                value: driver.id,
+                                label: driver.fullname,
+                            })) : []}
+                        />
                     </Form.Item>
                     <Form.Item className='d-flex justify-content-end'>
                         <Button className="primary-btn" htmlType='submit' >

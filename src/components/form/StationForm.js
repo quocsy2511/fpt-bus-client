@@ -1,7 +1,7 @@
 
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Checkbox } from 'antd';
 import Modal from 'antd/es/modal/Modal';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
 import { handleNewStationFunction } from '../../services/station.service'
@@ -17,10 +17,16 @@ const StationForm = ({
     selectedStation,
     setSelectedStation,
 }) => {
+    const [checked, setChecked] = useState(false);
     const dispatch = useDispatch();
 
     const onFinish = async (values) => {
-        // console.log(" values in onfinish ", values); 112.7919828 11.7919828 c7 Apartment
+        // console.log('values in station : ', values)
+        const data = {
+            ...values,
+            status: checked
+        };
+        console.log(data);
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -28,7 +34,7 @@ const StationForm = ({
                 response = await handleNewStationFunction(values);
                 console.log('response in Station form add : ', response)
             } else {
-                response = await handleUpdateStationFunction(values, selectedStation);
+                response = await handleUpdateStationFunction(data, selectedStation);
                 console.log('response in Station form update', response)
             }
             dispatch(HideLoading());
@@ -36,7 +42,6 @@ const StationForm = ({
             if (response.data.status === "Success") {
                 message.success(response.data.message);
                 dispatch(HideLoading());
-
             } else {
                 dispatch(HideLoading());
                 message.error(response.data.message)
@@ -49,6 +54,7 @@ const StationForm = ({
             dispatch(HideLoading());
         }
     }
+
     return (
         <div>
             <Modal
@@ -111,6 +117,12 @@ const StationForm = ({
                         }
                         ]} hasFeedback>
                         <Input placeholder='Enter Station Latitude ' />
+                    </Form.Item>s
+                    <Form.Item style={{ "marginLeft": "150px" }}
+                        checked={checked} >
+                        <Checkbox onChange={(e) => setChecked(e.target.checked)}>
+                            Active Station
+                        </Checkbox>
                     </Form.Item>
                     <Form.Item className='d-flex justify-content-end'>
                         <Button className="primary-btn" htmlType='submit' >

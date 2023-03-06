@@ -5,36 +5,28 @@ import { SmileOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import { getAllStationsFunction } from '../../services/station.service';
-// const stations = [{
-//     label: ' VinHome center park',
-//     value: 'vinhomeCenterPark'
-// }, {
-//     label: 'Điện máy xanh',
-//     value: 'dienMayXanh'
-// }, {
-//     label: 'Family Mart',
-//     value: 'familyMart'
-// }, {
-//     label: 'Ngã tư Thủ đức ',
-//     value: 'ngaTuThuDuc'
-// }, {
-//     label: 'Hutech University',
-//     value: 'hutechUniversity'
-// }, {
-//     label: 'FPT University',
-//     value: 'fptUniversity'
-// },];
+import { handleNewBusRouteFunction, handleUpdateBusRouteFunction } from '../../services/busRoute.service';
+import { useDispatch } from 'react-redux';
+import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
 
-const RouteForm = ({ showBusRouteForm, setShowBusRouteForm, type = 'new', }) => {
+const RouteForm = ({
+    showBusRouteForm,
+    setShowBusRouteForm,
+    type = 'new',
+    setSelectedBusRoute,
+    getData,
+    selectedBusRoute,
+}) => {
     const [startStation, setStartStation] = useState("Departure");
     const [endStation, setEndStation] = useState("Destination");
     const [middleStations, setMiddleStations] = useState([]);
     const [showMiddleStationSelect, setShowMiddleStationSelect] = useState(false);
     const [stations, setStations] = useState([])
-
+    const dispatch = useDispatch();
     const getAllStations = async () => {
         try {
             const response = await getAllStationsFunction()
+            console.log('response station : ', response)
             if (response.data.status === "Success") {
                 setStations(response.data.data);
             } else {
@@ -46,6 +38,7 @@ const RouteForm = ({ showBusRouteForm, setShowBusRouteForm, type = 'new', }) => 
     };
 
     const handleStartStationChange = (value) => {
+        console.log('value start :', value)
         if (value === endStation) {
             message.error('Trạm xuất phát không được trùng với trạm kết thúc!');
             setStartStation("Departure")
@@ -62,6 +55,7 @@ const RouteForm = ({ showBusRouteForm, setShowBusRouteForm, type = 'new', }) => 
     };
 
     const handleEndStationChange = (value) => {
+        console.log('value end', value)
         if (value === startStation) {
             message.error('Trạm kết thúc không được trùng với trạm xuất phát!');
             setEndStation("Destination");
@@ -80,6 +74,7 @@ const RouteForm = ({ showBusRouteForm, setShowBusRouteForm, type = 'new', }) => 
 
     const handleMiddleStationChange = (index, value) => {
         const newMiddleStations = [...middleStations];
+        console.log('newMiddleStations', newMiddleStations)
         newMiddleStations[index] = value;
         if (value === startStation || value === endStation) {
             message.error('Trạm ở giữa không được trùng với trạm đã chọn!');
@@ -99,10 +94,41 @@ const RouteForm = ({ showBusRouteForm, setShowBusRouteForm, type = 'new', }) => 
         //     setShowMiddleStationSelect(true);
         // }
     };
+
     const handleAddMiddleStation = () => {
         setMiddleStations([...middleStations, null]);
         // setShowMiddleStationSelect(false);
     };
+
+    const onFinish = async (values) => {
+        const data = { ...values, stations: middleStations }
+        console.log('data : ', data)
+        try {
+            dispatch(ShowLoading())
+            let response = null;
+            if (type === "new") {
+                response = await handleNewBusRouteFunction(data);
+                console.log('response in bus form add : ', response)
+            } else {
+                response = await handleUpdateBusRouteFunction(data, selectedBusRoute);
+                console.log('response in route: ', response)
+            }
+            dispatch(HideLoading());
+            setShowBusRouteForm(false);
+            if (response.data.status === "Success") {
+                message.success(response.data.message);
+                dispatch(HideLoading());
+            } else {
+                dispatch(HideLoading());
+                message.error(response.data.message)
+            }
+            getData();
+            setShowBusRouteForm(false);
+            selectedBusRoute(null)
+        } catch (error) {
+            console.log('error in form', error)
+        }
+    }
 
     useEffect(() => {
         getAllStations();
@@ -115,49 +141,7 @@ const RouteForm = ({ showBusRouteForm, setShowBusRouteForm, type = 'new', }) => 
                 open={showBusRouteForm}
                 onCancel={() => { setShowBusRouteForm(false) }}
                 footer={false}>
-                <Form>
-                    <Timeline mode="alternate">
-                        <Timeline.Item color={"blue"}
-                            dot={(<EnvironmentOutlined style={{ fontSize: '80px', }} />)}
-                            children={(
-                                <Form.Item label='Start' >
-                                    <Select value={startStation} style={{ width: 200, }}
-                                        onChange={handleStartStationChange}
-                                        options={stations.map((station) => ({
-                                            station_name: station.station_name,
-                                            value: station.station_name
-                                        }))} />
-                                </Form.Item>
-                            )}>
-                        </Timeline.Item>
-                        {middleStations.map((middleStation, index) => (
-                            <Timeline.Item key={index}>
-                                <Select key={index} placeholder={`Station ${index + 2}`}
-                                    style={{ width: 200, }}
-                                    onChange={(value) => handleMiddleStationChange(index, value)}
-                                    options={stations.map((station) => ({
-                                        station_name: station.station_name,
-                                        value: station.station_name
-                                    }
-                                    ))}>
-                                </Select>
-                            </Timeline.Item>
-                        ))}
-                        <Timeline.Item color={"green"}
-                            dot={(<SmileOutlined style={{ fontSize: '80px', }} />)}
-                            children={(
-                                <Form.Item label='End' >
-                                    <Select value={endStation} style={{ width: 200, }}
-                                        onChange={handleEndStationChange}
-                                        options={stations.map((station) => ({
-                                            station_name: station.station_name,
-                                            value: station.station_name
-                                        }))} />
-                                </Form.Item>
-                            )}
-                        >
-                        </Timeline.Item>
-                    </Timeline>
+                <Form onFinish={onFinish} initialValues={selectedBusRoute}>
                     <Form.Item className='d-flex justify-content-end'>
                         {showMiddleStationSelect &&
                             (<Button className="primary-btn" onClick={handleAddMiddleStation}>
@@ -165,9 +149,60 @@ const RouteForm = ({ showBusRouteForm, setShowBusRouteForm, type = 'new', }) => 
                             </Button>
                             )}
                     </Form.Item>
+                    <Timeline mode="alternate" >
+                        <Timeline.Item color={"blue"}
+                            dot={(<EnvironmentOutlined style={{ fontSize: '80px', }} />)}
+                            children={(
+                                <Form.Item label='Start' name="start" >
+                                    <Select value={startStation} style={{ width: 200, }}
+                                        onChange={handleStartStationChange}
+                                        options={stations.map((station) => ({
+                                            label: station.station_name,
+                                            value: station.id
+                                        }))} />
+                                </Form.Item>
+                            )}>
+                        </Timeline.Item>
+                        {middleStations.map((middleStation, index) => (
+                            <Timeline.Item key={index}
+                                children={(
+                                    <Form.Item>
+                                        <Select key={index} placeholder={`Station ${index + 2}`}
+                                            style={{ width: 200, }}
+                                            onChange={(value) => handleMiddleStationChange(index, value)}
+                                            options={stations.map((station) => ({
+                                                label: station.station_name,
+                                                value: station.id
+                                            }
+                                            ))}>
+                                        </Select>
+                                    </Form.Item>
+
+                                )}>
+                            </Timeline.Item>
+                        ))}
+                        <Timeline.Item color={"green"}
+                            dot={(<SmileOutlined style={{ fontSize: '80px', }} />)}
+                            children={(
+                                <Form.Item label='End' name="end"  >
+                                    <Select value={endStation} style={{ width: 200, }}
+                                        onChange={handleEndStationChange}
+                                        options={stations.map((station) => ({
+                                            label: station.station_name,
+                                            value: station.id
+                                        }))} />
+                                </Form.Item>
+                            )}>
+                        </Timeline.Item>
+                    </Timeline>
+                    <Form.Item className='d-flex justify-content-end'>
+                        <Button className="primary-btn" htmlType='submit' >
+                            Save
+                        </Button>
+                    </Form.Item>
                 </Form>
             </Modal>
-        </div >
+        </div>
     );
 };
 

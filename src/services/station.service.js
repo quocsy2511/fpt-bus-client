@@ -31,9 +31,9 @@ export const handleNewStationFunction = async (values) => {
     }
 }
 
-export const handleUpdateStationFunction = async (values, selectedStation) => {
+export const handleUpdateStationFunction = async (data, selectedStation) => {
     try {
-        const response = await axiosInstance.put(serverEndpoint + `api/v1/station/update/${selectedStation.id}`, values);
+        const response = await axiosInstance.put(serverEndpoint + `api/v1/station/update/${selectedStation.id}`, data);
         console.log('response in service: ', response)
         return response;
     } catch (error) {

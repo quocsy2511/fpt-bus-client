@@ -4,7 +4,7 @@ import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllUsersFunction } from "../services/user.service";
+import { getAllDriversFunction, getAllStudentsFunction, getAllUsersFunction } from "../services/user.service";
 import "../resources/content.css"
 import Header from "../components/Header";
 import UserForm from "../components/form/UserForm"
@@ -138,18 +138,14 @@ const Users = () => {
 
     const handleStatus = () => {
     }
-
-    const getAllUsers = async () => {
+    const getAllStudents = async () => {
         try {
             dispatch(ShowLoading());
-            const response = await getAllUsersFunction()
-            // console.log('response get all user: ', response)
+            const response = await getAllStudentsFunction();
+            console.log('response get all student :  ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
-                const students = response.data.data.filter((item) => item.RoleType?.role_name === "STUDENT");
-                const drivers = response.data.data.filter((item) => item.RoleType?.role_name === "DRIVER");
-                setUsers(students);
-                setDrivers(drivers)
+                setUsers(response.data.data);
             } else {
                 message.error(response.data?.message);
             }
@@ -157,10 +153,27 @@ const Users = () => {
             dispatch(HideLoading());
             message.error(error.message);
         }
-    };
+    }
+    const getAllDrivers = async () => {
+        try {
+            dispatch(ShowLoading());
+            const response = await getAllDriversFunction();
+            console.log('response get all student :  ', response)
+            dispatch(HideLoading());
+            if (response?.data?.status === "Success") {
+                setDrivers(response.data.data);
+            } else {
+                message.error(response.data?.message);
+            }
+        } catch (error) {
+            dispatch(HideLoading());
+            message.error(error.message);
+        }
+    }
 
     useEffect(() => {
-        getAllUsers();
+        getAllStudents()
+        getAllDrivers()
     }, []);
 
     return (

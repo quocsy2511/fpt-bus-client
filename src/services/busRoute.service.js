@@ -28,3 +28,22 @@ export const updateBusRouteStatusFunction = async (id) => {
         return error;
     }
 }
+export const handleNewBusRouteFunction = async (values) => {
+    try {
+        const response = await axiosInstance.post(serverEndpoint + "api/v1/route/create", values)
+        return response;
+    } catch (error) {
+        console.log('error in service : ', error)
+        return error;
+    }
+}
+export const handleUpdateBusRouteFunction = async (data, selectedBusRoute) => {
+    try {
+        const response = await axiosInstance.put(serverEndpoint + `api/v1/route/update/${selectedBusRoute.id}`, data)
+        console.log('response in service: ', response)
+        return response;
+    } catch (error) {
+        console.log('error in service : ', error)
+        return error
+    }
+}

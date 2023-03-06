@@ -121,6 +121,8 @@ const BusRoutes = () => {
                     setShowBusRouteForm={setShowBusRouteForm}
                     type={selectedBusRoute ? "edit" : "new"}
                     setSelectedBusRoute={setSelectedBusRoute}
+                    selectedBusRoute={selectedBusRoute}
+                    getData={getAllBusRoutes}
                 />
             )}
         </div>
