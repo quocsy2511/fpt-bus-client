@@ -35,7 +35,6 @@ const Buses = () => {
         {
             title: "Driver",
             dataIndex: "driver_name",
-            // render: (user) => <a>{user ? user.fullname : ""}</a>,
             render: (text) => <a>{text}</a>,
         },
         {

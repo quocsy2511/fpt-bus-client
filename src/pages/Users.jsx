@@ -4,7 +4,7 @@ import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllDriversFunction, getAllStudentsFunction, getAllUsersFunction } from "../services/user.service";
+import { getAllDriversFunction, getAllStudentsFunction, getAllUsersFunction, updateUserStatusFunction } from "../services/user.service";
 import "../resources/content.css"
 import Header from "../components/Header";
 import UserForm from "../components/form/UserForm"
@@ -19,6 +19,7 @@ const Users = () => {
     let [drivers, setDrivers] = useState([]);
     const [showUserForm, setShowUserForm] = useState(false);
     const [query, setQuery] = useState("");
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const columnsStudent = [
         {
@@ -49,12 +50,12 @@ const Users = () => {
             dataIndex: "",
             width: 100,
             key: "status",
-            render: (data) => {
-
+            render: (data, record) => {
                 return (
                     <Space direction="vertical" size="middle">
-                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked />)
-                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" />)}
+                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
+                            onClick={() => handleStatus(record.id)} />)
+                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" onClick={() => handleStatus(record.id)} />)}
                     </Space>
                 )
             },
@@ -66,7 +67,8 @@ const Users = () => {
                 <Space size="large" >
                     <EditTwoTone twoToneColor='orange'
                         onClick={() => {
-                            console.log("click click ")
+                            setSelectedUser(record);
+                            setShowUserForm(true)
                         }} />
                     <Divider />
                 </Space>
@@ -103,12 +105,12 @@ const Users = () => {
             dataIndex: "",
             width: 100,
             key: "status",
-            render: (data) => {
-
+            render: (data, record) => {
                 return (
                     <Space direction="vertical" size="middle">
-                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked />)
-                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" />)}
+                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
+                            onClick={() => handleStatus(record.id)} />)
+                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" onClick={() => handleStatus(record.id)} />)}
                     </Space>
                 )
             },
@@ -120,7 +122,8 @@ const Users = () => {
                 <Space size="large" >
                     <EditTwoTone twoToneColor='orange'
                         onClick={() => {
-                            console.log("click click ")
+                            setSelectedUser(record);
+                            setShowUserForm(true)
                         }} />
                     <Divider />
                 </Space>
@@ -136,7 +139,22 @@ const Users = () => {
     const userFilter = getFilterItem(users);
     const driverFilter = getFilterItem(drivers);
 
-    const handleStatus = () => {
+    const handleStatus = async (id) => {
+        try {
+            dispatch(ShowLoading());
+            const response = await updateUserStatusFunction(id);
+            // console.log('response update in bus: ', response)
+            dispatch(HideLoading());
+            if (response.data.status === "Success") {
+                message.success(response.data.message);
+                dispatch(HideLoading());
+            } else {
+                message.error(response.message);
+                dispatch(HideLoading());
+            }
+        } catch (error) {
+            console.log('error in User : ', error)
+        }
     }
     const getAllStudents = async () => {
         try {
@@ -181,7 +199,6 @@ const Users = () => {
             <div>
                 <Header showForm={showUserForm} setShowForm={setShowUserForm} query={query} setQuery={setQuery} />
             </div>
-
             <div className='inside-content'>
                 <div className="inside-content-2">
                     <div className="d-flex justify-content-between">
@@ -199,7 +216,12 @@ const Users = () => {
             {showUserForm && (
                 <UserForm
                     showUserForm={showUserForm}
-                    setShowUserForm={setShowUserForm}>
+                    setShowUserForm={setShowUserForm}
+                    type={selectedUser ? "edit" : "new"}
+                    selectedUser={selectedUser}
+                    setSelectedUser={setSelectedUser}
+                    getDataStudents={getAllStudents}
+                    getDataDrivers={getAllDrivers}>
                 </UserForm>
             )}
         </div>

@@ -124,7 +124,7 @@ const RouteForm = ({
             }
             getData();
             setShowBusRouteForm(false);
-            selectedBusRoute(null)
+            setSelectedBusRoute(null)
         } catch (error) {
             console.log('error in form', error)
         }

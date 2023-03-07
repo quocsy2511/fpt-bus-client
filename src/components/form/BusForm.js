@@ -5,8 +5,7 @@ import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import { handleNewBusFunction } from '../../services/bus.service';
-import { handleUpdateBusFunction } from '../../services/bus.service';
+import { handleUpdateBusFunction, handleNewBusFunction } from '../../services/bus.service';
 import { getAllDriversFunction } from '../../services/user.service';
 
 
