@@ -4,7 +4,7 @@ import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllDriversFunction, getAllStudentsFunction, getAllUsersFunction, updateUserStatusFunction } from "../services/user.service";
+import { getAllDriversFunction, getAllStudentsFunction, updateUserStatusFunction } from "../services/user.service";
 import "../resources/content.css"
 import Header from "../components/Header";
 import UserForm from "../components/form/UserForm"
