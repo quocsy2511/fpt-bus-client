@@ -7,7 +7,8 @@ import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
 import { getAllTripsFunction, updateTripStatusFunction } from '../services/trip.service';
-import TripForm from '../components/form/TripForm';
+// import TripForm from '../components/form/TripForm';
+import TripForm from './form';
 
 const Trips = () => {
     const dispatch = useDispatch();
@@ -118,9 +119,12 @@ const Trips = () => {
                         <PageTitle title="List Trips" />
                     </div>
                     <br />
-                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
-                        pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
+                    {/* <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
+                        pagination={{ pageSize: 10, }} scroll={{ y: 240, }} /> */}
+                    <Table rowKey="id" columns={columns} dataSource={trips} />
+                    <TripForm></TripForm>
                 </div>
+
             </div>
             {showTripForm && (
                 <TripForm

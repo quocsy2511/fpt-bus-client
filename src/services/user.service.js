@@ -1,5 +1,6 @@
 
 import { serverEndpoint } from '../utilities/serverEndpoint'
+import { axiosInstance } from '../helpers/axiosInstance';
 import axios from 'axios';
 import { axiosInstance } from '../helpers/axiosInstance';
 
@@ -12,8 +13,8 @@ export const getAllUsersFunction = async () => {
                 'Content-Type': `application/json`
             }
         }
+        console.log(localStorage.getItem('access_token'));
         const response = await axios.get(serverEndpoint + 'api/v1/users', config)
-        // console.log(response);
         return response
     } catch (error) {
         console.log("error in service: ", error);
