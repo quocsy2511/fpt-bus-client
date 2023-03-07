@@ -1,5 +1,5 @@
 import axios from "axios";
-import { axiosInstance } from "../helpers/axiosInstance";
+import axiosInstance from "../helpers/axiosInstance";
 import { serverEndpoint } from '../utilities/serverEndpoint'
 
 export const getAllBusesFunction = async () => {
@@ -41,6 +41,7 @@ export const handleUpdateBusFunction = async (values, selectedBus) => {
 }
 export const updateBusStatusFunction = async (id) => {
     try {
+
         const response = await axiosInstance.put(serverEndpoint + `api/v1/bus/change-status/${id}`)
         // console.log('response update status bus in service :', response)
         return response

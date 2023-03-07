@@ -1,9 +1,7 @@
 
 import { serverEndpoint } from '../utilities/serverEndpoint'
-import { axiosInstance } from '../helpers/axiosInstance';
+import axiosInstance from '../helpers/axiosInstance';
 import axios from 'axios';
-import { axiosInstance } from '../helpers/axiosInstance';
-
 
 export const getAllUsersFunction = async () => {
     try {

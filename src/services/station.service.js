@@ -1,5 +1,5 @@
 import axios from "axios";
-import { axiosInstance } from "../helpers/axiosInstance";
+import axiosInstance from "../helpers/axiosInstance";
 import { serverEndpoint } from '../utilities/serverEndpoint'
 
 export const getAllStationsFunction = async () => {
