@@ -1,4 +1,4 @@
-import { message, Space, Switch, Table } from 'antd';
+import { Divider, message, Space, Switch, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Header from '../components/Header';
@@ -7,14 +7,16 @@ import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
 import { getAllTripsFunction, updateTripStatusFunction } from '../services/trip.service';
-// import TripForm from '../components/form/TripForm';
-import TripForm from './form';
+import TripForm from '../components/form/TripForm';
+// import TripForm2 from './form';
+import { EditTwoTone } from '@ant-design/icons';
 
 const Trips = () => {
     const dispatch = useDispatch();
     const [trips, setTrips] = useState([]);
     const [query, setQuery] = useState("");
     const [showTripForm, setShowTripForm] = useState(false)
+    const [selectedTrip, setSelectedTrip] = useState(null);
 
 
     const getFilterItem = (data) => {
@@ -62,6 +64,20 @@ const Trips = () => {
                     </Space>
                 )
             },
+        },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: (action, record) => (
+                <Space size="large" >
+                    <EditTwoTone twoToneColor='orange'
+                        onClick={() => {
+                            setSelectedTrip(record);
+                            setShowTripForm(true);
+                        }} />
+                    <Divider />
+                </Space>
+            ),
         },
 
     ];
@@ -119,10 +135,9 @@ const Trips = () => {
                         <PageTitle title="List Trips" />
                     </div>
                     <br />
-                    {/* <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
-                        pagination={{ pageSize: 10, }} scroll={{ y: 240, }} /> */}
-                    <Table rowKey="id" columns={columns} dataSource={trips} />
-                    <TripForm></TripForm>
+                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
+                        pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
+                    {/* <TripForm2></TripForm2> */}
                 </div>
 
             </div>
@@ -130,9 +145,9 @@ const Trips = () => {
                 <TripForm
                     showTripForm={showTripForm}
                     setShowTripForm={setShowTripForm}
-                    type={"new"}
-                    // selectedTrip={selectedTrip}
-                    // setSelectedTrip={setSelectedTrip}
+                    type={selectedTrip ? "edit" : "new"}
+                    selectedTrip={selectedTrip}
+                    setSelectedTrip={setSelectedTrip}
                     getData={getAllTrips} />
             )}
         </div>

@@ -124,7 +124,7 @@ const TripForm = () => {
                         Add Time
                     </Button>
                 </Form.Group>
-                <Form.Group controlId="daysOfWeek">
+                {/* <Form.Group controlId="daysOfWeek">
                     <Switch checkedChildren="Select days of the week" unCheckedChildren="Unselect days of the week" checked={showDaysOfWeek} onChange={handleToggleDaysOfWeek} />
                     {showDaysOfWeek && (
                         <div>
@@ -208,7 +208,7 @@ const TripForm = () => {
                             />
                         </div>
                     )}
-                </Form.Group>
+                </Form.Group> */}
                 <Button variant="primary" type="submit">
                     Create
                 </Button>
