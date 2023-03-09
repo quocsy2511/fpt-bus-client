@@ -42,7 +42,6 @@
   padding: 7px 11px !important;
 }
 
-
 .rmdp-input {
   border: 1px solid #c0c4d6;
   border-radius: 5px;
@@ -51,4 +50,17 @@
   padding: 5px 14px !important;
   background-color: white;
   width: 525px;
+}
+.form-trip {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around !important;
+}
+.anticon svg {
+  margin-bottom: 5px;
+  display: inline-block;
+}
+svg {
+  vertical-align: middle;
+  color: green;
 }

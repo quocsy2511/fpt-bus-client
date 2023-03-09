@@ -1,10 +1,10 @@
-import { Button, Checkbox, Form, Input, InputNumber, message, Modal, Select } from "antd";
+import { Button, Checkbox, Col, Form, Input, InputNumber, message, Modal, Row, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllBusesFunction } from "../../services/bus.service";
 import { getAllBusRoutesFunction } from "../../services/busRoute.service";
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import moment from "moment";
+import { addDays } from "date-fns"
 import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import DatePicker, { DateObject } from "react-multi-date-picker"
@@ -12,9 +12,8 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
 import InputIcon from "react-multi-date-picker/components/input_icon";
 import "react-multi-date-picker/styles/colors/teal.css"
-import transition from "react-element-popper/animations/transition"
-import { handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
-// import DatePicker from 'react-date-picker';
+import { getAllTripsFunction, handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
+import { FieldTimeOutlined } from "@ant-design/icons";
 
 const TripForm = ({
     showTripForm,
@@ -27,17 +26,14 @@ const TripForm = ({
 
     const [routes, setRoutes] = useState([]);
     const [buses, setBuses] = useState([]);
-    // let [departureDate, setDepartureDate] = useState(new Date())
     let [departureDate, setDepartureDate] = useState([])
     let [departureTime, setDepartureTime] = useState([])
-    const [checked, setChecked] = useState(false);
     const dispatch = useDispatch();
 
     const getAllRoutes = async () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllBusRoutesFunction()
-            console.log('response get all route in trip form: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 const filterRoutes = response.data.data.filter(route => route.status);
@@ -54,7 +50,6 @@ const TripForm = ({
         try {
             dispatch(ShowLoading());
             const response = await getAllBusesFunction()
-            console.log('response get all buses: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 const filterBuses = response.data.data.filter(bus => bus.status);
@@ -68,21 +63,27 @@ const TripForm = ({
         }
     };
 
-
     const handleDateChange = (date) => {
-        setDepartureDate(date);
+
+        let formattedDates = date.map((dateObj) => {
+            if (dateObj instanceof DateObject) {
+                return dateObj.format("YYYY/MM/DD");
+            }
+        });
+
+        setDepartureDate(formattedDates);
     };
-    const handleTimeChange = (date) => {
-        const index = departureTime.length - 1; // truyền vào cuối mảng
+
+    const handleTimeChange = (date, index) => {
         const updatedDepartureTime = [...departureTime];
         updatedDepartureTime[index] = date;
         setDepartureTime(updatedDepartureTime);
     }
 
+    //add time and remove time
     const handleAddTime = () => {
         setDepartureTime([...departureTime, new Date()])
     }
-
     const handleRemoveTime = (index) => {
         const updatedDepartureTime = [...departureTime];
         updatedDepartureTime.splice(index, 1);
@@ -90,19 +91,17 @@ const TripForm = ({
     }
 
     const onFinish = async (values) => {
-        let formattedDates = departureDate.map((dateObj) => {
-            if (dateObj instanceof DateObject) {
-                return dateObj.format("YYYY/MM/DD");
-            }
-        });
+
+        //formatTimes
         let formattedTimes = departureTime.map((dateObj) => {
             if (dateObj instanceof DateObject) {
                 return dateObj.format("HH:mm");
             };
         })
+
         const data = {
-            ...values, departure_dates: [formattedDates],
-            departure_times: [formattedTimes]
+            ...values, departure_dates: departureDate,
+            departure_times: formattedTimes
         }
         console.log('data', data)
         // try {
@@ -187,13 +186,7 @@ const TripForm = ({
                         ]} hasFeedback>
                         <InputNumber className='seat-quantity' />
                     </Form.Item>
-                    <Form.Item style={{ "marginLeft": "150px" }}
-                        checked={checked} >
-                        <Checkbox onChange={(e) => setChecked(e.target.checked)}>
-                            Multiple Date Mode
-                        </Checkbox>
-                    </Form.Item>
-                    {checked ? <Form.Item label="Departure Date 2 : " name="departure_dates"
+                    <Form.Item label="Departure Date : "
                         rules={
                             [{
                                 required: true,
@@ -203,33 +196,15 @@ const TripForm = ({
                         <DatePicker
                             format="YYYY/MM/DD"
                             className="teal"
-                            render={<InputIcon />}
+                            render={<InputIcon style={{ color: "green" }} />}
                             onChange={handleDateChange}
+                            minDate={addDays(new Date(), 0)}
                             multiple
                             plugins={[
-                                <DatePanel markFocused />
+                                <DatePanel />,
                             ]}
                         />
                     </Form.Item>
-                        : <Form.Item label="Departure Date 1 : "
-                            rules={
-                                [{
-                                    required: true,
-                                    message: 'Please input !',
-                                },
-                                ]} hasFeedback>
-
-                            <DatePicker
-                                onChange={handleDateChange}
-                                className="teal"
-                                render={<InputIcon />}
-                                format="YYYY/MM/DD"
-                                animations={[
-                                    transition({ duration: 800, from: 35 })
-                                ]}
-                            />
-                        </Form.Item>}
-
                     {departureTime.map((time, index) => (
                         <Form.Item key={index} label={`Departure Time ${index + 1}: `}
                             rules={
@@ -245,17 +220,23 @@ const TripForm = ({
                                 onChange={(date) => handleTimeChange(date, index)}
                                 plugins={[<TimePicker />]}
                             />
-                            <Button onClick={handleRemoveTime}> Remove </Button>
+                            <div className="d-flex justify-content-end mt-1">
+                                <Button onClick={handleRemoveTime}
+                                    type="primary" danger ghost
+                                >
+                                    Remove
+                                </Button>
+                            </div>
                         </Form.Item>
                     ))}
-
-
-
-                    <Form.Item className='d-flex '>
-                        <Button className="primary-btn" onClick={handleAddTime} >
-                            Add time
+                    <Form.Item label="Departure Time">
+                        <Button onClick={handleAddTime}
+                            icon={<FieldTimeOutlined />}>
+                            Add Time
                         </Button>
-                        <Button className="primary-btn" htmlType='submit' >
+                    </Form.Item>
+                    <Form.Item className="d-flex justify-content-end">
+                        <Button className="primary-btn" htmlType='submit'>
                             Save
                         </Button>
                     </Form.Item>
