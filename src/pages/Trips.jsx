@@ -8,8 +8,10 @@ import "../resources/content.css"
 import 'antd/dist/reset.css'
 import { getAllTripsFunction, updateTripStatusFunction } from '../services/trip.service';
 import TripForm from '../components/form/TripForm';
-// import TripForm2 from './form';
+import TripForm2 from './form';
 import { EditTwoTone } from '@ant-design/icons';
+
+
 
 const Trips = () => {
     const dispatch = useDispatch();
@@ -137,7 +139,7 @@ const Trips = () => {
                     <br />
                     <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
                         pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
-                    {/* <TripForm2></TripForm2> */}
+                    <TripForm2></TripForm2>
                 </div>
 
             </div>

@@ -117,7 +117,7 @@ const StationForm = ({
                         }
                         ]} hasFeedback>
                         <Input placeholder='Enter Station Latitude ' />
-                    </Form.Item>s
+                    </Form.Item>
                     <Form.Item style={{ "marginLeft": "150px" }}
                         checked={checked} >
                         <Checkbox onChange={(e) => setChecked(e.target.checked)}>
