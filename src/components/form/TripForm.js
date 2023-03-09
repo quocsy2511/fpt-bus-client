@@ -104,30 +104,30 @@ const TripForm = ({
             departure_times: formattedTimes
         }
         console.log('data', data)
-        // try {
-        //     let response = null;
-        //     if (type === "new") {
-        //         response = await handleNewTripFunction(data);
-        //         console.log('response in bus form add : ', response)
-        //     } else {
-        //         response = await handleUpdateTripFunction(data, selectedTrip);
-        //     }
-        //     dispatch(HideLoading());
-        //     setShowTripForm(false);
-        //     if (response.data.status === "Success") {
-        //         message.success(response.data.message);
-        //         dispatch(HideLoading());
-        //     } else {
-        //         dispatch(HideLoading());
-        //         message.error(response.data.message)
-        //     }
-        //     getData();
-        //     setShowTripForm(false);
-        //     setSelectedTrip(null);
-        // } catch (error) {
-        //     console.log('error in form : ', error)
-        //     dispatch(HideLoading());
-        // }
+        try {
+            let response = null;
+            if (type === "new") {
+                response = await handleNewTripFunction(data);
+                console.log('response in bus form add : ', response)
+            } else {
+                response = await handleUpdateTripFunction(data, selectedTrip);
+            }
+            dispatch(HideLoading());
+            setShowTripForm(false);
+            if (response.data.status === "Success") {
+                message.success(response.data.message);
+                dispatch(HideLoading());
+            } else {
+                dispatch(HideLoading());
+                message.error(response.data.message)
+            }
+            getData();
+            setShowTripForm(false);
+            setSelectedTrip(null);
+        } catch (error) {
+            console.log('error in form : ', error)
+            dispatch(HideLoading());
+        }
     }
 
     useEffect(() => {
