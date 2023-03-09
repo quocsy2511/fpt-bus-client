@@ -142,7 +142,8 @@ const TripForm = ({
                 title={type === "new" ? "New Bus" : "Edit Bus"}
                 open={showTripForm}
                 onCancel={() => {
-                    setShowTripForm(false)
+                    setShowTripForm(false);
+                    setSelectedTrip(null)
                 }}
                 footer={false}
             >
@@ -183,6 +184,12 @@ const TripForm = ({
                             required: true,
                             message: 'Please input !',
                         },
+                        {
+                            type: "number",
+                            max: 45,
+                            min: 1,
+                            message: "Ticket quantity must be between 1 and 45!"
+                        }
                         ]} hasFeedback>
                         <InputNumber className='seat-quantity' />
                     </Form.Item>

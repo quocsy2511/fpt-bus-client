@@ -78,7 +78,7 @@ const BusForm = ({
                 title={type === "new" ? "New Bus" : "Edit Bus"}
                 open={showBusForm}
                 onCancel={() => {
-                    setShowBusForm(false)
+                    setShowBusForm(false); setSelectedBus(null);
                 }}
                 footer={false}
             >
@@ -109,7 +109,7 @@ const BusForm = ({
                         ]}
                         hasFeedback>
                         {/* <input type="text" placeholder='Enter Bus License Plate ' /> */}
-                        <Input placeholder='Enter Bus License Plate ' />
+                        <Input placeholder='Enter Bus License Plate '  />
                     </Form.Item>
                     <Form.Item label="Seat Quantity: " name="seat_quantity" rules={
                         [{

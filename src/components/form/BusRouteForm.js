@@ -4,7 +4,6 @@ import { Timeline, Select } from 'antd';
 import { SmileOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css'
 import "../../resources/form.css"
-import { getAllStationsFunction } from '../../services/station.service';
 import { handleNewBusRouteFunction, handleUpdateBusRouteFunction } from '../../services/busRoute.service';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
@@ -16,26 +15,15 @@ const RouteForm = ({
     setSelectedBusRoute,
     getData,
     selectedBusRoute,
+    stations
 }) => {
     const [startStation, setStartStation] = useState("Departure");
     const [endStation, setEndStation] = useState("Destination");
     const [middleStations, setMiddleStations] = useState([]);
     const [showMiddleStationSelect, setShowMiddleStationSelect] = useState(false);
-    const [stations, setStations] = useState([])
+    console.log("stations:",stations);
     const dispatch = useDispatch();
-    const getAllStations = async () => {
-        try {
-            const response = await getAllStationsFunction()
-            console.log('response station : ', response)
-            if (response.data.status === "Success") {
-                setStations(response.data.data);
-            } else {
-                message.error(response.data.message);
-            }
-        } catch (error) {
-            message.error(error.message);
-        }
-    };
+
 
     const handleStartStationChange = (value) => {
         console.log('value start :', value)
@@ -130,16 +118,13 @@ const RouteForm = ({
         }
     }
 
-    useEffect(() => {
-        getAllStations();
-    }, []);
 
     return (
         <div>
             <Modal width={800}
                 title={type === "new" ? "New BusRoute" : "Edit BusRoute"}
                 open={showBusRouteForm}
-                onCancel={() => { setShowBusRouteForm(false) }}
+                onCancel={() => { setShowBusRouteForm(false); setSelectedBusRoute(null); }}
                 footer={false}>
                 <Form onFinish={onFinish} initialValues={selectedBusRoute}>
                     <Form.Item className='d-flex justify-content-end'>
@@ -154,7 +139,7 @@ const RouteForm = ({
                             dot={(<EnvironmentOutlined style={{ fontSize: '80px', }} />)}
                             children={(
                                 <Form.Item label='Start' name="start" >
-                                    <Select value={startStation} style={{ width: 200, }}
+                                    <Select defaultValue={selectedBusRoute?.departure || stations[0]?.station_name} style={{ width: 200, }}
                                         onChange={handleStartStationChange}
                                         options={stations.map((station) => ({
                                             label: station.station_name,
@@ -185,7 +170,7 @@ const RouteForm = ({
                             dot={(<SmileOutlined style={{ fontSize: '80px', }} />)}
                             children={(
                                 <Form.Item label='End' name="end"  >
-                                    <Select value={endStation} style={{ width: 200, }}
+                                    <Select defaultValue={selectedBusRoute?.destination || stations[1]?.station_name} style={{ width: 200, }}
                                         onChange={handleEndStationChange}
                                         options={stations.map((station) => ({
                                             label: station.station_name,

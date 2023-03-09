@@ -62,7 +62,8 @@ const StationForm = ({
                 title={type === "new" ? "New Station" : "Edit Station"}
                 open={showStationForm}
                 onCancel={() => {
-                    setShowStationForm(false)
+                    setShowStationForm(false);
+                    setSelectedStation(null);
                 }}
                 footer={false}>
                 <Form layout='horizontal' className='new-user' labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} autoComplete="off"

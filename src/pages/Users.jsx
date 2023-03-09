@@ -205,12 +205,12 @@ const Users = () => {
                         <PageTitle title="List Users" />
                     </div>
                     <br />
-                    <Table rowKey="id" columns={columnsStudent} pagination={{ pageSize: 10, }} scroll={{ y: 290, }} dataSource={userFilter} />
+                    <Table rowKey="id" columns={columnsStudent} pagination={{ pageSize: 5, }}  dataSource={userFilter} />
                     <div className="d-flex justify-content-between">
                         <PageTitle title="List Drivers" />
                     </div>
                     <br />
-                    <Table rowKey="id" columns={columnsDriver} pagination={{ pageSize: 10, }} scroll={{ y: 200, }} dataSource={driverFilter} />
+                    <Table rowKey="id" columns={columnsDriver} pagination={{ pageSize: 5, }}  dataSource={driverFilter} />
                 </div>
             </div>
             {showUserForm && (
