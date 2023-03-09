@@ -2,10 +2,8 @@
   --primary: #058359;
   --secondary: #ac4425;
 }
-
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 * {
-  font-family: "Montserrat", sans-serif !important;
-  font-size: 16px;
+  font-size: 17px;
+  font-family: "Open Sans", sans-serif !important;
 }

@@ -11,13 +11,17 @@ import { message } from 'antd';
 
 
 const Login = () => {
-    const { user, googleSignIn, accessToken,logOut } = UserAuth();
+    const { user, googleSignIn, accessToken, logOut } = UserAuth();
     console.log("token_firebase: ", accessToken);
     console.log("user: ", user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
     const handleGoogleSignIn = async () => {
         dispatch(ShowLoading());
+        console.log("token tin login", accessToken);
+        console.log("user in login", user);
+
         try {
             //call function google signin in AuthContext
             await googleSignIn();
@@ -59,18 +63,24 @@ const Login = () => {
             } else {
                 dispatch(HideLoading());
                 console.log("Access token not found");
+                await logOut();
             }
         } catch (error) {
             dispatch(HideLoading());
             console.log("error", error);
+            await logOut();
         }
     };
+
+    useEffect(() => {
+        loginFunction();
+    }, [googleSignIn])
     return (
         <div className='login-body'>
 
             <div className="container" id="container">
                 <div className="form-container log-in-container">
-                    <form action="#">
+                    <form action="#" className='form-content'>
                         {user?.displayName ? (
                             <hr />
                         ) : (

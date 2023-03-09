@@ -34,7 +34,8 @@ function App() {
             <Route path='/users' element={
               <Protected>
                 <Users></Users>
-              </Protected>}>
+              </Protected>
+            }>
             </Route>
             <Route path='/buses' element={
               <Protected>
@@ -43,7 +44,9 @@ function App() {
             </Route>
             <Route path='/trips' element={
               <Protected>
-                <Trips></Trips>
+                <Trips>
+                </Trips>
+
               </Protected>}>
             </Route>
             <Route path='/stations' element={
@@ -60,6 +63,7 @@ function App() {
               <PublicRoute>
                 <Login></Login>
               </PublicRoute>
+              // <Login></Login>
             }>
             </Route>
           </Routes>

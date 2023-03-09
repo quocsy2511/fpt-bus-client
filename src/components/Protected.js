@@ -5,16 +5,11 @@ import jwt_decode from "jwt-decode";
 import { SetUser } from "../redux/usersSlice";
 import DefaultLayout from './DefaultLayout';
 
-
-
 const Protected = ({ children }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    // const { user, accessToken } = UserAuth();
-    // if (!user) {
-    //     return <Navigate to='/' />;
-    // }
-    const validateToken = async () => {
+
+    const validateToken = () => {
         try {
             const token = localStorage.getItem("access_token")
             const decodeUser = jwt_decode(token)
@@ -26,6 +21,7 @@ const Protected = ({ children }) => {
                 navigate("/login")
             }
         } catch (error) {
+            console.log(error);
             localStorage.removeItem("access_token")
             navigate("/login")
         }
@@ -38,6 +34,7 @@ const Protected = ({ children }) => {
             navigate("/login")
         }
     }, [])
+
     return (
         <div>
             <DefaultLayout>{children}</DefaultLayout>
