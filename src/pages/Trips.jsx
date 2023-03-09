@@ -33,22 +33,34 @@ const Trips = () => {
             render: (_, __, index) => index + 1, // Return the index of each row plus one
         },
         {
-            title: "Departure time",
+            title: "Departure Time",
             dataIndex: "departure_time",
+            width: 150,
         },
         {
-            title: "Bus name",
+            title: "Bus Name",
             dataIndex: "license_plate",
             render: (text) => <a>{text}</a>,
         },
         {
             title: "Route",
-            dataIndex: "id",
+            dataIndex: "",
+            key: "route",
+            width: 250,
+            render: (record) => {
+                const { departure, destination } = record;
+                return (
+                    <span>
+                        {departure} - {destination}
+                    </span>
+                );
+            },
         },
         {
-            title: "Ticket quantity",
+            title: "Ticket Quantity",
             dataIndex: "ticket_quantity",
             render: (text) => <a>{text}</a>,
+            width: 105,
         },
         {
             title: "Status",
