@@ -149,7 +149,7 @@ const Trips = () => {
                     </div>
                     <br />
                     <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
-                        pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
+                        pagination={{ pageSize: 7, }} />
                 </div>
 
             </div>
