@@ -18,7 +18,8 @@ const Stations = () => {
     const [showStationForm, setShowStationForm] = useState(false)
     const [selectedStation, setSelectedStation] = useState(null);
     const [query, setQuery] = useState("");
-    const [stationStatus, setStationStatus] = useState([]);
+    const [stationStatus, setStationStatus] = useState();
+
 
 
     const columns = [
@@ -104,7 +105,6 @@ const Stations = () => {
             const response = await getAllStationsFunction()
             console.log('response get all station : ', response.data.data)
 
-            console.log('response get all station status: ', response.data.data.status)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setStations(response.data.data);

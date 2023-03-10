@@ -90,7 +90,8 @@ const BusRoutes = () => {
             const response = await getAllStationsFunction()
             console.log('response station : ', response)
             if (response.data.status === "Success") {
-                setStations(response.data.data);
+                const filterStations = response.data.data.filter(station => station.status);
+                setStations(filterStations);
             } else {
                 message.error(response.data.message);
             }

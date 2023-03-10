@@ -4,7 +4,7 @@ import Modal from 'antd/es/modal/Modal';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import { handleNewStationFunction } from '../../services/station.service'
+import { getAllStationsFunction, handleNewStationFunction } from '../../services/station.service'
 import { handleUpdateStationFunction } from '../../services/station.service';
 import 'antd/dist/reset.css'
 import "../../resources/form.css"
@@ -17,11 +17,11 @@ const StationForm = ({
     selectedStation,
     setSelectedStation,
 }) => {
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState(selectedStation.status);
     const dispatch = useDispatch();
 
     const onFinish = async (values) => {
-        // console.log('values in station : ', values)
+        console.log('values in station : ', values)
         const data = {
             ...values,
             status: checked
@@ -120,8 +120,11 @@ const StationForm = ({
                         <Input placeholder='Enter Station Latitude ' />
                     </Form.Item>
                     <Form.Item style={{ "marginLeft": "150px" }}
-                        checked={checked} >
-                        <Checkbox onChange={(e) => setChecked(e.target.checked)}>
+                        checked={checked}
+                    >
+                        <Checkbox defaultChecked={selectedStation?.status}
+                            onChange={(e) => setChecked(!checked)}
+                        >
                             Active Station
                         </Checkbox>
                     </Form.Item>
