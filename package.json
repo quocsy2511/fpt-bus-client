@@ -52,7 +52,7 @@
     "webpack": "^4.44.2"
   },
   "resolutions": {
-    "firebase": "^9.17.1"
+    "firebase": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
