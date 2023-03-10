@@ -39,9 +39,9 @@ export const handleUpdateTripFunction = async (values, selectedBus) => {
         return error;
     }
 }
-export const updateTripStatusFunction = async (id) => {
+export const updateTripStatusFunction = async (id, values) => {
     try {
-        const response = await axiosInstance.put(serverEndpoint + `api/v1/trip/change-status/${id}`)
+        const response = await axiosInstance.put(serverEndpoint + `api/v1/trip/change-status/${id}`, { status: values })
         console.log('response update status bus in service :', response)
         return response
     } catch (error) {

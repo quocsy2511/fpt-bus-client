@@ -75,10 +75,10 @@ const Trips = () => {
             render: (data, record) => {
                 return (
                     <Space size="middle">
-                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
-                            onClick={() => handleStatus(record.id)} />)
+                        {data.status === 1 ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
+                            onClick={() => handleStatus(record.id, 3)} />)
                             : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
-                                onClick={() => handleStatus(record.id)} />)}
+                                onClick={() => handleStatus(record.id,1)} />)}
                     </Space>
                 )
             },
@@ -101,10 +101,10 @@ const Trips = () => {
 
     ];
 
-    const handleStatus = async (id) => {
+    const handleStatus = async (id,status) => {
         try {
             dispatch(ShowLoading());
-            const response = await updateTripStatusFunction(id);
+            const response = await updateTripStatusFunction(id,status);
             console.log('response update in bus: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
