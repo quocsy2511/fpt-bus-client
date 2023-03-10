@@ -51,6 +51,9 @@
     "web-vitals": "^2.1.4",
     "webpack": "^4.44.2"
   },
+  "resolutions": {
+    "firebase": "^9.17.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
