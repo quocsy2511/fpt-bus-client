@@ -114,7 +114,8 @@ const UserForm = ({
                 title={type === "new" ? "New Bus" : "Edit Bus"}
                 open={showUserForm}
                 onCancel={() => {
-                    setShowUserForm(false)
+                    setShowUserForm(false);
+                    setSelectedUser(null);
                 }}
                 footer={false}
             >

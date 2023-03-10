@@ -4,10 +4,6 @@
 .ant-form-item-label > label {
   font-weight: bold;
 }
-/* .custom-switch {
-  background-color: #f0f0f0;
-} */
-
 .custom-switch {
   background-color: #ef2222;
 }
@@ -62,5 +58,5 @@
 }
 svg {
   vertical-align: middle;
-  color: green;
+  /* color: green; */
 }

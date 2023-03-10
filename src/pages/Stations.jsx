@@ -131,7 +131,7 @@ const Stations = () => {
                         <PageTitle title="List Stations" />
                     </div>
                     <br />
-                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter} pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
+                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter} pagination={{ pageSize: 7, }} />
                 </div>
             </div>
             {showStationForm && (

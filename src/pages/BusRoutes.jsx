@@ -9,19 +9,25 @@ import "../resources/content.css"
 import 'antd/dist/reset.css'
 import { EditTwoTone } from '@ant-design/icons';
 import { getAllBusRoutesFunction, updateBusRouteStatusFunction } from '../services/busRoute.service';
-
+import { getAllStationsFunction } from '../services/station.service';
 const BusRoutes = () => {
     const dispatch = useDispatch();
     const [busRoutes, setBusRoutes] = useState([]);
     const [selectedBusRoute, setSelectedBusRoute] = useState(null);
     const [showBusRouteForm, setShowBusRouteForm] = useState(false)
-
+    const [stations, setStations] = useState([])
     const columns = [
         {
             title: "No",
             dataIndex: "",
             width: 50,
             render: (_, __, index) => index + 1, // Return the index of each row plus one
+        },
+        {
+            title: "Route Name",
+            dataIndex: "route_name",
+            width: 130,
+            render: (text) => <a>{text}</a>,
         },
         {
             title: "Departure",
@@ -79,7 +85,19 @@ const BusRoutes = () => {
             message.error(error.message);
         }
     }
-
+    const getAllStations = async () => {
+        try {
+            const response = await getAllStationsFunction()
+            console.log('response station : ', response)
+            if (response.data.status === "Success") {
+                setStations(response.data.data);
+            } else {
+                message.error(response.data.message);
+            }
+        } catch (error) {
+            message.error(error.message);
+        }
+    };
     const getAllBusRoutes = async () => {
         try {
             dispatch(ShowLoading());
@@ -99,12 +117,13 @@ const BusRoutes = () => {
 
     useEffect(() => {
         getAllBusRoutes();
+        getAllStations()
     }, []);
 
     return (
         <div>
             <div>
-                <Header showForm={showBusRouteForm} setShowForm={setShowBusRouteForm} />
+                <Header showForm={showBusRouteForm} setShowForm={setShowBusRouteForm} exclude={"routes"} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
@@ -112,7 +131,7 @@ const BusRoutes = () => {
                         <PageTitle title="List Bus Routes" />
                     </div>
                     <br />
-                    <Table rowKey="id" columns={columns} dataSource={busRoutes} />
+                    <Table rowKey="id" columns={columns} dataSource={busRoutes} pagination={{ pageSize: 7, }} />
                 </div>
             </div>
             {showBusRouteForm && (
@@ -123,6 +142,7 @@ const BusRoutes = () => {
                     setSelectedBusRoute={setSelectedBusRoute}
                     selectedBusRoute={selectedBusRoute}
                     getData={getAllBusRoutes}
+                    stations={stations}
                 />
             )}
         </div>

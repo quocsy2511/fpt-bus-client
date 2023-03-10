@@ -123,7 +123,7 @@ const Buses = () => {
     return (
         <div>
             <div>
-                <Header showForm={showBusForm} setShowForm={setShowBusForm} query={query} setQuery={setQuery} search={dataFilter} />
+                <Header showForm={showBusForm} setSelectedBus={selectedBus} setShowForm={setShowBusForm} query={query} setQuery={setQuery} search={dataFilter} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
@@ -132,7 +132,7 @@ const Buses = () => {
                     </div>
                     <br />
                     <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
-                        pagination={{ pageSize: 10, }} scroll={{ y: 240, }} />
+                        pagination={{ pageSize: 7, }} />
                 </div>
             </div>
             {showBusForm && (

@@ -139,10 +139,11 @@ const TripForm = ({
         <div>
             <Modal
                 width={800}
-                title={type === "new" ? "New Bus" : "Edit Bus"}
+                title={type === "new" ? "New Trip" : "Edit Trip"}
                 open={showTripForm}
                 onCancel={() => {
-                    setShowTripForm(false)
+                    setShowTripForm(false);
+                    setSelectedTrip(null)
                 }}
                 footer={false}
             >
@@ -169,6 +170,7 @@ const TripForm = ({
                             required: true,
                             message: 'Please input !',
                         },
+
                         ]} hasFeedback>
                         <Select className='driver'
                             placeholder="choose bus ... "
@@ -185,9 +187,10 @@ const TripForm = ({
                         },
                         {
                             type: "number",
-                            min: 5,
-                            message: 'Please input  not less than 5 !',
-                        },
+                            max: 45,
+                            min: 1,
+                            message: "Ticket quantity must be between 1 and 45!"
+                        }
                         ]} hasFeedback>
                         <InputNumber className='seat-quantity' />
                     </Form.Item>
