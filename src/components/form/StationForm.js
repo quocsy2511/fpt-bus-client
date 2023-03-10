@@ -17,7 +17,7 @@ const StationForm = ({
     selectedStation,
     setSelectedStation,
 }) => {
-    const [checked, setChecked] = useState(selectedStation.status);
+    const [checked, setChecked] = useState(selectedStation?.status);
     const dispatch = useDispatch();
 
     const onFinish = async (values) => {
@@ -122,7 +122,7 @@ const StationForm = ({
                     <Form.Item style={{ "marginLeft": "150px" }}
                         checked={checked}
                     >
-                        <Checkbox defaultChecked={selectedStation?.status}
+                        <Checkbox defaultChecked={checked}
                             onChange={(e) => setChecked(!checked)}
                         >
                             Active Station
