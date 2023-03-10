@@ -183,6 +183,11 @@ const TripForm = ({
                             required: true,
                             message: 'Please input !',
                         },
+                        {
+                            type: "number",
+                            min: 5,
+                            message: 'Please input  not less than 5 !',
+                        },
                         ]} hasFeedback>
                         <InputNumber className='seat-quantity' />
                     </Form.Item>
