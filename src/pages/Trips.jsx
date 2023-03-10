@@ -33,6 +33,11 @@ const Trips = () => {
             render: (_, __, index) => index + 1, // Return the index of each row plus one
         },
         {
+            title: "Departure Date",
+            dataIndex: "departure_date",
+            width: 150,
+        },
+        {
             title: "Departure Time",
             dataIndex: "departure_time",
             width: 150,
@@ -40,32 +45,32 @@ const Trips = () => {
         {
             title: "Bus Name",
             dataIndex: "license_plate",
+            width: 130,
             render: (text) => <a>{text}</a>,
         },
         {
             title: "Route",
             dataIndex: "",
             key: "route",
-            width: 250,
+            width: 210,
             render: (record) => {
                 const { departure, destination } = record;
                 return (
-                    <span>
+                    <a>
                         {departure} - {destination}
-                    </span>
+                    </a>
                 );
             },
         },
         {
             title: "Ticket Quantity",
             dataIndex: "ticket_quantity",
-            render: (text) => <a>{text}</a>,
             width: 105,
         },
         {
             title: "Status",
             dataIndex: "",
-            width: 150,
+            width: 110,
             key: "status",
             render: (data, record) => {
                 return (
@@ -81,6 +86,7 @@ const Trips = () => {
         {
             title: "Action",
             dataIndex: "action",
+            width: 90,
             render: (action, record) => (
                 <Space size="large" >
                     <EditTwoTone twoToneColor='orange'
