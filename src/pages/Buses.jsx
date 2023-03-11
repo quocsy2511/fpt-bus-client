@@ -18,6 +18,7 @@ const Buses = () => {
     const [showBusForm, setShowBusForm] = useState(false)
     const [selectedBus, setSelectedBus] = useState(null);
     const [query, setQuery] = useState("");
+    const [status, setStatus] = useState(null);
 
     const getFilterItem = (data) => {
         return data.filter((item) => item.license_plate.toLowerCase().includes(query.toLowerCase())
@@ -54,6 +55,8 @@ const Buses = () => {
             width: 150,
             key: "status",
             render: (data, record) => {
+                console.log(data);
+
                 return (
                     <Space size="middle">
                         <Switch checked={data?.status}
@@ -83,14 +86,16 @@ const Buses = () => {
         try {
             dispatch(ShowLoading());
             const response = await updateBusStatusFunction(id);
-            // console.log('response update in bus: ', response)
+            console.log('response update in bus: ', response)
             dispatch(HideLoading());
+
             if (response?.data?.status === "Success") {
+
                 message.success(response.data.message);
                 getAllBuses()
                 dispatch(HideLoading());
             } else {
-                message.error(response.message);
+                message.error(response.response.data.message);
                 dispatch(HideLoading());
             }
         } catch (error) {

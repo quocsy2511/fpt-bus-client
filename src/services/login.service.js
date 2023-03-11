@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "../helpers/axiosInstance";
 import { serverEndpoint } from '../utilities/serverEndpoint'
 
 
@@ -6,7 +7,7 @@ export const loginFunction = async (accessToken) => {
 
     try {
         //call api
-        const response = await axios.post(
+        const response = await axiosInstance.post(
             serverEndpoint + "api/v1/auth/sign-in",
             { accessToken },
         );
