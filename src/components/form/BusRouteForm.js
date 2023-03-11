@@ -23,7 +23,7 @@ const RouteForm = ({
     const [showMiddleStationSelect, setShowMiddleStationSelect] = useState(false);
     const dispatch = useDispatch();
     const [stationsBetween, setStationsBetween] = useState(selectedBusRoute?.stations)
-    console.log('stationsBetween ne : ', stationsBetween)
+    console.log('stationsBetween  : ', stationsBetween)
 
 
     const handleStartStationChange = (value) => {

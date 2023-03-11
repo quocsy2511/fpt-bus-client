@@ -75,10 +75,13 @@ const Trips = () => {
             render: (data, record) => {
                 return (
                     <Space size="middle">
-                        {data === 3 ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
+                        {/* {data === 3 ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
                             onClick={() => handleStatus(record.id, record.status)} />)
                             : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
-                                onClick={() => handleStatus(record.id, record.status)} />)}
+                                onClick={() => handleStatus(record.id, record.status)} />)} */}
+                        <Switch checked={data !== 3}
+                            className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
+                            onClick={() => handleStatus(record.id, record.status)} />
                     </Space>
                 )
             },
@@ -107,13 +110,14 @@ const Trips = () => {
             let response = null;
             if (status === 3) {
                 response = await updateTripStatusActiveFunction(id);
-                console.log('response update Active in bus: ', response?.data?.status)
+                console.log('response update Active in bus: ', response.data.status)
             } else {
                 response = await updateTripStatusDeActiveFunction(id);
-                console.log('response update DeActive in bus: ', response?.data?.status)
+                console.log('response update DeActive in bus: ', response.data.status)
             }
             dispatch(HideLoading());
             if (response.data.status === "Success") {
+                getAllTrips();
                 message.success(response.data.message);
                 dispatch(HideLoading());
             } else {

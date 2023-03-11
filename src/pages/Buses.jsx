@@ -56,10 +56,9 @@ const Buses = () => {
             render: (data, record) => {
                 return (
                     <Space size="middle">
-                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
-                            onClick={() => handleStatus(record.id)} />)
-                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
-                                onClick={() => handleStatus(record.id)} />)}
+                        <Switch checked={data?.status}
+                            className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
+                            onClick={() => handleStatus(record.id)} />
                     </Space>
                 )
             },
@@ -86,8 +85,9 @@ const Buses = () => {
             const response = await updateBusStatusFunction(id);
             // console.log('response update in bus: ', response)
             dispatch(HideLoading());
-            if (response.data.status === "Success") {
+            if (response?.data?.status === "Success") {
                 message.success(response.data.message);
+                getAllBuses()
                 dispatch(HideLoading());
             } else {
                 message.error(response.message);
@@ -95,7 +95,11 @@ const Buses = () => {
             }
         } catch (error) {
             dispatch(HideLoading());
-            message.error(error.message);
+            if (error.message) {
+                message.error(error.message);
+            } else {
+                message.error("Something went wrong!");
+            }
         }
     }
 

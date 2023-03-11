@@ -41,12 +41,16 @@ export const handleUpdateBusFunction = async (values, selectedBus) => {
 }
 export const updateBusStatusFunction = async (id) => {
     try {
-
         const response = await axiosInstance.put(serverEndpoint + `api/v1/bus/change-status/${id}`)
-        // console.log('response update status bus in service :', response)
+        console.log('response update status bus in service :', response)
         return response
     } catch (error) {
         console.log('error in update status buses service: ', error);
-        return error;
+        //API trả về một thông báo lỗi từ máy chủ
+        if (error?.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else {
+            throw error;
+        }
     }
 }
