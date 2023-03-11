@@ -6,7 +6,7 @@ import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { getAllTripsFunction, updateTripStatusFunction } from '../services/trip.service';
+import { getAllTripsFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction, updateTripStatusFunction } from '../services/trip.service';
 import TripForm from '../components/form/TripForm';
 import { EditTwoTone } from '@ant-design/icons';
 
@@ -69,16 +69,16 @@ const Trips = () => {
         },
         {
             title: "Status",
-            dataIndex: "",
+            dataIndex: "status",
             width: 110,
             key: "status",
             render: (data, record) => {
                 return (
                     <Space size="middle">
-                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
-                            onClick={() => handleStatus(record.id)} />)
-                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
-                                onClick={() => handleStatus(record.id)} />)}
+                        {data === 3 ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
+                            onClick={() => handleStatus(record.id, record.status)} />)
+                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
+                                onClick={() => handleStatus(record.id, record.status)} />)}
                     </Space>
                 )
             },
@@ -98,14 +98,20 @@ const Trips = () => {
                 </Space>
             ),
         },
-
     ];
 
-    const handleStatus = async (id) => {
+    const handleStatus = async (id, status) => {
+        console.log('status in handle Status : ', status)
         try {
             dispatch(ShowLoading());
-            const response = await updateTripStatusFunction(id);
-            console.log('response update in bus: ', response)
+            let response = null;
+            if (status === 3) {
+                response = await updateTripStatusActiveFunction(id);
+                console.log('response update Active in bus: ', response?.data?.status)
+            } else {
+                response = await updateTripStatusDeActiveFunction(id);
+                console.log('response update DeActive in bus: ', response?.data?.status)
+            }
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 message.success(response.data.message);

@@ -39,9 +39,19 @@ export const handleUpdateTripFunction = async (values, selectedBus) => {
         return error;
     }
 }
-export const updateTripStatusFunction = async (id) => {
+export const updateTripStatusActiveFunction = async (id) => {
     try {
-        const response = await axiosInstance.put(serverEndpoint + `api/v1/trip/change-status/${id}`)
+        const response = await axiosInstance.put(serverEndpoint + `api/v1/trip/change-status/${id}`, { "status": 1 })
+        console.log('response update status bus in service :', response)
+        return response
+    } catch (error) {
+        console.log('error in update status buses service: ', error);
+        return error;
+    }
+}
+export const updateTripStatusDeActiveFunction = async (id, status) => {
+    try {
+        const response = await axiosInstance.put(serverEndpoint + `api/v1/trip/change-status/${id}`, { "status": 3 })
         console.log('response update status bus in service :', response)
         return response
     } catch (error) {
