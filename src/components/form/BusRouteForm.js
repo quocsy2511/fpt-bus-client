@@ -156,7 +156,6 @@ const RouteForm = ({
     }, [selectedBusRoute, stations])
 
     useEffect(() => {
-
         // truyền id từ trong mảng station ơ giữa vô stationBetween 
         if (selectedBusRoute?.stations && selectedBusRoute.stations.length > 0) {
             const stationBetweenIDs = selectedBusRoute?.stations.map((item) => item.id)
