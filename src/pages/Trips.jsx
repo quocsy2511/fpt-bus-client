@@ -99,6 +99,7 @@ const Trips = () => {
         },
     ];
 
+
     const handleStatus = async (id, status) => {
         console.log('status in handle Status : ', status)
         try {
