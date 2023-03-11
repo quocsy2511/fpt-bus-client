@@ -89,7 +89,6 @@ const RouteForm = ({
         }
     };
 
-
     const handleStationsBetweenChange = (index, value) => {
         if (value === startStation || value === endStation) {
             message.error('The station in the middle cannot match the selected station! please choose again');
@@ -110,12 +109,10 @@ const RouteForm = ({
     };
 
     const onFinish = async (values) => {
-
         const dataMiddleStation = { ...values, stations: middleStations }
-        console.log('dataMiddleStation', dataMiddleStation)
-
+        // console.log('dataMiddleStation', dataMiddleStation)
         const dataStationsBetween = { ...values, stations: stationsBetween }
-        console.log('dataStationsBetween : ', dataStationsBetween)
+        // console.log('dataStationsBetween : ', dataStationsBetween)
         try {
             dispatch(ShowLoading())
             let response = null;

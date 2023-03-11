@@ -75,10 +75,6 @@ const Trips = () => {
             render: (data, record) => {
                 return (
                     <Space size="middle">
-                        {/* {data === 3 ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
-                            onClick={() => handleStatus(record.id, record.status)} />)
-                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
-                                onClick={() => handleStatus(record.id, record.status)} />)} */}
                         <Switch checked={data !== 3}
                             className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
                             onClick={() => handleStatus(record.id, record.status)} />
