@@ -45,16 +45,14 @@ const Stations = () => {
         },
         {
             title: "Status",
-            dataIndex: "",
             width: 150,
             key: "status",
             render: (data, record) => {
                 return (
                     <Space size="middle">
-                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
-                            onClick={() => handleStatus(record.id)} />)
-                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
-                                onClick={() => handleStatus(record.id)} />)}
+                        <Switch checked={data?.status}
+                            className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
+                            onClick={() => handleStatus(record.id)} />
                     </Space>
                 )
             },
@@ -88,6 +86,7 @@ const Stations = () => {
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 message.success(response.data.message);
+                getAllStations();
                 dispatch(HideLoading());
             } else {
                 message.error(response.message);
@@ -117,6 +116,7 @@ const Stations = () => {
             message.error(error.message);
         }
     };
+
     useEffect(() => {
         getAllStations();
     }, []);

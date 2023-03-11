@@ -17,7 +17,8 @@ const StationForm = ({
     selectedStation,
     setSelectedStation,
 }) => {
-    const [checked, setChecked] = useState(selectedStation.status);
+    const [checked, setChecked] = useState(false);
+    // console.log('checked : ', checked)
     const dispatch = useDispatch();
 
     const onFinish = async (values) => {
@@ -54,6 +55,10 @@ const StationForm = ({
             dispatch(HideLoading());
         }
     }
+
+    useEffect(() => {
+        setChecked(selectedStation?.status)
+    }, [selectedStation?.status])
 
     return (
         <div>
@@ -119,12 +124,10 @@ const StationForm = ({
                         ]} hasFeedback>
                         <Input placeholder='Enter Station Latitude ' />
                     </Form.Item>
-                    <Form.Item style={{ "marginLeft": "150px" }}
-                        checked={checked}
-                    >
-                        <Checkbox defaultChecked={selectedStation?.status}
-                            onChange={(e) => setChecked(!checked)}
-                        >
+                    <Form.Item style={{ "marginLeft": "150px" }}>
+                        <Checkbox
+                            checked={checked}
+                            onChange={(e) => setChecked(!checked)}>
                             Active Station
                         </Checkbox>
                     </Form.Item>
