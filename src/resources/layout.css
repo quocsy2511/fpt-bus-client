@@ -35,7 +35,7 @@
   justify-content: start;
   padding: 10px 30px;
   flex-direction: column;
-  height: 127vh;
+  height: 101vh;
 }
 .content {
   background-color: whitesmoke;
@@ -60,7 +60,7 @@
   font-size: 16px;
 }
 .menu {
-  margin-top: 120px;
+  margin-top: 67px;
 }
 .menu-item {
   display: flex;
@@ -101,6 +101,7 @@
   width: 50px;
   padding-left: 30px;
 }
-/* ::-webkit-scrollbar {
-  display: none;
-} */
+
+.ant-input-group-addon:first-child {
+  background-color: #1677ff;
+}

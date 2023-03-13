@@ -33,6 +33,7 @@ const Stations = () => {
             title: "Station",
             dataIndex: "station_name",
             render: (text) => <a>{text}</a>,
+            ellipsis: true,
             width: 350,
         },
         {
@@ -45,7 +46,7 @@ const Stations = () => {
         },
         {
             title: "Status",
-            width: 150,
+            width: 180,
             key: "status",
             render: (data, record) => {
                 return (
@@ -123,12 +124,15 @@ const Stations = () => {
     return (
         <div>
             <div>
-                <Header showForm={showStationForm} setShowForm={setShowStationForm} query={query} setQuery={setQuery} search={dataFilter} />
+                <Header query={query} setQuery={setQuery} search={dataFilter} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
                     <div className="d-flex justify-content-between ">
                         <PageTitle title="List Stations" />
+                        <div>
+                            <button className='add-button' onClick={() => setShowStationForm(true)}> New </button>
+                        </div>
                     </div>
                     <br />
                     <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter} pagination={{ pageSize: 7, }} />

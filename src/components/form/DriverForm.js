@@ -8,12 +8,12 @@ import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
 import { handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
 
-const UserForm = ({
-    showUserForm,
-    setShowUserForm,
-    getDataStudents,
-    selectedUser,
-    setSelectedUser,
+const DriverForm = ({
+    showDriverForm,
+    setShowDriverForm,
+    getDataDrivers,
+    selectedDriver,
+    setSelectedDriver,
     type = 'new',
 }) => {
     const dispatch = useDispatch();
@@ -40,8 +40,7 @@ const UserForm = ({
 
     //create User
     const onFinish = async (values) => {
-        const data = { ...values, profile_img: fileList[0]?.name || "", role_id: 1 }
-        console.log('data', data)
+        const data = { ...values, profile_img: fileList[0]?.name || "", role_id: 3 }
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -49,11 +48,10 @@ const UserForm = ({
                 response = await handleNewUserFunction(data);
                 console.log('response in user form add : ', response)
             } else {
-                response = await handleUpdateUserFunction(data, selectedUser);
-                console.log('response', response)
+                response = await handleUpdateUserFunction(data, selectedDriver);
             }
             dispatch(HideLoading());
-            setShowUserForm(false);
+            setShowDriverForm(false);
             if (response.data.status === "Success") {
                 message.success(response.data.message);
                 dispatch(HideLoading());
@@ -61,70 +59,31 @@ const UserForm = ({
                 dispatch(HideLoading());
                 message.error(response.data.message)
             }
-            getDataStudents();
-            setShowUserForm(false);
-            setSelectedUser(null);
+            getDataDrivers();
+            setShowDriverForm(false);
+            setSelectedDriver(null);
         } catch (error) {
             console.log('error in form: ', error)
         }
     }
-
-    //validation form
-    const validateStudentId = (_, value) => {
-        const regex = /^[A-Z]{2}\d{6}$/;
-        if (!regex.test(value)) {
-            return Promise.reject('Please enter a valid Student ID: 2 capital letters and 6 digits Example : SE123456');
-        }
-        const prefix = value.slice(0, 2);
-        const validPrefixes = ['SS', 'SA', 'SE'];
-        if (!validPrefixes.includes(prefix)) {
-            return Promise.reject('Please enter a valid Student ID prefix: SS, SA, or SE');
-        }
-        return Promise.resolve();
-    };
-
     return (
         <div>
             <Modal
                 width={800}
-                title={type === "new" ? "New User" : "Edit User"}
-                open={showUserForm}
+                title={type === "new" ? "New Driver" : "Edit Driver"}
+                open={showDriverForm}
                 onCancel={() => {
-                    setShowUserForm(false);
-                    setSelectedUser(null);
+                    setShowDriverForm(false);
+                    setSelectedDriver(null);
                 }}
                 footer={false}
             >
                 <Form layout='horizontal' className='new-user' labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} autoComplete="off"
-                    onFinish={onFinish} initialValues={selectedUser} >
-                    <Form.Item label=" Student ID :" name="student_id" rules={
+                    onFinish={onFinish} initialValues={selectedDriver} >
+                    <Form.Item label=" Driver Name : " name="fullname" rules={
                         [{
                             required: true,
-                            message: 'Please input License Plate! Example : SE123456',
-                        },
-                        {
-                            whitespace: true,
-                            message: 'Please type License Plate!'
-                        },
-                        {
-                            validator: validateStudentId,
-                        },
-                        {
-                            min: 8,
-                            message: "Enter at least 8 characters Example : SE151029",
-                        },
-                        {
-                            max: 8,
-                            message: "Enter at max 8 characters "
-                        }
-                        ]}
-                        hasFeedback>
-                        <Input placeholder='Enter your Student ID ' />
-                    </Form.Item>
-                    <Form.Item label=" User Name : " name="fullname" rules={
-                        [{
-                            required: true,
-                            message: 'Please input your Name  Example : Nguyen Thanh Tung',
+                            message: 'Please input driver Name  Example : Nguyen Thanh Tung',
                         },
                         {
                             min: 3,
@@ -136,12 +95,12 @@ const UserForm = ({
                         }
                         ]}
                         hasFeedback>
-                        <Input placeholder='Enter your Name ' />
+                        <Input placeholder='Enter driver Name ' />
                     </Form.Item>
                     <Form.Item label="Email Address : " name="email" rules={
                         [{
                             required: true,
-                            message: 'Please input your Email  Example : Phuongntu@fpt.edu.vn',
+                            message: 'Please input driver Email  Example : Phuongntu@fpt.edu.vn',
                         },
                         {
                             pattern: /^.+@fpt\.edu\.vn$/,
@@ -149,7 +108,7 @@ const UserForm = ({
                         },
                         ]}
                         hasFeedback>
-                        <Input placeholder='Enter your Email ' />
+                        <Input placeholder='Enter driver Email ' />
                     </Form.Item>
                     <Form.Item label=" Phone Number : " name="phone_number" rules={
                         [{
@@ -162,7 +121,7 @@ const UserForm = ({
                         },
                         ]}
                         hasFeedback>
-                        <Input placeholder="Enter your phone number" />
+                        <Input placeholder="Enter driver phone number" />
                     </Form.Item>
                     <Form.Item label="Profile Image : " name="profile_img"
                         hasFeedback>
@@ -189,4 +148,4 @@ const UserForm = ({
     );
 };
 
-export default UserForm;
+export default DriverForm;

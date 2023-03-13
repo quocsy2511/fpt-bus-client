@@ -20,7 +20,7 @@ const BusRoutes = () => {
         {
             title: "No",
             dataIndex: "",
-            width: 50,
+            width: 70,
             render: (_, __, index) => index + 1, // Return the index of each row plus one
         },
         {
@@ -32,14 +32,18 @@ const BusRoutes = () => {
         {
             title: "Departure",
             dataIndex: "departure",
+            width: 280,
+            ellipsis: true,
         },
         {
             title: "Destination ",
             dataIndex: "destination",
+            width: 280,
+            ellipsis: true,
         },
         {
             title: "Status",
-            width: 150,
+            width: 180,
             key: "status",
             render: (data, record) => {
                 return (
@@ -119,16 +123,15 @@ const BusRoutes = () => {
         getAllBusRoutes();
         getAllStations()
     }, []);
-
     return (
         <div>
-            <div>
-                <Header showForm={showBusRouteForm} setShowForm={setShowBusRouteForm} exclude={"routes"} />
-            </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
                     <div className="d-flex justify-content-between">
                         <PageTitle title="List Bus Routes" />
+                        <div>
+                            <button className='add-button' onClick={() => setShowBusRouteForm(true)}> New </button>
+                        </div>
                     </div>
                     <br />
                     <Table rowKey="id" columns={columns} dataSource={busRoutes} pagination={{ pageSize: 7, }} />

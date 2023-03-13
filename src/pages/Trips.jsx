@@ -34,13 +34,20 @@ const Trips = () => {
         },
         {
             title: "Departure Date",
-            dataIndex: "departure_date",
             width: 150,
+            render: (record) => {
+                const { departure_date, departure_time } = record;
+                return (
+                    <a>
+                        {departure_date} - {departure_time}
+                    </a>
+                )
+            }
         },
         {
-            title: "Departure Time",
-            dataIndex: "departure_time",
-            width: 150,
+            title: "Driver",
+            dataIndex: "driver_name",
+            width: 200,
         },
         {
             title: "Bus Name",
@@ -50,7 +57,6 @@ const Trips = () => {
         },
         {
             title: "Route",
-            dataIndex: "",
             key: "route",
             width: 210,
             render: (record) => {
@@ -148,21 +154,22 @@ const Trips = () => {
     useEffect(() => {
         getAllTrips();
     }, []);
-
-
     return (
         <div>
             <div>
-                <Header showForm={showTripForm} setShowForm={setShowTripForm} query={query} setQuery={setQuery} search={dataFilter} />
+                <Header query={query} setQuery={setQuery} search={dataFilter} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
                     <div className="d-flex justify-content-between ">
                         <PageTitle title="List Trips" />
+                        <div>
+                            <button className='add-button' onClick={() => setShowTripForm(true)}> New </button>
+                        </div>
                     </div>
                     <br />
                     <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
-                        pagination={{ pageSize: 7, }} />
+                        pagination={{ pageSize: 5 }} />
                 </div>
 
             </div>

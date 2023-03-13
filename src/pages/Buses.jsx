@@ -29,33 +29,33 @@ const Buses = () => {
         {
             title: "No",
             dataIndex: "",
-            width: 70,
+            width: 100,
             render: (_, __, index) => index + 1, // Return the index of each row plus one
         },
-        {
-            title: "Driver",
-            dataIndex: "driver_name",
-            render: (text) => <a>{text}</a>,
-        },
+        // {
+        //     title: "Driver",
+        //     dataIndex: "driver_name",
+        //     render: (text) => <a>{text}</a>,
+        // },
         {
             title: "License Plate",
             dataIndex: "license_plate",
-            key: "license_plate"
+            key: "license_plate",
+            render: (text) => <a>{text}</a>
         },
         {
             title: "Quantity",
             dataIndex: "seat_quantity",
             key: "seat_quantity",
-            width: 120,
+            width: 250,
         },
         {
             title: "Status",
             dataIndex: "",
-            width: 150,
+            width: 200,
             key: "status",
             render: (data, record) => {
                 console.log(data);
-
                 return (
                     <Space size="middle">
                         <Switch checked={data?.status}
@@ -131,12 +131,15 @@ const Buses = () => {
     return (
         <div>
             <div>
-                <Header showForm={showBusForm} setSelectedBus={selectedBus} setShowForm={setShowBusForm} query={query} setQuery={setQuery} search={dataFilter} />
+                <Header query={query} setQuery={setQuery} search={dataFilter} />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
                     <div className="d-flex justify-content-between ">
                         <PageTitle title="List Buses" />
+                        <div>
+                            <button className='add-button' onClick={() => setShowBusForm(true)}> New </button>
+                        </div>
                     </div>
                     <br />
                     <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
