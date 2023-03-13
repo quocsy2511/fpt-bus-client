@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Form, Input, InputNumber, message, Modal, Row, Select } from "antd";
+import { Button, Form, InputNumber, message, Modal, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllBusesFunction } from "../../services/bus.service";
@@ -12,7 +12,7 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
 import InputIcon from "react-multi-date-picker/components/input_icon";
 import "react-multi-date-picker/styles/colors/teal.css"
-import { getAllTripsFunction, handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
+import { handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
 import { FieldTimeOutlined } from "@ant-design/icons";
 
 const TripForm = ({
@@ -67,7 +67,7 @@ const TripForm = ({
 
         let formattedDates = date.map((dateObj) => {
             if (dateObj instanceof DateObject) {
-                return dateObj.format("YYYY/MM/DD");
+                return dateObj.format("YYYY-MM-DD");
             }
         });
 
@@ -127,6 +127,11 @@ const TripForm = ({
         } catch (error) {
             console.log('error in form : ', error)
             dispatch(HideLoading());
+            if (error.message) {
+                message.error(error.message);
+            } else {
+                message.error("Something went wrong!");
+            }
         }
     }
 
@@ -202,7 +207,7 @@ const TripForm = ({
                             },
                             ]} hasFeedback>
                         <DatePicker
-                            format="YYYY/MM/DD"
+                            format="YYYY-MM-DD"
                             className="teal"
                             render={<InputIcon style={{ color: "green" }} />}
                             onChange={handleDateChange}

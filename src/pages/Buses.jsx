@@ -18,7 +18,6 @@ const Buses = () => {
     const [showBusForm, setShowBusForm] = useState(false)
     const [selectedBus, setSelectedBus] = useState(null);
     const [query, setQuery] = useState("");
-    const [status, setStatus] = useState(null);
 
     const getFilterItem = (data) => {
         return data.filter((item) => item.license_plate.toLowerCase().includes(query.toLowerCase())

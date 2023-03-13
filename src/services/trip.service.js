@@ -26,7 +26,12 @@ export const handleNewTripFunction = async (values) => {
         return response
     } catch (error) {
         console.log('error in service : ', error)
-        return error;
+        //API trả về một thông báo lỗi từ máy chủ
+        if (error?.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else {
+            throw error;
+        }
     }
 }
 export const handleUpdateTripFunction = async (values, selectedBus) => {
