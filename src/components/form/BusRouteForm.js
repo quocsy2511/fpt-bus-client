@@ -23,50 +23,50 @@ const RouteForm = ({
     const [endStation, setEndStation] = useState("Destination");
     const [middleStations, setMiddleStations] = useState([]);
     const [showMiddleStationSelect, setShowMiddleStationSelect] = useState(false);
-    // console.log('stations', stations)
     const [stationsBetween, setStationsBetween] = useState([])
-    console.log('stationsBetween  : ', stationsBetween)
-
+    const [errorDuplication, setErrorDuplication] = useState(false)
 
     const handleStartStationChange = (value) => {
         console.log('value start :', value)
+        //check điều kiện với end
         if (value === endStation) {
+            setErrorDuplication(true)
             message.error('The starting station must not be the same as the ending station please choose again !');
-            setStartStation("")
-        }
-        else if (middleStations.includes(value)) {
-            message.error('The starting station must not be the same as the middle station please choose again !');
-            setStartStation("")
+            setStartStation("Departure")
         } else {
-            setStartStation(value);
+            //check điều kiện với mid
+            if (middleStations.includes(value)) {
+                setErrorDuplication(true)
+                message.error('The starting station must not be the same as the middle station please choose again !');
+                setStartStation("Departure")
+            } else {
+                setErrorDuplication(false)
+                setStartStation(value)
+            }
         }
-
         if (value !== "Departure" && value !== endStation && value !== "Destination") {
             setShowMiddleStationSelect(true);
-        }
-        if (value === endStation) {
-            setEndStation("Destination");
         }
     };
 
     const handleEndStationChange = (value) => {
         console.log('value end', value)
         if (value === startStation) {
+            setErrorDuplication(true)
             message.error('The ending station must not be the same as the starting station! please choose again ');
-            setEndStation("");
-        } else if (middleStations.includes(value)) {
-            message.error('The end station must not coincide with the middle station! Please choose again');
-            setEndStation("");
+            setEndStation("Destination");
         } else {
-            setEndStation(value);
+            if (middleStations.includes(value)) {
+                setErrorDuplication(true)
+                message.error('The end station must not coincide with the middle station! Please choose again');
+                setEndStation("Destination");
+            } else {
+                setErrorDuplication(false)
+                setEndStation(value);
+            }
         }
-
         if (value !== "Destination" && value !== startStation && value !== "Departure") {
             setShowMiddleStationSelect(true);
-        }
-
-        if (value === startStation) {
-            setStartStation("Departure");
         }
     };
 
@@ -109,6 +109,11 @@ const RouteForm = ({
     };
 
     const onFinish = async (values) => {
+        if (errorDuplication) {
+            message.error("Can't create route when there are 2 same stations")
+            return;
+        }
+        console.log('values', values)
         const dataMiddleStation = { ...values, stations: middleStations }
         // console.log('dataMiddleStation', dataMiddleStation)
         const dataStationsBetween = { ...values, stations: stationsBetween }
@@ -206,7 +211,7 @@ const RouteForm = ({
                                     initialValue={initialStationStart || startStation}
                                 >
                                     <Select
-                                        value={startStation}
+                                        // value={startStation}
                                         style={{ width: 200, }}
                                         onChange={handleStartStationChange}
                                         options={stations.map((station) => ({

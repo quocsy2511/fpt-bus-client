@@ -1,4 +1,4 @@
-import { Divider, message, Space, Switch, Table } from 'antd';
+import { Divider, message, Space, Switch, DatePicker, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Header from '../components/Header';
@@ -6,9 +6,10 @@ import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { getAllTripsFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction, updateTripStatusFunction } from '../services/trip.service';
+import { getAllTripsFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction } from '../services/trip.service';
 import TripForm from '../components/form/TripForm';
 import { EditTwoTone } from '@ant-design/icons';
+
 
 
 
@@ -18,6 +19,7 @@ const Trips = () => {
     const [query, setQuery] = useState("");
     const [showTripForm, setShowTripForm] = useState(false)
     const [selectedTrip, setSelectedTrip] = useState(null);
+    const [date, setDate] = useState(new Date())
 
 
     const getFilterItem = (data) => {
@@ -105,7 +107,6 @@ const Trips = () => {
         },
     ];
 
-
     const handleStatus = async (id, status) => {
         console.log('status in handle Status : ', status)
         try {
@@ -132,7 +133,6 @@ const Trips = () => {
             message.error(error.message);
         }
     }
-
 
     const getAllTrips = async () => {
         try {
@@ -163,6 +163,10 @@ const Trips = () => {
                 <div className='inside-content-2'>
                     <div className="d-flex justify-content-between ">
                         <PageTitle title="List Trips" />
+                        <DatePicker
+                            value={date}
+                            onChange={setDate}
+                        />
                         <div>
                             <button className='add-button' onClick={() => setShowTripForm(true)}> New </button>
                         </div>
