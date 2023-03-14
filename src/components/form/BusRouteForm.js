@@ -18,12 +18,12 @@ const RouteForm = ({
     stations
 
 }) => {
+    const dispatch = useDispatch();
     const [startStation, setStartStation] = useState("Departure");
     const [endStation, setEndStation] = useState("Destination");
     const [middleStations, setMiddleStations] = useState([]);
     const [showMiddleStationSelect, setShowMiddleStationSelect] = useState(false);
-    const dispatch = useDispatch();
-    console.log('stations', stations)
+    // console.log('stations', stations)
     const [stationsBetween, setStationsBetween] = useState([])
     console.log('stationsBetween  : ', stationsBetween)
 
@@ -153,7 +153,6 @@ const RouteForm = ({
     }, [selectedBusRoute, stations])
 
     useEffect(() => {
-
         // truyền id từ trong mảng station ơ giữa vô stationBetween 
         if (selectedBusRoute?.stations && selectedBusRoute.stations.length > 0) {
             const stationBetweenIDs = selectedBusRoute?.stations.map((item) => item.id)
