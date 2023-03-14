@@ -16,6 +16,15 @@ const BusRoutes = () => {
     const [selectedBusRoute, setSelectedBusRoute] = useState(null);
     const [showBusRouteForm, setShowBusRouteForm] = useState(false)
     const [stations, setStations] = useState([])
+    const [query, setQuery] = useState("");
+
+    const getFilterItem = (data) => {
+        return data.filter((item) => item.route_name.toLowerCase().includes(query.toLowerCase())
+            || item.departure.toLowerCase().includes(query.toLowerCase())
+            || item.destination.toLowerCase().includes(query.toLowerCase()))
+    }
+    const dataFilter = getFilterItem(busRoutes);
+
     const columns = [
         {
             title: "No",
@@ -125,16 +134,18 @@ const BusRoutes = () => {
     }, []);
     return (
         <div>
+            <div>
+                <Header query={query} setQuery={setQuery} search={dataFilter} />
+            </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
-                    <div className="d-flex justify-content-between">
+                    <div className="d-flex justify-content-between" style={{ margin: "30px" }}>
                         <PageTitle title="List Bus Routes" />
                         <div>
                             <button className='add-button' onClick={() => setShowBusRouteForm(true)}> New </button>
                         </div>
                     </div>
-                    <br />
-                    <Table rowKey="id" columns={columns} dataSource={busRoutes} pagination={{ pageSize: 7, }} />
+                    <Table rowKey="id" columns={columns} dataSource={dataFilter} pagination={{ pageSize: 5, }} />
                 </div>
             </div>
             {showBusRouteForm && (

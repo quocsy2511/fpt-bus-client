@@ -14,7 +14,7 @@ import InputIcon from "react-multi-date-picker/components/input_icon";
 import "react-multi-date-picker/styles/colors/teal.css"
 import { handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
 import { FieldTimeOutlined } from "@ant-design/icons";
-import moment from 'moment';
+
 
 const TripForm = ({
     showTripForm,

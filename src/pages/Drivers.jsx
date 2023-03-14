@@ -124,13 +124,12 @@ const Drivers = () => {
             <div className='inside-content'>
                 <div className="inside-content-2">
 
-                    <div className="d-flex justify-content-between">
+                    <div className="d-flex justify-content-between" style={{ margin: "30px" }}>
                         <PageTitle title="List Drivers" />
                         <div>
                             <button className='add-button' onClick={() => setShowDriverForm(true)}> New </button>
                         </div>
                     </div>
-                    <br />
                     <Table rowKey="id" columns={columnsDriver} pagination={{ pageSize: 5, }} dataSource={driverFilter} />
                 </div>
             </div>

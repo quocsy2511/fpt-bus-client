@@ -6,11 +6,11 @@ import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { getAllTripsFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction } from '../services/trip.service';
+import { getAllTripsByDateFunction, getAllTripsFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction } from '../services/trip.service';
 import TripForm from '../components/form/TripForm';
 import { EditTwoTone } from '@ant-design/icons';
-
-
+import moment from 'moment';
+import dayjs from 'dayjs';
 
 
 const Trips = () => {
@@ -19,14 +19,8 @@ const Trips = () => {
     const [query, setQuery] = useState("");
     const [showTripForm, setShowTripForm] = useState(false)
     const [selectedTrip, setSelectedTrip] = useState(null);
-    const [date, setDate] = useState(new Date())
+    const [date, setDate] = useState("")
 
-
-    const getFilterItem = (data) => {
-        return data.filter((item) => item.license_plate.toLowerCase().includes(query.toLowerCase())
-            || item.departure_time.toLowerCase().includes(query.toLowerCase()))
-    }
-    const dataFilter = getFilterItem(trips);
     const columns = [
         {
             title: "No",
@@ -49,18 +43,19 @@ const Trips = () => {
         {
             title: "Driver",
             dataIndex: "driver_name",
-            width: 200,
+            width: 150,
+            ellipsis: true,
         },
         {
-            title: "Bus Name",
+            title: "License Plate",
             dataIndex: "license_plate",
-            width: 130,
+            width: 170,
             render: (text) => <a>{text}</a>,
         },
         {
             title: "Route",
             key: "route",
-            width: 210,
+            width: 280,
             render: (record) => {
                 const { departure, destination } = record;
                 return (
@@ -114,10 +109,10 @@ const Trips = () => {
             let response = null;
             if (status === 3) {
                 response = await updateTripStatusActiveFunction(id);
-                console.log('response update Active in bus: ', response.data.status)
+                // console.log('response update Active in bus: ', response.data.status)
             } else {
                 response = await updateTripStatusDeActiveFunction(id);
-                console.log('response update DeActive in bus: ', response.data.status)
+                // console.log('response update DeActive in bus: ', response.data.status)
             }
             dispatch(HideLoading());
             if (response.data.status === "Success") {
@@ -138,7 +133,7 @@ const Trips = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllTripsFunction()
-            console.log('response get all trip: ', response)
+            // console.log('response get all trip: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setTrips(response.data.data);
@@ -151,31 +146,55 @@ const Trips = () => {
         }
     };
 
+    const getAllTripsByDate = async (date) => {
+        try {
+            dispatch(ShowLoading());
+            const response = await getAllTripsByDateFunction(date)
+            // console.log('response get all trip: ', response)
+            dispatch(HideLoading());
+            if (response.data.status === "Success") {
+                setTrips(response.data.data);
+            } else {
+                message.error(response.data.message);
+            }
+        } catch (error) {
+            dispatch(HideLoading());
+            message.error(error.message);
+        }
+    };
+
+    const onChangeDate = (date, dateString) => {
+        setDate(dateString)
+    };
+
     useEffect(() => {
+        console.log("log by date");
+        getAllTripsByDate(date)
+    }, [date]);
+
+    useEffect(() => {
+        console.log("log by all");
         getAllTrips();
-    }, []);
+    }, [])
     return (
         <div>
-            <div>
-                <Header query={query} setQuery={setQuery} search={dataFilter} />
+            <div className='search-picker-date'>
+                <DatePicker onChange={onChangeDate}
+                    disabledDate={(current) => current && current < moment().startOf('day')}
+                // defaultValue={dayjs()}
+                />
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
-                    <div className="d-flex justify-content-between ">
+                    <div className="d-flex justify-content-between " style={{ margin: "30px" }}>
                         <PageTitle title="List Trips" />
-                        <DatePicker
-                            value={date}
-                            onChange={setDate}
-                        />
                         <div>
                             <button className='add-button' onClick={() => setShowTripForm(true)}> New </button>
                         </div>
                     </div>
-                    <br />
-                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter}
+                    <Table rowKey="id" bordered={false} columns={columns} dataSource={trips}
                         pagination={{ pageSize: 5 }} />
                 </div>
-
             </div>
             {showTripForm && (
                 <TripForm

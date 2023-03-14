@@ -128,14 +128,13 @@ const Stations = () => {
             </div>
             <div className='inside-content'>
                 <div className='inside-content-2'>
-                    <div className="d-flex justify-content-between ">
+                    <div className="d-flex justify-content-between " style={{ margin: "30px" }}>
                         <PageTitle title="List Stations" />
                         <div>
                             <button className='add-button' onClick={() => setShowStationForm(true)}> New </button>
                         </div>
                     </div>
-                    <br />
-                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter} pagination={{ pageSize: 7, }} />
+                    <Table rowKey="id" bordered={false} columns={columns} dataSource={dataFilter} pagination={{ pageSize: 5, }} />
                 </div>
             </div>
             {showStationForm && (
