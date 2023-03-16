@@ -32,41 +32,51 @@ const RouteForm = ({
         if (value === endStation) {
             setErrorDuplication(true)
             message.error('The starting station must not be the same as the ending station please choose again !');
-            setStartStation("Departure")
+            setStartStation(value)
         } else {
-            //check điều kiện với mid
+            //check điều kiện với mid khi add
             if (middleStations.includes(value)) {
                 setErrorDuplication(true)
                 message.error('The starting station must not be the same as the middle station please choose again !');
-                setStartStation("Departure")
-            } else {
+            } //check điều kiện với mid khi update
+            else if (stationsBetween.includes(value)) {
+                setErrorDuplication(true)
+                message.error('The starting station must not be the same as the middle station please choose again !');
+            }
+            else {
                 setErrorDuplication(false)
                 setStartStation(value)
+                if (endStation !== "Destination" && type === "new") {
+                    setShowMiddleStationSelect(true);
+                } else {
+                    setShowMiddleStationSelect(false);
+                }
             }
-        }
-        if (value !== "Departure" && value !== endStation && value !== "Destination") {
-            setShowMiddleStationSelect(true);
         }
     };
 
     const handleEndStationChange = (value) => {
-        console.log('value end', value)
         if (value === startStation) {
             setErrorDuplication(true)
             message.error('The ending station must not be the same as the starting station! please choose again ');
-            setEndStation("Destination");
+            setEndStation(value);
         } else {
             if (middleStations.includes(value)) {
                 setErrorDuplication(true)
                 message.error('The end station must not coincide with the middle station! Please choose again');
-                setEndStation("Destination");
-            } else {
+            } else if (stationsBetween.includes(value)) {
+                setErrorDuplication(true)
+                message.error('The end station must not be the same as the middle station please choose again !');
+            }
+            else {
                 setErrorDuplication(false)
                 setEndStation(value);
+                if (startStation !== "Departure" && type === "new") {
+                    setShowMiddleStationSelect(true);
+                } else {
+                    setShowMiddleStationSelect(false);
+                }
             }
-        }
-        if (value !== "Destination" && value !== startStation && value !== "Departure") {
-            setShowMiddleStationSelect(true);
         }
     };
 
@@ -75,33 +85,42 @@ const RouteForm = ({
         console.log('newMiddleStations', newMiddleStations)
         newMiddleStations[index] = value;
         if (value === startStation || value === endStation) {
+            setErrorDuplication(true)
             message.error('The station in the middle cannot match the selected station! please choose again ');
-            return setMiddleStations([])
         } else {
-            setMiddleStations(newMiddleStations);
-        }
-        if (middleStations.includes(value)) {
-            message.error('Stations in the middle cannot be duplicated ! please choose again');
-            setMiddleStations([])
-            return;
-        } else {
-            setMiddleStations(newMiddleStations);
+            if (middleStations.includes(value)) {
+                setErrorDuplication(true)
+                message.error('Stations in the middle cannot be duplicated ! please choose again');
+            } else {
+                setErrorDuplication(false)
+                setMiddleStations(newMiddleStations);
+            }
         }
     };
 
     const handleStationsBetweenChange = (index, value) => {
-        if (value === startStation || value === endStation) {
-            message.error('The station in the middle cannot match the selected station! please choose again');
-            return setStationsBetween([])
-        }
         const newStationsBetween = [...stationsBetween];
-        if (newStationsBetween.includes(value)) {
-            message.error('Stations in the middle cannot be duplicated ! please choose again ');
-            setStationsBetween([])
-            return;
+        console.log('value between ', value)
+
+        if (value === startStation || value === endStation) {
+            setErrorDuplication(true)
+            message.error('The station in the middle cannot match the selected station! please choose again');
+        } else {
+            if (newStationsBetween.includes(value)) {
+                setErrorDuplication(true)
+                message.error('Stations in the middle cannot be duplicated ! please choose again ');
+            } else {
+                if (startStation === endStation) {
+                    setErrorDuplication(true)
+                    message.error('Stations in the start and end cannot be duplicated ! please choose again  <3 ');
+                } else {
+                    setErrorDuplication(false)
+                    newStationsBetween[index] = value; // cập nhật phần tử tại index với giá trị mới
+                    setStationsBetween(newStationsBetween); // cập nhật mảng stationsBetween với bản sao mới
+                }
+
+            }
         }
-        newStationsBetween[index] = value; // cập nhật phần tử tại index với giá trị mới
-        setStationsBetween(newStationsBetween); // cập nhật mảng stationsBetween với bản sao mới
     };
 
     const handleAddMiddleStation = () => {
@@ -110,10 +129,11 @@ const RouteForm = ({
 
     const onFinish = async (values) => {
         if (errorDuplication) {
+            console.log('endStation on finish', endStation)
+            console.log('startStation on finish ', startStation)
             message.error("Can't create route when there are 2 same stations")
             return;
         }
-        console.log('values', values)
         const dataMiddleStation = { ...values, stations: middleStations }
         // console.log('dataMiddleStation', dataMiddleStation)
         const dataStationsBetween = { ...values, stations: stationsBetween }
@@ -141,20 +161,33 @@ const RouteForm = ({
             setShowBusRouteForm(false);
             setSelectedBusRoute(null)
         } catch (error) {
-            console.log('error in form', error)
+            dispatch(HideLoading());
+            if (error.message) {
+                message.error(error.message);
+            } else {
+                message.error("Something went wrong!");
+            }
         }
     }
 
-    // dùng để tìm id theo name khi edit mà ko chọn select start
+    // dùng để tìm id theo name khi edit mà ko chọn select start (code ngu)
     const initialStationStart = useMemo(() => {
-        const stationStart = stations.find((item) => selectedBusRoute?.departure === item.station_name)
-        return stationStart?.id
+        if (selectedBusRoute?.departure) {
+            const stationStart = stations.find((item) => selectedBusRoute?.departure === item.station_name)
+            setStartStation(stationStart?.id)
+        } else {
+            setStartStation("Departure");
+        }
     }, [selectedBusRoute, stations])
 
-    // dùng để tìm id theo name khi edit mà ko chọn select end
+    // dùng để tìm id theo name khi edit mà ko chọn select end (code ngu)
     const initialStationEnd = useMemo(() => {
-        const stationEnd = stations.find((item) => selectedBusRoute?.destination === item.station_name)
-        return stationEnd?.id
+        if (selectedBusRoute?.destination) {
+            const stationEnd = stations.find((item) => selectedBusRoute?.destination === item.station_name)
+            setEndStation(stationEnd?.id)
+        } else {
+            setEndStation("Destination");
+        }
     }, [selectedBusRoute, stations])
 
     useEffect(() => {
@@ -174,31 +207,32 @@ const RouteForm = ({
                 footer={false}>
                 <Form onFinish={onFinish}
                     initialValues={selectedBusRoute}>
-                    <Form.Item className='d-flex justify-content-end'>
-                        {showMiddleStationSelect &&
-                            (<Button className="primary-btn" onClick={handleAddMiddleStation}>
+                    {showMiddleStationSelect &&
+                        (<div className='d-flex justify-content-end'
+                            style={{ marginTop: "20px" }} >
+                            <Button className="primary-btn" onClick={handleAddMiddleStation}>
                                 Add middle station
                             </Button>
-                            )}
-                    </Form.Item>
-                    <Form.Item label="Route Name :" name="route_name" rules={
-                        [{
-                            required: true,
-                            message: 'Please input License Plate! Example : route 1',
-                        },
-                        {
-                            whitespace: true,
-                            message: 'Please type License Plate!'
-                        },
-                        {
-                            min: 5,
-                            message: "Enter at least 5 characters Example : route 1",
-                        },
-                        {
-                            max: 25,
-                            message: "Enter at max 25 characters Example : route 1"
-                        }
-                        ]}
+                        </div>)}
+                    <Form.Item label="Route Name :" name="route_name" style={{ marginTop: "30px" }}
+                        rules={
+                            [{
+                                required: true,
+                                message: 'Please input License Plate! Example : route 1',
+                            },
+                            {
+                                whitespace: true,
+                                message: 'Please type License Plate!'
+                            },
+                            {
+                                min: 5,
+                                message: "Enter at least 5 characters Example : route 1",
+                            },
+                            {
+                                max: 25,
+                                message: "Enter at max 25 characters Example : route 1"
+                            }
+                            ]}
                         hasFeedback>
                         <Input placeholder='Enter route name' />
                     </Form.Item>
@@ -208,7 +242,7 @@ const RouteForm = ({
                             dot={(<EnvironmentOutlined style={{ fontSize: '80px', }} />)}
                             children={(
                                 <Form.Item label='Start' name="start"
-                                    initialValue={initialStationStart || startStation}
+                                    initialValue={startStation || "Departure"}
                                 >
                                     <Select
                                         // value={startStation}
@@ -260,10 +294,10 @@ const RouteForm = ({
                             dot={(<SmileOutlined style={{ fontSize: '80px', }} />)}
                             children={(
                                 <Form.Item label='End' name="end"
-                                    initialValue={initialStationEnd || endStation}
+                                    initialValue={endStation || "Destination"}
                                 >
                                     <Select
-                                        value={endStation}
+                                        // value={endStation}
                                         style={{ width: 200, }}
                                         onChange={handleEndStationChange}
                                         options={stations.map((station) => ({

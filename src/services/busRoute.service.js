@@ -34,7 +34,11 @@ export const handleNewBusRouteFunction = async (values) => {
         return response;
     } catch (error) {
         console.log('error in service : ', error)
-        return error;
+        if (error?.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else {
+            throw error;
+        }
     }
 }
 export const handleUpdateBusRouteFunction = async (data, selectedBusRoute) => {

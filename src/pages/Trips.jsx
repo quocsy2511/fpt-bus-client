@@ -133,7 +133,7 @@ const Trips = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllTripsFunction()
-            // console.log('response get all trip: ', response)
+            console.log('response get all trip: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setTrips(response.data.data);
@@ -150,7 +150,7 @@ const Trips = () => {
         try {
             dispatch(ShowLoading());
             const response = await getAllTripsByDateFunction(date)
-            // console.log('response get all trip: ', response)
+            console.log('response get all trip by date: ', response)
             dispatch(HideLoading());
             if (response.data.status === "Success") {
                 setTrips(response.data.data);
@@ -168,12 +168,10 @@ const Trips = () => {
     };
 
     useEffect(() => {
-        console.log("log by date");
         getAllTripsByDate(date)
     }, [date]);
 
     useEffect(() => {
-        console.log("log by all");
         getAllTrips();
     }, [])
     return (
