@@ -12,11 +12,11 @@ const DefaultLayout = ({ children }) => {
     const { logOut } = UserAuth();
 
     const adminMenu = [
-        {
-            name: "Home",
-            path: "/home",
-            icon: "ri-home-line",
-        },
+        // {
+        //     name: "Home",
+        //     path: "/home",
+        //     icon: "ri-home-line",
+        // },
         {
             name: "Trips",
             path: "/trips",
