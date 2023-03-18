@@ -6,7 +6,9 @@ import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import { handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
+import { handleFileUploadFunction, handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
+import { storage } from '../../firebase';
+import { ref } from 'firebase/storage'
 
 const UserForm = ({
     showUserForm,
@@ -19,28 +21,49 @@ const UserForm = ({
     const dispatch = useDispatch();
 
     //updaload img
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
     const [fileList, setFileList] = useState([]);
+
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+
     const onChange = ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
-    const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
         }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
+        setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
+    // const handleFileUpload = async ({ fileList }, selectedUser) => {
+    //     try {
+    //         const response = await handleFileUploadFunction({ fileList }, selectedUser)
+    //         console.log('response upload File', response)
+    //         if (response?.data?.status === "Success") {
+    //             message.success(response.data.message);
+    //             setFileList(response.data.data.imageUrl)
+    //         } else {
+    //             message.error(response.data.message)
+    //         }
+    //     } catch (error) {
+    //         console.log('error in upload : ', error)
+    //         message.error(error.message);
+    //     }
+    // }
 
     //create User
     const onFinish = async (values) => {
-        const data = { ...values, profile_img: fileList[0]?.name || "", role_id: 1 }
+        const data = { ...values, profile_img: fileList[0] || "", role_id: 1 }
         console.log('data', data)
         try {
             dispatch(ShowLoading())
@@ -169,10 +192,17 @@ const UserForm = ({
                         <ImgCrop rotate>
                             <Upload
                                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                // customRequest={handleFileUpload}
+                                accept='.png, .jpg'
                                 listType="picture-card"
                                 fileList={fileList}
                                 onChange={onChange}
-                                onPreview={onPreview}
+                                // onPreview={onPreview}
+                                onPreview={handlePreview}
+                                beforeUpload={(file) => {
+                                    console.log(file);
+                                    return false;
+                                }}
                             >
                                 {fileList.length < 1 && '+ Upload'}
                             </Upload>
