@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Form, Input, InputNumber, message, Modal, Row, Select } from "antd";
+import { Button, Form, InputNumber, message, Modal, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllBusesFunction } from "../../services/bus.service";
@@ -12,8 +12,9 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
 import InputIcon from "react-multi-date-picker/components/input_icon";
 import "react-multi-date-picker/styles/colors/teal.css"
-import { getAllTripsFunction, handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
+import { handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
 import { FieldTimeOutlined } from "@ant-design/icons";
+
 
 const TripForm = ({
     showTripForm,
@@ -28,6 +29,7 @@ const TripForm = ({
     const [buses, setBuses] = useState([]);
     let [departureDate, setDepartureDate] = useState([])
     let [departureTime, setDepartureTime] = useState([])
+    let [selectedTime, setSelectedTime] = useState(selectedTrip?.departure_time ? new Date(`2000-01-01T${selectedTrip?.departure_time}`) : null)
     const dispatch = useDispatch();
 
     const getAllRoutes = async () => {
@@ -64,13 +66,11 @@ const TripForm = ({
     };
 
     const handleDateChange = (date) => {
-
         let formattedDates = date.map((dateObj) => {
             if (dateObj instanceof DateObject) {
-                return dateObj.format("YYYY/MM/DD");
+                return dateObj.format("YYYY-MM-DD");
             }
         });
-
         setDepartureDate(formattedDates);
     };
 
@@ -91,17 +91,17 @@ const TripForm = ({
     }
 
     const onFinish = async (values) => {
+        // formatNewTimes
+        let formattedTimes = departureTime
+            .map((dateObj) => dateObj instanceof DateObject ? dateObj.format("HH:mm") : null)
+            .filter(time => time !== null);
 
-        //formatTimes
-        let formattedTimes = departureTime.map((dateObj) => {
-            if (dateObj instanceof DateObject) {
-                return dateObj.format("HH:mm");
-            };
-        })
+        //formatTimeUpdate
+        let formattedSelectTime = selectedTime ? selectedTime.format("HH:mm") : null;
 
         const data = {
             ...values, departure_dates: departureDate,
-            departure_times: formattedTimes
+            departure_times: formattedTimes.concat(formattedSelectTime || [])
         }
         console.log('data', data)
         try {
@@ -127,6 +127,11 @@ const TripForm = ({
         } catch (error) {
             console.log('error in form : ', error)
             dispatch(HideLoading());
+            if (error.message) {
+                message.error(error.message);
+            } else {
+                message.error("Something went wrong!");
+            }
         }
     }
 
@@ -134,7 +139,6 @@ const TripForm = ({
         getAllRoutes();
         getAllBuses();
     }, [])
-
     return (
         <div>
             <Modal
@@ -202,7 +206,8 @@ const TripForm = ({
                             },
                             ]} hasFeedback>
                         <DatePicker
-                            format="YYYY/MM/DD"
+                            value={selectedTrip?.departure_date}
+                            format="YYYY-MM-DD"
                             className="teal"
                             render={<InputIcon style={{ color: "green" }} />}
                             onChange={handleDateChange}
@@ -222,9 +227,9 @@ const TripForm = ({
                                 },
                                 ]} hasFeedback>
                             <DatePicker
+                                value={time}
                                 disableDayPicker
                                 format="HH:mm"
-                                value={time}
                                 onChange={(date) => handleTimeChange(date, index)}
                                 plugins={[<TimePicker />]}
                             />
@@ -237,6 +242,23 @@ const TripForm = ({
                             </div>
                         </Form.Item>
                     ))}
+                    {selectedTime !== null &&
+                        (<Form.Item
+                            label={`Departure Time : `}
+                            rules={
+                                [{
+                                    required: true,
+                                    message: 'Please input !',
+                                },
+                                ]} hasFeedback>
+                            <DatePicker
+                                disableDayPicker
+                                format="HH:mm"
+                                value={selectedTime}
+                                onChange={(date) => setSelectedTime(date)}
+                                plugins={[<TimePicker />]}
+                            />
+                        </Form.Item>)}
                     <Form.Item label="Departure Time">
                         <Button onClick={handleAddTime}
                             icon={<FieldTimeOutlined />}>

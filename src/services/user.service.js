@@ -2,6 +2,7 @@
 import { serverEndpoint } from '../utilities/serverEndpoint'
 import axiosInstance from '../helpers/axiosInstance';
 import axios from 'axios';
+import { async } from '@firebase/util';
 
 export const getAllUsersFunction = async () => {
     try {
@@ -80,6 +81,22 @@ export const updateUserStatusFunction = async (id) => {
         return response
     } catch (error) {
         console.log('error in update status buses service: ', error);
+        return error;
+    }
+}
+
+export const handleFileUploadFunction = async (fileList, selectedUser) => {
+    try {
+        const response = await axiosInstance.post(serverEndpoint + "api/v1/upload-file", {
+
+            type: "profile",
+            imageBase64: `${fileList}`,
+            userId: `${selectedUser.id}`
+        })
+        console.log('response upload in service : ', response)
+        return response;
+    } catch (error) {
+        console.log('error in upload file service ', error)
         return error;
     }
 }

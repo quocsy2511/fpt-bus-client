@@ -6,62 +6,65 @@ import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import { handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
+import { handleFileUploadFunction, handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
+import { storage } from '../../firebase';
+import { ref } from 'firebase/storage'
 
 const UserForm = ({
     showUserForm,
     setShowUserForm,
     getDataStudents,
-    getDataDrivers,
     selectedUser,
     setSelectedUser,
     type = 'new',
 }) => {
     const dispatch = useDispatch();
-    const [showStudentId, setShowStudentId] = useState(false);
-    const role = [
-        {
-            role_name: "STUDENT",
-            role_id: 2
-        },
-        {
-            role_name: "DRIVER",
-            role_id: 3
-        }];
-
-    //showStudentID
-    const handleRoleChange = (value) => {
-        if (value === 2) { // if the selected role is STUDENT
-            setShowStudentId(true); // show the Student ID input
-        } else {
-            setShowStudentId(false); // hide the Student ID input
-        }
-    };
 
     //updaload img
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
     const [fileList, setFileList] = useState([]);
+
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+
     const onChange = ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
-    const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
         }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
+        setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
+    // const handleFileUpload = async ({ fileList }, selectedUser) => {
+    //     try {
+    //         const response = await handleFileUploadFunction({ fileList }, selectedUser)
+    //         console.log('response upload File', response)
+    //         if (response?.data?.status === "Success") {
+    //             message.success(response.data.message);
+    //             setFileList(response.data.data.imageUrl)
+    //         } else {
+    //             message.error(response.data.message)
+    //         }
+    //     } catch (error) {
+    //         console.log('error in upload : ', error)
+    //         message.error(error.message);
+    //     }
+    // }
 
     //create User
     const onFinish = async (values) => {
-        const data = { ...values, profile_img: fileList[0].name }
-
+        const data = { ...values, profile_img: fileList[0] || "", role_id: 1 }
+        console.log('data', data)
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -70,25 +73,23 @@ const UserForm = ({
                 console.log('response in user form add : ', response)
             } else {
                 response = await handleUpdateUserFunction(data, selectedUser);
+                console.log('response', response)
             }
             dispatch(HideLoading());
             setShowUserForm(false);
             if (response.data.status === "Success") {
-                message.success(response.data.messages);
+                message.success(response.data.message);
                 dispatch(HideLoading());
             } else {
                 dispatch(HideLoading());
-                message.error(response.data.messages)
+                message.error(response.data.message)
             }
             getDataStudents();
-            getDataDrivers();
             setShowUserForm(false);
             setSelectedUser(null);
         } catch (error) {
             console.log('error in form: ', error)
-
         }
-
     }
 
     //validation form
@@ -105,13 +106,11 @@ const UserForm = ({
         return Promise.resolve();
     };
 
-
-
     return (
         <div>
             <Modal
                 width={800}
-                title={type === "new" ? "New Bus" : "Edit Bus"}
+                title={type === "new" ? "New User" : "Edit User"}
                 open={showUserForm}
                 onCancel={() => {
                     setShowUserForm(false);
@@ -121,46 +120,30 @@ const UserForm = ({
             >
                 <Form layout='horizontal' className='new-user' labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} autoComplete="off"
                     onFinish={onFinish} initialValues={selectedUser} >
-                    <Form.Item label="Role : " name="role_id" rules={
+                    <Form.Item label=" Student ID :" name="student_id" rules={
                         [{
                             required: true,
-                            message: 'Please choose Role !',
+                            message: 'Please input License Plate! Example : SE123456',
                         },
-                        ]} hasFeedback>
-                        <Select className='driver'
-                            placeholder="choose driver "
-                            options={role.map((item) => ({
-                                value: item.role_id,
-                                label: item.role_name,
-                            }))}
-                            onChange={handleRoleChange}
-                        />
+                        {
+                            whitespace: true,
+                            message: 'Please type License Plate!'
+                        },
+                        {
+                            validator: validateStudentId,
+                        },
+                        {
+                            min: 8,
+                            message: "Enter at least 8 characters Example : SE151029",
+                        },
+                        {
+                            max: 8,
+                            message: "Enter at max 8 characters "
+                        }
+                        ]}
+                        hasFeedback>
+                        <Input placeholder='Enter your Student ID ' />
                     </Form.Item>
-                    {showStudentId &&
-                        (<Form.Item label=" Student ID :" name="student_id" rules={
-                            [{
-                                required: true,
-                                message: 'Please input License Plate! Example : SE123456',
-                            },
-                            {
-                                whitespace: true,
-                                message: 'Please type License Plate!'
-                            },
-                            {
-                                validator: validateStudentId,
-                            },
-                            {
-                                min: 8,
-                                message: "Enter at least 8 characters Example : SE151029",
-                            },
-                            {
-                                max: 8,
-                                message: "Enter at max 8 characters "
-                            }
-                            ]}
-                            hasFeedback>
-                            <Input placeholder='Enter your Student ID ' />
-                        </Form.Item>)}
                     <Form.Item label=" User Name : " name="fullname" rules={
                         [{
                             required: true,
@@ -204,30 +187,27 @@ const UserForm = ({
                         hasFeedback>
                         <Input placeholder="Enter your phone number" />
                     </Form.Item>
-                    {/* <Form.Item label="Profile Image : " name="profile_img" rules={
-                        [{
-                            required: true,
-                            message: 'Please input your Email  Example : Phuongntu@fpt.edu.vn',
-                        },
-                        ]}
-                        hasFeedback>
-                        <Input placeholder='Enter your Profile Image ' />
-                    </Form.Item> */}
                     <Form.Item label="Profile Image : " name="profile_img"
                         hasFeedback>
                         <ImgCrop rotate>
                             <Upload
                                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                // customRequest={handleFileUpload}
+                                accept='.png, .jpg'
                                 listType="picture-card"
                                 fileList={fileList}
                                 onChange={onChange}
-                                onPreview={onPreview}
+                                // onPreview={onPreview}
+                                onPreview={handlePreview}
+                                beforeUpload={(file) => {
+                                    console.log(file);
+                                    return false;
+                                }}
                             >
                                 {fileList.length < 1 && '+ Upload'}
                             </Upload>
                         </ImgCrop>
                     </Form.Item>
-
                     <Form.Item className='d-flex justify-content-end'>
                         <Button className="primary-btn" htmlType='submit' >
                             Save

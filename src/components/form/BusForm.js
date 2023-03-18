@@ -108,8 +108,7 @@ const BusForm = ({
                         }
                         ]}
                         hasFeedback>
-                        {/* <input type="text" placeholder='Enter Bus License Plate ' /> */}
-                        <Input placeholder='Enter Bus License Plate '  />
+                        <Input placeholder='Enter Bus License Plate ' />
                     </Form.Item>
                     <Form.Item label="Seat Quantity: " name="seat_quantity" rules={
                         [{

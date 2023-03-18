@@ -12,6 +12,7 @@ import Loader from "./components/Loader";
 import { useSelector } from "react-redux";
 import { AuthContextProvider } from './context/AuthContext';
 import Protected from './components/Protected';
+import Drivers from "./pages/Drivers";
 
 function App() {
   const { loading } = useSelector(state => state.alerts)
@@ -37,6 +38,12 @@ function App() {
               </Protected>
             }>
             </Route>
+            <Route path='/drivers' element={
+              <Protected>
+                <Drivers></Drivers>
+              </Protected>
+            }>
+            </Route>
             <Route path='/buses' element={
               <Protected>
                 <Buses></Buses>
@@ -46,7 +53,6 @@ function App() {
               <Protected>
                 <Trips>
                 </Trips>
-
               </Protected>}>
             </Route>
             <Route path='/stations' element={
