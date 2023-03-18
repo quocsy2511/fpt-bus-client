@@ -54,16 +54,10 @@ const Trips = () => {
         },
         {
             title: "Route",
+            dataIndex: "route_name",
             key: "route",
-            width: 280,
-            render: (record) => {
-                const { departure, destination } = record;
-                return (
-                    <a>
-                        {departure} - {destination}
-                    </a>
-                );
-            },
+            width: 140,
+
         },
         {
             title: "Ticket Quantity",

@@ -138,6 +138,7 @@ const RouteForm = ({
         // console.log('dataMiddleStation', dataMiddleStation)
         const dataStationsBetween = { ...values, stations: stationsBetween }
         // console.log('dataStationsBetween : ', dataStationsBetween)
+
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -243,10 +244,17 @@ const RouteForm = ({
                             children={(
                                 <Form.Item label='Start' name="start"
                                     initialValue={startStation || "Departure"}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please choose a station.',
+                                        },
+                                    ]}
                                 >
                                     <Select
                                         // value={startStation}
                                         style={{ width: 200, }}
+                                        required
                                         onChange={handleStartStationChange}
                                         options={stations.map((station) => ({
                                             label: station.station_name,
@@ -295,6 +303,12 @@ const RouteForm = ({
                             children={(
                                 <Form.Item label='End' name="end"
                                     initialValue={endStation || "Destination"}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please choose a station.',
+                                        },
+                                    ]}
                                 >
                                     <Select
                                         // value={endStation}
