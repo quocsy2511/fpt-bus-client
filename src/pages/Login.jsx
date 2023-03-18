@@ -47,7 +47,7 @@ const Login = () => {
                         localStorage.setItem("access_token", token);
                         console.log("access_token", token);
                         dispatch(HideLoading());
-                        navigate("/home");
+                        navigate("/trips");
                         message.success(response.data.messages);
                     } else {
                         dispatch(HideLoading());
