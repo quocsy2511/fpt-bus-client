@@ -85,13 +85,12 @@ export const updateUserStatusFunction = async (id) => {
     }
 }
 
-export const handleFileUploadFunction = async (fileList, selectedUser) => {
+export const handleFileUploadFunction = async (base64) => {
     try {
         const response = await axiosInstance.post(serverEndpoint + "api/v1/upload-file", {
-
             type: "profile",
-            imageBase64: `${fileList}`,
-            userId: `${selectedUser.id}`
+            imageBase64: `${base64}`,
+            userId: ""
         })
         console.log('response upload in service : ', response)
         return response;
