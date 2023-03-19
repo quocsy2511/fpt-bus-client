@@ -22,7 +22,13 @@ const UserForm = ({
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState([]);
+    const [fileList, setFileList] = useState([
+        {
+            uid: "-1", name: "defaultImage.png",
+            status: "done",
+            url: selectedUser?.profile_img
+        }
+    ]);
     const [urlImage, setUrlImage] = useState("")
 
     const getBase64 = (file) =>
@@ -195,14 +201,8 @@ const UserForm = ({
                         hasFeedback>
                         <ImgCrop rotate>
                             <Upload
-                                defaultFileList={
-                                    selectedUser?.profile_img ? [{
-                                    uid: "defaultImage",
-                                    name: "defaultImage.png",
-                                    url: selectedUser?.profile_img
-                                }] : []}
-                                // action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                                action='http://api.fpt-bus.online/api/v1/upload-file'
+                                defaultFileList={[...fileList]}
+                                action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
                                 accept='.png, .jpg'
                                 listType="picture-card"
                                 fileList={fileList}
@@ -213,7 +213,7 @@ const UserForm = ({
                                     return false;
                                 }}
                             >
-                                {fileList.length < 1 && '+ Upload'}
+                                {fileList.length < 2 && '+ Upload'}
                             </Upload>
                         </ImgCrop>
                     </Form.Item>
