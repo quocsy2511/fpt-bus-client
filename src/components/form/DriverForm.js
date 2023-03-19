@@ -22,7 +22,13 @@ const DriverForm = ({
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState([]);
+    const [fileList, setFileList] = useState([
+        {
+            uid: "-1", name: "defaultImage.png",
+            status: "done",
+            url: selectedDriver?.profile_img
+        }
+    ]);
     const [urlImage, setUrlImage] = useState("")
 
     const getBase64 = (file) =>
@@ -65,7 +71,7 @@ const DriverForm = ({
 
     //create User
     const onFinish = async (values) => {
-        const data = { ...values, profile_img: fileList[0]?.name || "", role_id: 3 }
+        const data = { ...values, profile_img: urlImage || "", role_id: 3 }
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -152,6 +158,7 @@ const DriverForm = ({
                         hasFeedback>
                         <ImgCrop rotate>
                             <Upload
+                                defaultFileList={[...fileList]}
                                 action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
                                 accept='.png, .jpg'
                                 listType="picture-card"
@@ -163,7 +170,7 @@ const DriverForm = ({
                                     return false;
                                 }}
                             >
-                                {fileList.length < 1 && '+ Upload'}
+                                {fileList.length < 2 && '+ Upload'}
                             </Upload>
                         </ImgCrop>
                     </Form.Item>
