@@ -69,7 +69,6 @@ function App() {
               <PublicRoute>
                 <Login></Login>
               </PublicRoute>
-              // <Login></Login>
             }>
             </Route>
           </Routes>
