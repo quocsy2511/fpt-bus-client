@@ -23,17 +23,17 @@ const TripForm = ({
     getData,
     selectedTrip,
     setSelectedTrip,
+    dateSearch
 }) => {
 
     const [routes, setRoutes] = useState([]);
     const [buses, setBuses] = useState([]);
     let [departureDate, setDepartureDate] = useState([])
+    console.log('departureDate', departureDate)
     let [departureTime, setDepartureTime] = useState([])
     // let [selectedTime, setSelectedTime] = useState(selectedTrip?.departure_time ? new Date(`2000-01-01T${selectedTrip?.departure_time}`) : null)
     let [selectedTime, setSelectedTime] = useState(selectedTrip?.departure_time ? moment(`2000-01-01T${selectedTrip?.departure_time}`).toDate() : null);
-    console.log('selectedTime', selectedTime)
     const dispatch = useDispatch();
-
     const getAllRoutes = async () => {
         try {
             dispatch(ShowLoading());
@@ -67,13 +67,25 @@ const TripForm = ({
         }
     };
     const handleDateChange = (date) => {
-        let formattedDates = date.map((dateObj) => {
-            if (dateObj instanceof DateObject) {
-                return dateObj.format("YYYY-MM-DD");
-            }
-        });
-        setDepartureDate(formattedDates);
+        let formattedDates;
+        if (selectedTrip?.departure_date) {
+            formattedDates = date.format("YYYY-MM-DD");
+            setDepartureDate(formattedDates);
+        } else {
+            formattedDates = date.map((dateObj) => {
+                if (dateObj instanceof DateObject) {
+                    return dateObj.format("YYYY-MM-DD");
+                }
+            });
+            setDepartureDate(formattedDates);
+        }
+
     };
+
+    // const handleDateChangeUpdate = (date) => {
+    //     let formattedDates = date.format("YYYY-MM-DD");
+    //     setDepartureDate(formattedDates);
+    // }
 
     const handleTimeChange = (date, index) => {
         const updatedDepartureTime = [...departureTime];
@@ -102,7 +114,6 @@ const TripForm = ({
         // let formattedSelectTime = selectedTime ? selectedTime.format("HH:mm") : (selectedTrip?.departure_time || null);
 
         formattedSelectTime = selectedTime ? moment(selectedTime).format("HH:mm") : (selectedTrip?.departure_time || null);
-        console.log('formattedSelectTime', formattedSelectTime)
 
         //data for Create Trip
         const dataCreate = {
@@ -114,7 +125,7 @@ const TripForm = ({
         //data for Update Trip
         const dataUpdate = {
             ...values,
-            departure_date: departureDate?.[0] || selectedTrip?.departure_date,
+            departure_date: departureDate || selectedTrip?.departure_date,
             departure_time: formattedSelectTime,
             status: 1
         }
@@ -136,7 +147,12 @@ const TripForm = ({
                 dispatch(HideLoading());
                 message.error(response.data.message)
             }
-            getData();
+            if (selectedTrip?.departure_date) {
+                getData(departureDate);
+            } else {
+                getData(departureDate?.[0]);
+            }
+            // getData(departureDate);
             setShowTripForm(false);
             setSelectedTrip(null);
         } catch (error) {
@@ -213,7 +229,7 @@ const TripForm = ({
                         ]} hasFeedback>
                         <InputNumber className='seat-quantity' />
                     </Form.Item>
-                    <Form.Item label="Departure Date : "
+                    {selectedTrip ? <Form.Item label="Departure Date : "
                         rules={
                             [{
                                 required: true,
@@ -227,12 +243,30 @@ const TripForm = ({
                             render={<InputIcon style={{ color: "green" }} />}
                             onChange={handleDateChange}
                             minDate={addDays(new Date(), 0)}
+                            plugins={[
+                                <DatePanel />,
+                            ]}
+                        />
+                    </Form.Item> : <Form.Item label="Departure Date : "
+                        rules={
+                            [{
+                                required: true,
+                                message: 'Please input !',
+                            },
+                            ]} hasFeedback>
+                        <DatePicker
+                            // value={selectedTrip?.departure_date}
+                            format="YYYY-MM-DD"
+                            className="teal"
+                            render={<InputIcon style={{ color: "green" }} />}
+                            onChange={handleDateChange}
+                            minDate={addDays(new Date(), 0)}
                             multiple
                             plugins={[
                                 <DatePanel />,
                             ]}
                         />
-                    </Form.Item>
+                    </Form.Item>}
                     {departureTime.map((time, index) => (
                         <Form.Item key={index} label={`Departure Time ${index + 1}: `}
                             rules={

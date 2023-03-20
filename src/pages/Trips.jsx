@@ -1,7 +1,6 @@
 import { Divider, message, Space, Switch, DatePicker, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
@@ -19,7 +18,8 @@ const Trips = () => {
     const [query, setQuery] = useState("");
     const [showTripForm, setShowTripForm] = useState(false)
     const [selectedTrip, setSelectedTrip] = useState(null);
-    const [date, setDate] = useState("")
+    const today = dayjs().format('YYYY-MM-DD');
+    const [date, setDate] = useState(today)
 
     const columns = [
         {
@@ -110,9 +110,13 @@ const Trips = () => {
             }
             dispatch(HideLoading());
             if (response.data.status === "Success") {
-                getAllTrips();
-                message.success(response.data.message);
-                dispatch(HideLoading());
+                if (date) {
+                    getAllTripsByDate(date)
+                    message.success(response.data.message);
+                    dispatch(HideLoading());
+                }
+                // getAllTrips();
+
             } else {
                 message.error(response.message);
                 dispatch(HideLoading());
@@ -157,7 +161,7 @@ const Trips = () => {
         }
     };
 
-    const onChangeDate = (date, dateString) => {
+    const onChangeDateSearch = (date, dateString) => {
         setDate(dateString)
     };
 
@@ -165,15 +169,18 @@ const Trips = () => {
         getAllTripsByDate(date)
     }, [date]);
 
-    useEffect(() => {
-        getAllTrips();
-    }, [])
+    // useEffect(() => {
+    //     // getAllTrips();
+    //     getAllTripsByDate(today)
+    //     console.log("hrere");
+    // }, [])
+
     return (
         <div>
             <div className='search-picker-date'>
-                <DatePicker onChange={onChangeDate}
+                <DatePicker onChange={onChangeDateSearch}
                     disabledDate={(current) => current && current < moment().startOf('day')}
-                // defaultValue={dayjs()}
+                    defaultValue={dayjs(today)}
                 />
             </div>
             <div className='inside-content'>
@@ -190,12 +197,13 @@ const Trips = () => {
             </div>
             {showTripForm && (
                 <TripForm
+                    dateSearch={date}
                     showTripForm={showTripForm}
                     setShowTripForm={setShowTripForm}
                     type={selectedTrip ? "edit" : "new"}
                     selectedTrip={selectedTrip}
                     setSelectedTrip={setSelectedTrip}
-                    getData={getAllTrips} />
+                    getData={getAllTripsByDate} />
             )}
         </div>
     );
