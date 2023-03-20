@@ -6,7 +6,7 @@ import 'antd/dist/reset.css'
 import "../../resources/form.css"
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
-import { handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
+import { handleFileUploadFunction, handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
 
 const DriverForm = ({
     showDriverForm,
@@ -19,28 +19,59 @@ const DriverForm = ({
     const dispatch = useDispatch();
 
     //updaload img
-    const [fileList, setFileList] = useState([]);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
+    const [fileList, setFileList] = useState([
+        {
+            uid: "-1", name: "defaultImage.png",
+            status: "done",
+            url: selectedDriver?.profile_img
+        }
+    ]);
+    const [urlImage, setUrlImage] = useState("")
+
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+
     const onChange = ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
-    const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
         }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
+        setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
+
+    const handleFileUpload = async (previewImage) => {
+        const base64 = await getBase64(previewImage);
+        try {
+            const response = await handleFileUploadFunction(base64)
+            console.log('response upload File', response)
+            if (response?.data?.status === "Success") {
+                message.success(response.data.messages);
+                console.log("url image : ", response.data.data.imageUrl);
+                setUrlImage(response.data.data.imageUrl)
+            } else {
+                message.error(response.data.messages)
+            }
+        } catch (error) {
+            console.log('error in upload : ', error)
+            message.error(error.message);
+        }
+    }
 
     //create User
     const onFinish = async (values) => {
-        const data = { ...values, profile_img: fileList[0]?.name || "", role_id: 3 }
+        const data = { ...values, profile_img: urlImage || "", role_id: 3 }
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -127,13 +158,19 @@ const DriverForm = ({
                         hasFeedback>
                         <ImgCrop rotate>
                             <Upload
-                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                defaultFileList={[...fileList]}
+                                action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                                accept='.png, .jpg'
                                 listType="picture-card"
                                 fileList={fileList}
                                 onChange={onChange}
-                                onPreview={onPreview}
+                                onPreview={handlePreview}
+                                beforeUpload={(file) => {
+                                    handleFileUpload(file)
+                                    return false;
+                                }}
                             >
-                                {fileList.length < 1 && '+ Upload'}
+                                {fileList.length < 2 && '+ Upload'}
                             </Upload>
                         </ImgCrop>
                     </Form.Item>

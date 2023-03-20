@@ -14,7 +14,7 @@ import InputIcon from "react-multi-date-picker/components/input_icon";
 import "react-multi-date-picker/styles/colors/teal.css"
 import { handleNewTripFunction, handleUpdateTripFunction } from "../../services/trip.service";
 import { FieldTimeOutlined } from "@ant-design/icons";
-
+import moment from "moment";
 
 const TripForm = ({
     showTripForm,
@@ -28,10 +28,11 @@ const TripForm = ({
     const [routes, setRoutes] = useState([]);
     const [buses, setBuses] = useState([]);
     let [departureDate, setDepartureDate] = useState([])
+    console.log('departureDate', departureDate)
     let [departureTime, setDepartureTime] = useState([])
-    let [selectedTime, setSelectedTime] = useState(selectedTrip?.departure_time ? new Date(`2000-01-01T${selectedTrip?.departure_time}`) : null)
+    // let [selectedTime, setSelectedTime] = useState(selectedTrip?.departure_time ? new Date(`2000-01-01T${selectedTrip?.departure_time}`) : null)
+    let [selectedTime, setSelectedTime] = useState(selectedTrip?.departure_time ? moment(`2000-01-01T${selectedTrip?.departure_time}`).toDate() : null);
     const dispatch = useDispatch();
-
     const getAllRoutes = async () => {
         try {
             dispatch(ShowLoading());
@@ -65,13 +66,34 @@ const TripForm = ({
         }
     };
 
+    //Format Date
     const handleDateChange = (date) => {
-        let formattedDates = date.map((dateObj) => {
-            if (dateObj instanceof DateObject) {
-                return dateObj.format("YYYY-MM-DD");
+        let formattedDates;
+        if (date) {
+            if (Array.isArray(date)) {
+                formattedDates = date.map((dateObj) => {
+                    if (dateObj instanceof DateObject) {
+                        return dateObj.format("YYYY-MM-DD");
+                    }
+                });
+            } else if (date instanceof DateObject) {
+                formattedDates = date.format("YYYY-MM-DD");
             }
-        });
-        setDepartureDate(formattedDates);
+            setDepartureDate(formattedDates);
+        } else if (selectedTrip?.departure_date) {
+            setDepartureDate(selectedTrip.departure_date);
+        }
+        // if (selectedTrip?.departure_date) {
+        //     formattedDates = date.format("YYYY-MM-DD");
+        //     setDepartureDate(formattedDates);
+        // } else {
+        //     formattedDates = date.map((dateObj) => {
+        //         if (dateObj instanceof DateObject) {
+        //             return dateObj.format("YYYY-MM-DD");
+        //         }
+        //     });
+        //     setDepartureDate(formattedDates);
+        // }
     };
 
     const handleTimeChange = (date, index) => {
@@ -79,7 +101,6 @@ const TripForm = ({
         updatedDepartureTime[index] = date;
         setDepartureTime(updatedDepartureTime);
     }
-
     //add time and remove time
     const handleAddTime = () => {
         setDepartureTime([...departureTime, new Date()])
@@ -90,27 +111,39 @@ const TripForm = ({
         setDepartureTime(updatedDepartureTime);
     }
 
+    let formattedSelectTime
     const onFinish = async (values) => {
+
         // formatNewTimes
         let formattedTimes = departureTime
             .map((dateObj) => dateObj instanceof DateObject ? dateObj.format("HH:mm") : null)
             .filter(time => time !== null);
 
         //formatTimeUpdate
-        let formattedSelectTime = selectedTime ? selectedTime.format("HH:mm") : null;
+        // let formattedSelectTime = selectedTime ? selectedTime.format("HH:mm") : (selectedTrip?.departure_time || null);
+        formattedSelectTime = selectedTime ? moment(selectedTime).format("HH:mm") : (selectedTrip?.departure_time || null);
 
-        const data = {
+        //data for Create Trip
+        const dataCreate = {
             ...values, departure_dates: departureDate,
-            departure_times: formattedTimes.concat(formattedSelectTime || [])
+            departure_times: formattedTimes
         }
-        console.log('data', data)
+
+        //data for Update Trip
+        const dataUpdate = {
+            ...values,
+            departure_date: departureDate.length > 0 ? departureDate : selectedTrip?.departure_date,
+            departure_time: formattedSelectTime,
+            status: 1
+        }
+        console.log('dataUpdate', dataUpdate)
         try {
             let response = null;
             if (type === "new") {
-                response = await handleNewTripFunction(data);
+                response = await handleNewTripFunction(dataCreate);
                 console.log('response in bus form add : ', response)
             } else {
-                response = await handleUpdateTripFunction(data, selectedTrip);
+                response = await handleUpdateTripFunction(dataUpdate, selectedTrip);
             }
             dispatch(HideLoading());
             setShowTripForm(false);
@@ -121,7 +154,15 @@ const TripForm = ({
                 dispatch(HideLoading());
                 message.error(response.data.message)
             }
-            getData();
+            if (type === "new") {
+                getData(departureDate?.[0]);
+            } else {
+                if (departureDate.length > 0) {
+                    getData(departureDate);
+                } else {
+                    getData(selectedTrip?.departure_date);
+                }
+            }
             setShowTripForm(false);
             setSelectedTrip(null);
         } catch (error) {
@@ -139,6 +180,7 @@ const TripForm = ({
         getAllRoutes();
         getAllBuses();
     }, [])
+
     return (
         <div>
             <Modal
@@ -198,7 +240,7 @@ const TripForm = ({
                         ]} hasFeedback>
                         <InputNumber className='seat-quantity' />
                     </Form.Item>
-                    <Form.Item label="Departure Date : "
+                    {selectedTrip ? <Form.Item label="Departure Date : "
                         rules={
                             [{
                                 required: true,
@@ -212,12 +254,29 @@ const TripForm = ({
                             render={<InputIcon style={{ color: "green" }} />}
                             onChange={handleDateChange}
                             minDate={addDays(new Date(), 0)}
+                            plugins={[
+                                <DatePanel />,
+                            ]}
+                        />
+                    </Form.Item> : <Form.Item label="Departure Date : "
+                        rules={
+                            [{
+                                required: true,
+                                message: 'Please input !',
+                            },
+                            ]} hasFeedback>
+                        <DatePicker
+                            format="YYYY-MM-DD"
+                            className="teal"
+                            render={<InputIcon style={{ color: "green" }} />}
+                            onChange={handleDateChange}
+                            minDate={addDays(new Date(), 0)}
                             multiple
                             plugins={[
                                 <DatePanel />,
                             ]}
                         />
-                    </Form.Item>
+                    </Form.Item>}
                     {departureTime.map((time, index) => (
                         <Form.Item key={index} label={`Departure Time ${index + 1}: `}
                             rules={
@@ -255,16 +314,17 @@ const TripForm = ({
                                 disableDayPicker
                                 format="HH:mm"
                                 value={selectedTime}
-                                onChange={(date) => setSelectedTime(date)}
+                                onChange={(date) => setSelectedTime(date ? date.toDate() : null)}
                                 plugins={[<TimePicker />]}
+                                key={formattedSelectTime}
                             />
                         </Form.Item>)}
-                    <Form.Item label="Departure Time">
+                    {selectedTime === null && <Form.Item label="Departure Time">
                         <Button onClick={handleAddTime}
                             icon={<FieldTimeOutlined />}>
                             Add Time
                         </Button>
-                    </Form.Item>
+                    </Form.Item>}
                     <Form.Item className="d-flex justify-content-end">
                         <Button className="primary-btn" htmlType='submit'>
                             Save

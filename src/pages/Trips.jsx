@@ -1,12 +1,11 @@
 import { Divider, message, Space, Switch, DatePicker, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { getAllTripsByDateFunction, getAllTripsFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction } from '../services/trip.service';
+import { getAllTripsByDateFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction } from '../services/trip.service';
 import TripForm from '../components/form/TripForm';
 import { EditTwoTone } from '@ant-design/icons';
 import moment from 'moment';
@@ -16,10 +15,10 @@ import dayjs from 'dayjs';
 const Trips = () => {
     const dispatch = useDispatch();
     const [trips, setTrips] = useState([]);
-    const [query, setQuery] = useState("");
     const [showTripForm, setShowTripForm] = useState(false)
     const [selectedTrip, setSelectedTrip] = useState(null);
-    const [date, setDate] = useState("")
+    const today = dayjs().format('YYYY-MM-DD');
+    const [date, setDate] = useState(today)
 
     const columns = [
         {
@@ -110,9 +109,11 @@ const Trips = () => {
             }
             dispatch(HideLoading());
             if (response.data.status === "Success") {
-                getAllTrips();
-                message.success(response.data.message);
-                dispatch(HideLoading());
+                if (date) {
+                    getAllTripsByDate(date)
+                    message.success(response.data.message);
+                    dispatch(HideLoading());
+                }
             } else {
                 message.error(response.message);
                 dispatch(HideLoading());
@@ -122,23 +123,6 @@ const Trips = () => {
             message.error(error.message);
         }
     }
-
-    const getAllTrips = async () => {
-        try {
-            dispatch(ShowLoading());
-            const response = await getAllTripsFunction()
-            console.log('response get all trip: ', response)
-            dispatch(HideLoading());
-            if (response.data.status === "Success") {
-                setTrips(response.data.data);
-            } else {
-                message.error(response.data.message);
-            }
-        } catch (error) {
-            dispatch(HideLoading());
-            message.error(error.message);
-        }
-    };
 
     const getAllTripsByDate = async (date) => {
         try {
@@ -157,7 +141,7 @@ const Trips = () => {
         }
     };
 
-    const onChangeDate = (date, dateString) => {
+    const onChangeDateSearch = (date, dateString) => {
         setDate(dateString)
     };
 
@@ -165,15 +149,12 @@ const Trips = () => {
         getAllTripsByDate(date)
     }, [date]);
 
-    useEffect(() => {
-        getAllTrips();
-    }, [])
     return (
         <div>
             <div className='search-picker-date'>
-                <DatePicker onChange={onChangeDate}
+                <DatePicker onChange={onChangeDateSearch}
                     disabledDate={(current) => current && current < moment().startOf('day')}
-                // defaultValue={dayjs()}
+                    defaultValue={dayjs(today)}
                 />
             </div>
             <div className='inside-content'>
@@ -195,7 +176,7 @@ const Trips = () => {
                     type={selectedTrip ? "edit" : "new"}
                     selectedTrip={selectedTrip}
                     setSelectedTrip={setSelectedTrip}
-                    getData={getAllTrips} />
+                    getData={getAllTripsByDate} />
             )}
         </div>
     );

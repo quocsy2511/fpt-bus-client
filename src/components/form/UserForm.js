@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Select, Upload } from 'antd';
+import { Button, Form, Input, message, Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import Modal from 'antd/es/modal/Modal';
 import React, { useState } from 'react';
@@ -7,8 +7,6 @@ import "../../resources/form.css"
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../redux/alertsSlice';
 import { handleFileUploadFunction, handleNewUserFunction, handleUpdateUserFunction } from '../../services/user.service';
-import { storage } from '../../firebase';
-import { ref } from 'firebase/storage'
 
 const UserForm = ({
     showUserForm,
@@ -24,7 +22,14 @@ const UserForm = ({
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState([]);
+    const [fileList, setFileList] = useState([
+        {
+            uid: "-1", name: "defaultImage.png",
+            status: "done",
+            url: selectedUser?.profile_img
+        }
+    ]);
+    const [urlImage, setUrlImage] = useState("")
 
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
@@ -45,25 +50,28 @@ const UserForm = ({
         setPreviewOpen(true);
         setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
-    // const handleFileUpload = async ({ fileList }, selectedUser) => {
-    //     try {
-    //         const response = await handleFileUploadFunction({ fileList }, selectedUser)
-    //         console.log('response upload File', response)
-    //         if (response?.data?.status === "Success") {
-    //             message.success(response.data.message);
-    //             setFileList(response.data.data.imageUrl)
-    //         } else {
-    //             message.error(response.data.message)
-    //         }
-    //     } catch (error) {
-    //         console.log('error in upload : ', error)
-    //         message.error(error.message);
-    //     }
-    // }
+
+    const handleFileUpload = async (previewImage) => {
+        const base64 = await getBase64(previewImage);
+        try {
+            const response = await handleFileUploadFunction(base64)
+            console.log('response upload File', response)
+            if (response?.data?.status === "Success") {
+                message.success(response.data.messages);
+                console.log("url image : ", response.data.data.imageUrl);
+                setUrlImage(response.data.data.imageUrl)
+            } else {
+                message.error(response.data.messages)
+            }
+        } catch (error) {
+            console.log('error in upload : ', error)
+            message.error(error.message);
+        }
+    }
 
     //create User
     const onFinish = async (values) => {
-        const data = { ...values, profile_img: fileList[0] || "", role_id: 1 }
+        const data = { ...values, profile_img: urlImage || "", role_id: 2 }
         console.log('data', data)
         try {
             dispatch(ShowLoading())
@@ -106,6 +114,8 @@ const UserForm = ({
         return Promise.resolve();
     };
 
+    console.log("selectedUser: ", selectedUser);
+    console.log("selectedUser?.profile_img: ", selectedUser?.profile_img);
     return (
         <div>
             <Modal
@@ -187,24 +197,23 @@ const UserForm = ({
                         hasFeedback>
                         <Input placeholder="Enter your phone number" />
                     </Form.Item>
-                    <Form.Item label="Profile Image : " name="profile_img"
+                    <Form.Item label="Profile Image : "
                         hasFeedback>
                         <ImgCrop rotate>
                             <Upload
-                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                                // customRequest={handleFileUpload}
+                                defaultFileList={[...fileList]}
+                                action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
                                 accept='.png, .jpg'
                                 listType="picture-card"
                                 fileList={fileList}
                                 onChange={onChange}
-                                // onPreview={onPreview}
                                 onPreview={handlePreview}
                                 beforeUpload={(file) => {
-                                    console.log(file);
+                                    handleFileUpload(file)
                                     return false;
                                 }}
                             >
-                                {fileList.length < 1 && '+ Upload'}
+                                {fileList.length < 2 && '+ Upload'}
                             </Upload>
                         </ImgCrop>
                     </Form.Item>

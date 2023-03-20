@@ -110,6 +110,11 @@ const Drivers = () => {
             }
         } catch (error) {
             console.log('error in User : ', error)
+            if (error.message) {
+                message.error(error.message);
+            } else {
+                message.error("Something went wrong!");
+            }
         }
     }
 
