@@ -69,19 +69,33 @@ const TripForm = ({
     //Format Date
     const handleDateChange = (date) => {
         let formattedDates;
-        if (selectedTrip?.departure_date) {
-            formattedDates = date.format("YYYY-MM-DD");
+        if (date) {
+            if (Array.isArray(date)) {
+                formattedDates = date.map((dateObj) => {
+                    if (dateObj instanceof DateObject) {
+                        return dateObj.format("YYYY-MM-DD");
+                    }
+                });
+            } else if (date instanceof DateObject) {
+                formattedDates = date.format("YYYY-MM-DD");
+            }
             setDepartureDate(formattedDates);
-        } else {
-            formattedDates = date.map((dateObj) => {
-                if (dateObj instanceof DateObject) {
-                    return dateObj.format("YYYY-MM-DD");
-                }
-            });
-            setDepartureDate(formattedDates);
+        } else if (selectedTrip?.departure_date) {
+            setDepartureDate(selectedTrip.departure_date);
         }
-
+        // if (selectedTrip?.departure_date) {
+        //     formattedDates = date.format("YYYY-MM-DD");
+        //     setDepartureDate(formattedDates);
+        // } else {
+        //     formattedDates = date.map((dateObj) => {
+        //         if (dateObj instanceof DateObject) {
+        //             return dateObj.format("YYYY-MM-DD");
+        //         }
+        //     });
+        //     setDepartureDate(formattedDates);
+        // }
     };
+
 
     const handleTimeChange = (date, index) => {
         const updatedDepartureTime = [...departureTime];
@@ -115,11 +129,11 @@ const TripForm = ({
             ...values, departure_dates: departureDate,
             departure_times: formattedTimes
         }
-
+        console.log('dataCreate', dataCreate)
         //data for Update Trip
         const dataUpdate = {
             ...values,
-            departure_date: departureDate || selectedTrip?.departure_date,
+            departure_date: departureDate.length > 0 ? departureDate : selectedTrip?.departure_date,
             departure_time: formattedSelectTime,
             status: 1
         }
@@ -141,10 +155,14 @@ const TripForm = ({
                 dispatch(HideLoading());
                 message.error(response.data.message)
             }
-            if (selectedTrip?.departure_date) {
-                getData(departureDate);
-            } else {
+            if (type === "new") {
                 getData(departureDate?.[0]);
+            } else {
+                if (departureDate.length > 0) {
+                    getData(departureDate);
+                } else {
+                    getData(selectedTrip?.departure_date);
+                }
             }
             setShowTripForm(false);
             setSelectedTrip(null);

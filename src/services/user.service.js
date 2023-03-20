@@ -2,7 +2,6 @@
 import { serverEndpoint } from '../utilities/serverEndpoint'
 import axiosInstance from '../helpers/axiosInstance';
 import axios from 'axios';
-import { async } from '@firebase/util';
 
 export const getAllUsersFunction = async () => {
     try {
@@ -71,7 +70,11 @@ export const handleUpdateUserFunction = async (values, selectedUser) => {
         return response;
     } catch (error) {
         console.log("error in service : ", error);
-        return error;
+        if (error?.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else {
+            throw error;
+        }
     }
 }
 export const updateUserStatusFunction = async (id) => {
@@ -81,7 +84,11 @@ export const updateUserStatusFunction = async (id) => {
         return response
     } catch (error) {
         console.log('error in update status buses service: ', error);
-        return error;
+        if (error?.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else {
+            throw error;
+        }
     }
 }
 
