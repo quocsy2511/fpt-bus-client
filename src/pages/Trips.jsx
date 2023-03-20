@@ -5,7 +5,7 @@ import PageTitle from '../components/PageTitle';
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import "../resources/content.css"
 import 'antd/dist/reset.css'
-import { getAllTripsByDateFunction, getAllTripsFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction } from '../services/trip.service';
+import { getAllTripsByDateFunction, updateTripStatusActiveFunction, updateTripStatusDeActiveFunction } from '../services/trip.service';
 import TripForm from '../components/form/TripForm';
 import { EditTwoTone } from '@ant-design/icons';
 import moment from 'moment';
@@ -15,7 +15,6 @@ import dayjs from 'dayjs';
 const Trips = () => {
     const dispatch = useDispatch();
     const [trips, setTrips] = useState([]);
-    const [query, setQuery] = useState("");
     const [showTripForm, setShowTripForm] = useState(false)
     const [selectedTrip, setSelectedTrip] = useState(null);
     const today = dayjs().format('YYYY-MM-DD');
@@ -115,8 +114,6 @@ const Trips = () => {
                     message.success(response.data.message);
                     dispatch(HideLoading());
                 }
-                // getAllTrips();
-
             } else {
                 message.error(response.message);
                 dispatch(HideLoading());
@@ -126,23 +123,6 @@ const Trips = () => {
             message.error(error.message);
         }
     }
-
-    const getAllTrips = async () => {
-        try {
-            dispatch(ShowLoading());
-            const response = await getAllTripsFunction()
-            console.log('response get all trip: ', response)
-            dispatch(HideLoading());
-            if (response.data.status === "Success") {
-                setTrips(response.data.data);
-            } else {
-                message.error(response.data.message);
-            }
-        } catch (error) {
-            dispatch(HideLoading());
-            message.error(error.message);
-        }
-    };
 
     const getAllTripsByDate = async (date) => {
         try {
@@ -169,12 +149,6 @@ const Trips = () => {
         getAllTripsByDate(date)
     }, [date]);
 
-    // useEffect(() => {
-    //     // getAllTrips();
-    //     getAllTripsByDate(today)
-    //     console.log("hrere");
-    // }, [])
-
     return (
         <div>
             <div className='search-picker-date'>
@@ -197,7 +171,6 @@ const Trips = () => {
             </div>
             {showTripForm && (
                 <TripForm
-                    dateSearch={date}
                     showTripForm={showTripForm}
                     setShowTripForm={setShowTripForm}
                     type={selectedTrip ? "edit" : "new"}

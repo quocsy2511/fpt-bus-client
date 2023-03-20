@@ -23,7 +23,6 @@ const TripForm = ({
     getData,
     selectedTrip,
     setSelectedTrip,
-    dateSearch
 }) => {
 
     const [routes, setRoutes] = useState([]);
@@ -79,13 +78,7 @@ const TripForm = ({
             });
             setDepartureDate(formattedDates);
         }
-
     };
-
-    // const handleDateChangeUpdate = (date) => {
-    //     let formattedDates = date.format("YYYY-MM-DD");
-    //     setDepartureDate(formattedDates);
-    // }
 
     const handleTimeChange = (date, index) => {
         const updatedDepartureTime = [...departureTime];
@@ -112,7 +105,6 @@ const TripForm = ({
 
         //formatTimeUpdate
         // let formattedSelectTime = selectedTime ? selectedTime.format("HH:mm") : (selectedTrip?.departure_time || null);
-
         formattedSelectTime = selectedTime ? moment(selectedTime).format("HH:mm") : (selectedTrip?.departure_time || null);
 
         //data for Create Trip
@@ -120,7 +112,6 @@ const TripForm = ({
             ...values, departure_dates: departureDate,
             departure_times: formattedTimes
         }
-        // .concat(formattedSelectTime || [])
 
         //data for Update Trip
         const dataUpdate = {
@@ -152,7 +143,6 @@ const TripForm = ({
             } else {
                 getData(departureDate?.[0]);
             }
-            // getData(departureDate);
             setShowTripForm(false);
             setSelectedTrip(null);
         } catch (error) {
@@ -255,7 +245,6 @@ const TripForm = ({
                             },
                             ]} hasFeedback>
                         <DatePicker
-                            // value={selectedTrip?.departure_date}
                             format="YYYY-MM-DD"
                             className="teal"
                             render={<InputIcon style={{ color: "green" }} />}
