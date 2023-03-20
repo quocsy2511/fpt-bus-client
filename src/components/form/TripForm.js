@@ -128,7 +128,7 @@ const TripForm = ({
             ...values, departure_dates: departureDate,
             departure_times: formattedTimes
         }
-        console.log('dataCreate', dataCreate)
+
         //data for Update Trip
         const dataUpdate = {
             ...values,
