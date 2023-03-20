@@ -96,7 +96,6 @@ const TripForm = ({
         // }
     };
 
-
     const handleTimeChange = (date, index) => {
         const updatedDepartureTime = [...departureTime];
         updatedDepartureTime[index] = date;

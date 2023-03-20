@@ -64,6 +64,11 @@ const BusForm = ({
         } catch (error) {
             console.log("error in bus form: ", error);
             dispatch(HideLoading());
+            if (error.message) {
+                message.error(error.message);
+            } else {
+                message.error("Something went wrong!");
+            }
         }
     }
 
