@@ -22,13 +22,13 @@ function App() {
       <AuthContextProvider>
         <BrowserRouter>
           <Routes>
-            {/* <Route
+            <Route
               path='/home'
               element={
                 <Protected>
                   <Home />
                 </Protected>
-              } /> */}
+              } />
             <Route path='/' element={
               <Protected></Protected>}>
             </Route>
