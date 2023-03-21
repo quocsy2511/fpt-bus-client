@@ -89,12 +89,12 @@ const Buses = () => {
             dispatch(HideLoading());
 
             if (response?.data?.status === "Success") {
-
                 message.success(response.data.message);
                 getAllBuses()
                 dispatch(HideLoading());
             } else {
                 message.error(response.response.data.message);
+                console.log("hể");
                 dispatch(HideLoading());
             }
         } catch (error) {

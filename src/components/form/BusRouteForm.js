@@ -103,7 +103,6 @@ const RouteForm = ({
 
     const handleStationsBetweenChange = (index, value) => {
         const newStationsBetween = [...stationsBetween];
-
         if (value === startStation || value === endStation) {
             setErrorDuplication(true)
             message.error('The station in the middle cannot match the selected station! please choose again');

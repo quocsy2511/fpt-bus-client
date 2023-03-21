@@ -109,10 +109,11 @@ const Drivers = () => {
                 dispatch(HideLoading());
             }
         } catch (error) {
-            console.log('error in User : ', error)
+            dispatch(HideLoading());
             if (error.message) {
                 dispatch(HideLoading());
                 message.error(error.message);
+                console.log(error.message);
             } else {
                 message.error("Something went wrong!");
             }
