@@ -16,14 +16,15 @@ const RouteForm = ({
     getData,
     selectedBusRoute,
     stations
-
 }) => {
     const dispatch = useDispatch();
     const [startStation, setStartStation] = useState("Departure");
     const [endStation, setEndStation] = useState("Destination");
     const [middleStations, setMiddleStations] = useState([]);
+    console.log('middleStations', middleStations)
     const [showMiddleStationSelect, setShowMiddleStationSelect] = useState(false);
     const [stationsBetween, setStationsBetween] = useState([])
+    console.log('stationsBetween', stationsBetween)
     const [errorDuplication, setErrorDuplication] = useState(false)
 
     const handleStartStationChange = (value) => {
@@ -82,13 +83,15 @@ const RouteForm = ({
 
     const handleMiddleStationChange = (index, value) => {
         const newMiddleStations = [...middleStations];
-        console.log('newMiddleStations', newMiddleStations)
         newMiddleStations[index] = value;
         if (value === startStation || value === endStation) {
             setErrorDuplication(true)
             message.error('The station in the middle cannot match the selected station! please choose again ');
         } else {
             if (middleStations.includes(value)) {
+                setErrorDuplication(true)
+                message.error('Stations in the middle cannot be duplicated ! please choose again');
+            } else if (stationsBetween.includes(value)) {
                 setErrorDuplication(true)
                 message.error('Stations in the middle cannot be duplicated ! please choose again');
             } else {
@@ -99,6 +102,9 @@ const RouteForm = ({
     };
 
     const handleStationsBetweenChange = (index, value) => {
+        console.log('value', value)
+        console.log('index', index)
+
         const newStationsBetween = [...stationsBetween];
         console.log('value between ', value)
 
@@ -118,7 +124,6 @@ const RouteForm = ({
                     newStationsBetween[index] = value; // cập nhật phần tử tại index với giá trị mới
                     setStationsBetween(newStationsBetween); // cập nhật mảng stationsBetween với bản sao mới
                 }
-
             }
         }
     };
@@ -126,19 +131,15 @@ const RouteForm = ({
     const handleAddMiddleStation = () => {
         setMiddleStations([...middleStations, null]);
     };
-
     const onFinish = async (values) => {
         if (errorDuplication) {
-            console.log('endStation on finish', endStation)
-            console.log('startStation on finish ', startStation)
             message.error("Can't create route when there are 2 same stations")
             return;
         }
         const dataMiddleStation = { ...values, stations: middleStations }
         // console.log('dataMiddleStation', dataMiddleStation)
-        const dataStationsBetween = { ...values, stations: stationsBetween }
-        // console.log('dataStationsBetween : ', dataStationsBetween)
-
+        const dataStationsBetween = { ...values, stations: stationsBetween.concat(middleStations || "") }
+        console.log('dataStationsBetween : ', dataStationsBetween)
         try {
             dispatch(ShowLoading())
             let response = null;
@@ -197,7 +198,10 @@ const RouteForm = ({
             const stationBetweenIDs = selectedBusRoute?.stations.map((item) => item.id)
             setStationsBetween(stationBetweenIDs);
         }
-    }, [selectedBusRoute?.stations])
+        if (selectedBusRoute) {
+            setShowMiddleStationSelect(true)
+        }
+    }, [selectedBusRoute?.stations, showMiddleStationSelect])
 
     return (
         <div>
@@ -264,10 +268,10 @@ const RouteForm = ({
                             )}>
                         </Timeline.Item>
                         {middleStations.map((middleStation, index) => (
-                            <Timeline.Item key={index}
+                            <Timeline.Item key={index} color={"red"}
                                 children={(
                                     <Form.Item >
-                                        <Select key={index} placeholder={`Station ${index + 2}`}
+                                        <Select placeholder={`Station ${index + 2}`}
                                             style={{ width: 200, }}
                                             onChange={(value) => handleMiddleStationChange(index, value)}
                                             options={stations.map((station) => ({
