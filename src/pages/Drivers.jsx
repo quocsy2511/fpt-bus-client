@@ -49,9 +49,9 @@ const Drivers = () => {
             render: (data, record) => {
                 return (
                     <Space direction="vertical" size="middle">
-                        {data.status ? (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" defaultChecked
-                            onClick={() => handleStatus(record.id)} />)
-                            : (<Switch className="custom-switch" checkedChildren="Active" unCheckedChildren="Block" onClick={() => handleStatus(record.id)} />)}
+                        <Switch checked={data?.status}
+                            className="custom-switch" checkedChildren="Active" unCheckedChildren="Block"
+                            onClick={() => handleStatus(record.id)} />
                     </Space>
                 )
             },
@@ -109,9 +109,10 @@ const Drivers = () => {
                 dispatch(HideLoading());
             }
         } catch (error) {
-            console.log('error in User : ', error)
+            dispatch(HideLoading());
             if (error.message) {
                 message.error(error.message);
+                console.log(error.message);
             } else {
                 message.error("Something went wrong!");
             }
