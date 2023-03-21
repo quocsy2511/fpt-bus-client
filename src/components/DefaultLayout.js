@@ -38,7 +38,7 @@ const DefaultLayout = ({ children }) => {
             icon: "ri-pin-distance-line",
         },
         {
-            name: "Users",
+            name: "Students",
             path: "/users",
             icon: "ri-user-line",
         },

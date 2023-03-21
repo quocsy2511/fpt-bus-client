@@ -26,7 +26,11 @@ export const handleNewBusFunction = async (values) => {
         return response
     } catch (error) {
         console.log('error in service : ', error)
-        return error;
+        if (error?.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else {
+            throw error;
+        }
     }
 }
 export const handleUpdateBusFunction = async (values, selectedBus) => {
@@ -36,7 +40,11 @@ export const handleUpdateBusFunction = async (values, selectedBus) => {
         return response;
     } catch (error) {
         console.log("error in service : ", error);
-        return error;
+        if (error?.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else {
+            throw error;
+        }
     }
 }
 export const updateBusStatusFunction = async (id) => {

@@ -133,10 +133,10 @@ const Users = () => {
             <div className='inside-content'>
                 <div className="inside-content-2">
                     <div className="d-flex justify-content-between" style={{ margin: "30px" }}>
-                        <PageTitle title="List Users" />
-                        <div>
+                        <PageTitle title="List Students" />
+                        {/* <div>
                             <button className='add-button' onClick={() => setShowUserForm(true)}> New </button>
-                        </div>
+                        </div> */}
                     </div>
                     <Table rowKey="id" columns={columnsStudent} pagination={{ pageSize: 5, }} dataSource={userFilter} />
                 </div>

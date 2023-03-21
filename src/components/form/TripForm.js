@@ -53,10 +53,12 @@ const TripForm = ({
         try {
             dispatch(ShowLoading());
             const response = await getAllBusesFunction()
+            console.log('response get all bus: ', response)
             dispatch(HideLoading());
             if (response?.data?.status === "Success") {
                 const filterBuses = response.data.data.filter(bus => bus.status);
                 setBuses(filterBuses);
+
             } else {
                 message.error(response.message);
             }
@@ -222,7 +224,7 @@ const TripForm = ({
                             placeholder="choose bus ... "
                             options={buses && buses.length > 0 ? buses.map((item) => ({
                                 value: item.id,
-                                label: item.license_plate
+                                label: `${item.license_plate} - ${item.driver_name}`
                             })) : []}
                         />
                     </Form.Item>
