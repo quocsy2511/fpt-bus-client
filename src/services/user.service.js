@@ -84,8 +84,8 @@ export const updateUserStatusFunction = async (id) => {
         return response
     } catch (error) {
         console.log('error in update status buses service: ', error);
-        if (error?.response?.data?.message) {
-            throw new Error(error.response.data.message);
+        if (error?.response?.data?.messages) {
+            throw new Error(error.response.data.messages);
         } else {
             throw error;
         }
