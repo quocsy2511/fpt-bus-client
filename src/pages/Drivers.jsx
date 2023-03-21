@@ -111,6 +111,7 @@ const Drivers = () => {
         } catch (error) {
             dispatch(HideLoading());
             if (error.message) {
+                dispatch(HideLoading());
                 message.error(error.message);
                 console.log(error.message);
             } else {
