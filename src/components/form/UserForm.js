@@ -120,7 +120,7 @@ const UserForm = ({
         <div>
             <Modal
                 width={800}
-                title={type === "new" ? "New User" : "Edit User"}
+                title={type === "new" ? "New Student" : "Edit Student"}
                 open={showUserForm}
                 onCancel={() => {
                     setShowUserForm(false);
@@ -131,28 +131,25 @@ const UserForm = ({
                 <Form layout='horizontal' className='new-user' labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} autoComplete="off"
                     onFinish={onFinish} initialValues={selectedUser} >
                     <Form.Item label=" Student ID :" name="student_id" rules={
-                        [{
-                            required: true,
-                            message: 'Please input License Plate! Example : SE123456',
-                        },
-                        {
-                            whitespace: true,
-                            message: 'Please type License Plate!'
-                        },
-                        {
-                            validator: validateStudentId,
-                        },
-                        {
-                            min: 8,
-                            message: "Enter at least 8 characters Example : SE151029",
-                        },
-                        {
-                            max: 8,
-                            message: "Enter at max 8 characters "
-                        }
+                        [
+                            {
+                                whitespace: true,
+                                message: 'Please type License Plate!'
+                            },
+                            {
+                                validator: validateStudentId,
+                            },
+                            {
+                                min: 8,
+                                message: "Enter at least 8 characters Example : SE151029",
+                            },
+                            {
+                                max: 8,
+                                message: "Enter at max 8 characters "
+                            }
                         ]}
                         hasFeedback>
-                        <Input placeholder='Enter your Student ID ' />
+                        <Input placeholder='Enter your Student ID ' disabled={true} />
                     </Form.Item>
                     <Form.Item label=" User Name : " name="fullname" rules={
                         [{
@@ -172,17 +169,14 @@ const UserForm = ({
                         <Input placeholder='Enter your Name ' />
                     </Form.Item>
                     <Form.Item label="Email Address : " name="email" rules={
-                        [{
-                            required: true,
-                            message: 'Please input your Email  Example : Phuongntu@fpt.edu.vn',
-                        },
-                        {
-                            pattern: /^.+@fpt\.edu\.vn$/,
-                            message: "Please enter a valid email address with @fpt.edu.vn domain!",
-                        },
+                        [
+                            {
+                                pattern: /^.+@fpt\.edu\.vn$/,
+                                message: "Please enter a valid email address with @fpt.edu.vn domain!",
+                            },
                         ]}
                         hasFeedback>
-                        <Input placeholder='Enter your Email ' />
+                        <Input placeholder='Enter your Email ' disabled={true} />
                     </Form.Item>
                     <Form.Item label=" Phone Number : " name="phone_number" rules={
                         [{
