@@ -4,6 +4,44 @@ import { useSelector } from "react-redux";
 import "../resources/layout.css";
 import { UserAuth } from '../context/AuthContext';
 import 'antd/dist/reset.css'
+import { Menu } from 'antd';
+import { RiRouteFill, RiAdminLine } from 'react-icons/ri';
+import {
+    HomeFilled,
+    LogoutOutlined,
+    UsergroupAddOutlined,
+    UserOutlined,
+    UserSwitchOutlined,
+    CarOutlined,
+    CalendarOutlined,
+    AimOutlined
+} from '@ant-design/icons';
+
+
+function getItem(label, key, icon, children, type, danger, style) {
+    return {
+        key,
+        icon,
+        children,
+        label,
+        type,
+        danger,
+        style
+    };
+}
+const items = [
+    getItem('Home', '/home', <HomeFilled />, null, null, null, { color: '#ffffff' }),
+    getItem('Trips', '/trips', <CalendarOutlined />, null, null, null, { color: '#ffffff' }),
+    getItem('Users', 'sub1', <UsergroupAddOutlined />, [
+        getItem('Students', '/users', <UserOutlined />, null, null, null, { color: '#ffffff' }),
+        getItem('Drivers', '/drivers', <UserSwitchOutlined />, null, null, null,
+            { color: '#ffffff' }),
+    ], null, null, { color: '#ffffff' }),
+    getItem('Buses', '/buses', <CarOutlined />, null, null, null, { color: '#ffffff' }),
+    getItem('Stations', '/stations', <AimOutlined />, null, null, null, { color: '#ffffff' }),
+    getItem('Routes', '/routes', <RiRouteFill style={{ fontSize: "19px" }} />, null, null, null, { color: '#ffffff' }),
+    getItem('Logout', '/logout', <LogoutOutlined />, null, null, null, { color: '#ffffff' }),
+];
 
 const DefaultLayout = ({ children }) => {
     const navigate = useNavigate();
@@ -49,66 +87,38 @@ const DefaultLayout = ({ children }) => {
         },
         {
             name: "Logout",
-            path: "/logout",
+            path: "/login",
             icon: "ri-logout-box-line",
         },
     ];
-
-    const menuToBeRendered = adminMenu
-    let activeRoute = window.location.pathname;
-    if (window.location.pathname.includes('book-now')) {
-        activeRoute = "/";
-    }
     return (
         <div className='layout-parent'>
             <div className='sidebar'>
-                <div className="sidebar-header">
-                    <div className='sidebar-collapsed' >
-                        <h3 className="logo items-center justify-content-start"><i className="ri-bus-fill"> </i> FPT </h3>
-                        <div className='item-collapsed'>
-                            {collapsed ? (
-                                <i
-                                    className="ri-bar-chart-horizontal-line"
-                                    style={{ color: "while" }}
-                                    onClick={() => setCollapsed(!collapsed)}
-                                ></i>
-                            ) : (
-                                <i
-                                    className="ri-close-circle-line"
-                                    style={{ color: "while" }}
-                                    onClick={() => setCollapsed(!collapsed)}
-                                ></i>
-                            )}
+                <div className='d-flex flex-column gap-5 justify-content-start menu'>
+                    <div className="sidebar-header">
+                        <div className="logo">
+                            <img src="https://scontent.fsgn5-15.fna.fbcdn.net/v/t1.6435-9/191299147_4218533944852001_9207524335393556037_n.png?_nc_cat=1&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=rYCRBwSoQj8AX-mLIop&_nc_ht=scontent.fsgn5-15.fna&oh=00_AfBVtxgFmoNESUrmhcHYGw5oeAet3ERaSflxL_6dChFmjg&oe=64413C35" alt="logo" style={{ width: "36%" }} />
+                        </div>
+                        <div className='name-admin'>
+                            <h2><RiAdminLine style={{ fontSize: "24px", color: "white" }} /> {user?.fullname}</h2>
                         </div>
                     </div>
-                    <h1 className="role">{user?.fullname}</h1>
-                </div>
-                <div className='d-flex flex-column gap-3 justify-content-start menu'>
-                    {menuToBeRendered.map((item, index) => {
-                        return (
-                            <div key={index} className={`${activeRoute === item.path && "active-menu-item"} menu-item`}>
-                                <i className={item.icon}></i>
-                                {!collapsed && (
-                                    <span
-                                        onClick={async () => {
-                                            try {
-                                                if (item.path === "/logout") {
-                                                    await logOut();
-                                                    navigate("/login");
-                                                } else {
-                                                    navigate(item.path);
-                                                }
-                                            } catch (error) {
-                                                console.log(error);
-                                            }
-                                        }}
-                                    >
-                                        {item.name}
-                                    </span>
-                                )}
-                            </div>
-                        )
-                    })}
+                    <div >
+                        <Menu
+                            defaultOpenKeys={['sub1']}
+                            mode="inline"
+                            inlineCollapsed={collapsed}
+                            items={items}
+                            onClick={async ({ key }) => {
+                                if (key === "/logout") {
+                                    await logOut();
+                                    navigate("/login");
+                                } else {
+                                    navigate(key)
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
             <div className='body'>

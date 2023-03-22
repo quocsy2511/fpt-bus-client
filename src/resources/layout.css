@@ -35,7 +35,8 @@
   justify-content: start;
   padding: 10px 30px;
   flex-direction: column;
-  height: 101vh;
+  height: 103vh;
+  width: 270px;
 }
 .content {
   background-color: whitesmoke;
@@ -49,10 +50,14 @@
   justify-content: center;
 }
 .logo {
-  color: white;
-  padding: 10px 5px 5px 5px;
+  color: #343541;
+  padding: 0px 5px 5px 0px;
   align-items: center;
   justify-content: center;
+}
+.logo > img {
+  border: 1px solid;
+  border-radius: 40px;
 }
 
 .role {
@@ -60,7 +65,7 @@
   font-size: 16px;
 }
 .menu {
-  margin-top: 67px;
+  margin-top: 5px;
 }
 .menu-item {
   display: flex;
@@ -104,4 +109,47 @@
 
 .ant-input-group-addon:first-child {
   background-color: #1677ff;
+}
+
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+  background-color: transparent !important;
+  border-inline-end: none !important;
+}
+.ant-menu-light.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+  background: rgb(242 111 32) !important;
+}
+.ant-menu-light .ant-menu-item-selected {
+  background-color: #f26f21;
+  border: 1px solid #ffd300;
+}
+.ant-menu-light.ant-menu-inline .ant-menu-item {
+  position: relative;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+.ant-menu-inline .ant-menu-submenu {
+  padding-bottom: 6.9px !important;
+}
+.ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #000000;
+}
+.ant-menu .ant-menu-item .ant-menu-item-icon svg {
+  font-size: 19px !important;
+}
+.anticon svg {
+  font-size: 19px !important;
+}
+
+.gap-5 {
+  gap: 3rem !important;
+}
+.name-admin {
+  padding-top: 25px;
+}
+.name-admin > h2 {
+  color: black;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
