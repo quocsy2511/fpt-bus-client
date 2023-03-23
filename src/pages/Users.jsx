@@ -4,11 +4,12 @@ import PageTitle from "../components/PageTitle";
 import { HideLoading, ShowLoading } from '../redux/alertsSlice';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllDriversFunction, getAllStudentsFunction, updateUserStatusFunction } from "../services/user.service";
+import { getAllStudentsFunction, updateUserStatusFunction } from "../services/user.service";
 import "../resources/content.css"
 import Header from "../components/Header";
 import UserForm from "../components/form/UserForm"
-import { EditTwoTone } from '@ant-design/icons';
+import NotiForm from "../components/form/NotiForm"
+import { EditTwoTone, NotificationTwoTone } from '@ant-design/icons';
 
 
 
@@ -17,6 +18,7 @@ const Users = () => {
     const dispatch = useDispatch();
     let [users, setUsers] = useState([]);
     const [showUserForm, setShowUserForm] = useState(false);
+    const [showNotiForm, setShowNotiForm] = useState(false);
     const [query, setQuery] = useState("");
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -70,6 +72,12 @@ const Users = () => {
                         onClick={() => {
                             setSelectedUser(record);
                             setShowUserForm(true)
+                        }} />
+                    <Divider />
+                    <NotificationTwoTone twoToneColor='orange'
+                        onClick={() => {
+                            setSelectedUser(record);
+                            setShowNotiForm(true)
                         }} />
                     <Divider />
                 </Space>
@@ -150,6 +158,14 @@ const Users = () => {
                     setSelectedUser={setSelectedUser}
                     getDataStudents={getAllStudents}>
                 </UserForm>
+            )}
+            {showNotiForm && (
+                <NotiForm
+                    showNotiForm={showNotiForm}
+                    setShowNotiForm={setShowNotiForm}
+                    selectedUser={selectedUser}
+                    setSelectedUser={setSelectedUser}
+                ></NotiForm>
             )}
         </div>
     );

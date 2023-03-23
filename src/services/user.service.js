@@ -77,6 +77,7 @@ export const handleUpdateUserFunction = async (values, selectedUser) => {
         }
     }
 }
+
 export const updateUserStatusFunction = async (id) => {
     try {
         const response = await axiosInstance.put(serverEndpoint + `api/v1/users/change-status/${id}`)
