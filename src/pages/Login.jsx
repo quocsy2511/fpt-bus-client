@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleButton } from 'react-google-button';
 import { UserAuth } from '../context/AuthContext';
@@ -17,7 +17,7 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const handleGoogleSignIn = async () => {
+    const handleGoogleSignIn = useCallback(async () => {
         dispatch(ShowLoading());
         console.log("token tin login", accessToken);
         console.log("user in login", user);
@@ -70,9 +70,9 @@ const Login = () => {
             console.log("error", error);
             await logOut();
         }
-    };
-
-    useEffect(() => {
+    }
+    )
+    useCallback(() => {
         loginFunction();
     }, [googleSignIn])
     return (

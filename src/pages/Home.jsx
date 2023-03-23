@@ -16,31 +16,39 @@ const Home = () => {
     const [date, setDate] = useState(today);
     const [dataAPI, setDateApi] = useState(null)
     const [dataChartPie, setDataChartPie] = useState({
-        labels: ["Ticket Booking", "Ticket Cancel"],
+        labels: ["Ticket Used", "Ticket Remaining"],
         datasets: [
             {
-                label: "Users Gained",
-                data: [dataAPI?.TotalTicketBook, dataAPI?.TotalTicketCancel],
+                label: "Ticket Used",
+                data: [(dataAPI?.TotalTicket / dataAPI?.TotalTicketOfTrip) * 100, 100 - ((dataAPI?.TotalTicket / dataAPI?.TotalTicketOfTrip) * 100)],
                 backgroundColor: [
                     "#0078d1",
                     "#119d57"
                 ],
                 // borderColor: "black",
                 borderWidth: 2,
-            },
+            }
         ],
     });
     const [dataChartBar, setDataChartBar] = useState({
-        labels: dataAPI?.TicketRoute?.map(item => item.route_name),
+        labels: dataAPI?.TotalRoute?.map(item => item.route_name),
         datasets: [
             {
-                label: "Ticket",
-                data: dataAPI?.TicketRoute?.map(item => item.TotalTicketOfRoute),
-                backgroundColor: [
-                    "#0078d1",
-                    "#119d57"
-                ],
-                // borderColor: "black",
+                label: "Ticket Cancel",
+                data: dataAPI?.TicketRoute?.TicketCancel?.map(item => item.TotalTicketOfRoute != undefined ? item.TotalTicketOfRoute : 0),
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderWidth: 2,
+            },
+            {
+                label: "Ticket Booking",
+                data: dataAPI?.TicketRoute?.TicketBooking?.map(item => item.TotalTicketOfRoute != undefined ? item.TotalTicketOfRoute : 0),
+                backgroundColor: 'rgb(75, 192, 192)',
+                borderWidth: 2,
+            },
+            {
+                label: "Ticket Used",
+                data: dataAPI?.TicketRoute?.TicketUsed?.map(item => item.TotalTicketOfRoute != undefined ? item.TotalTicketOfRoute : 0),
+                backgroundColor: 'rgb(53, 162, 235)',
                 borderWidth: 2,
             },
         ],
@@ -68,31 +76,38 @@ const Home = () => {
     }, [date]);
     useMemo(() => {
         setDataChartPie({
-            labels: ["Ticket Booking", "Ticket Cancel"],
+            labels: ["Ticket Used", "Ticket Remaining"],
             datasets: [
                 {
-                    label: "Ticket",
-                    data: [dataAPI?.TotalTicketBook, dataAPI?.TotalTicketCancel],
-                    backgroundColor: [
-                        "#119d57",
-                        "#ff0d0d"
-                    ],
-                    // borderColor: "black",
-                    borderWidth: 2,
-                },
-            ],
-        })
-        setDataChartBar({
-            labels: dataAPI?.TicketRoute?.map(item => item.route_name),
-            datasets: [
-                {
-                    label: "Ticket",
-                    data: dataAPI?.TicketRoute?.map(item => item.TotalTicketOfRoute),
+                    data: [((dataAPI?.TotalTicket / dataAPI?.TotalTicketOfTrip) * 100), (100 - ((dataAPI?.TotalTicket / dataAPI?.TotalTicketOfTrip) * 100))],
                     backgroundColor: [
                         "#0078d1",
                         "#119d57"
                     ],
                     // borderColor: "black",
+                    borderWidth: 2,
+                }
+            ],
+        })
+        setDataChartBar({
+            labels: dataAPI?.TotalRoute?.map(item => item.route_name),
+            datasets: [
+                {
+                    label: "Ticket Cancel",
+                    data: dataAPI?.TicketRoute?.TicketCancel?.map(item => item.TotalTicketOfRoute != undefined ? item.TotalTicketOfRoute : 0),
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderWidth: 2,
+                },
+                {
+                    label: "Ticket Booking",
+                    data: dataAPI?.TicketRoute?.TicketBooking?.map(item => item.TotalTicketOfRoute != undefined ? item.TotalTicketOfRoute : 0),
+                    backgroundColor: 'rgb(75, 192, 192)',
+                    borderWidth: 2,
+                },
+                {
+                    label: "Ticket Used",
+                    data: dataAPI?.TicketRoute?.TicketUsed?.map(item => item.TotalTicketOfRoute != undefined ? item.TotalTicketOfRoute : 0),
+                    backgroundColor: 'rgb(53, 162, 235)',
                     borderWidth: 2,
                 },
             ],
@@ -124,12 +139,12 @@ const Home = () => {
                     <div className="row justify-content-center">
                         <div className="col-lg-4 col-md-12">
                             <div className="white-box analytics-info">
-                                <h3 className="box-title">Total Bus:</h3>
+                                <h3 className="box-title">Total User:</h3>
                                 <ul className="list-inline two-part d-flex align-items-center mb-0">
                                     <li>
-                                        <i className='ri-bus-line'></i>
+                                        <i className='ri-user-line'></i>
                                     </li>
-                                    <li className="ms-auto"><span className="counter text-success">{dataAPI?.TotalBus}</span></li>
+                                    <li className="ms-auto"><span className="counter text-success">{dataAPI?.TotalUser}</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -140,7 +155,7 @@ const Home = () => {
                                     <li>
                                         <i className="ri-coupon-line"></i>
                                     </li>
-                                    <li className="ms-auto"><span className="counter text-purple">{dataAPI?.TotalTicketBook + dataAPI?.TotalTicketCancel}</span></li>
+                                    <li className="ms-auto"><span className="counter text-purple">{dataAPI?.TotalTicket}</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -166,7 +181,7 @@ const Home = () => {
                                         <BarChart chartData={dataChartBar} />
                                     </div>
                                     <div className='col-6' style={{ height: 405 }}>
-                                        <h3 className="box-title text-center">Total ticket booking and cancel in today</h3>
+                                        <h3 className="box-title text-center">Average number of student tickets booked per day</h3>
                                         <div style={{ marginLeft: "170px", height: 405 }}>
                                             <PieChart chartData={dataChartPie} />
                                         </div>
