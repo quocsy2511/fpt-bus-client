@@ -62,7 +62,7 @@ select {
   background-color: var(--primary) !important;
   color: white;
   border: none;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   cursor: pointer;
   height: 40px;
 }
